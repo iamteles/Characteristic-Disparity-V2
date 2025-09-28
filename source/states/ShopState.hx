@@ -194,8 +194,13 @@ class ShopState extends MusicBeatState
             var countTimer = new FlxTimer().start(0.7, function(tmr:FlxTimer)
             {
                 hudTalk.tweenAlpha(1, 1);
-                if(question)
-                    hudTalk.resetDial("entersong");
+                if(question) {
+                    if(!SaveData.progression.get("oneofthem"))
+                        hudTalk.resetDial("entersong");
+                    else
+                        hudTalk.resetDial("replaysong");
+                }
+
                 else
                     hudTalk.resetDial("post");
             });

@@ -177,7 +177,7 @@ class ShopTalk extends FlxGroup
                             if(ShopState.Y) {
                                 resetDial("post");
                             }
-                        case "entersong":
+                        case "entersong" | "replaysong":
                             if(ShopState.A) {
                                 resetDial("conservation");
                             }
@@ -427,7 +427,7 @@ class ShopBuy extends FlxGroup
     public function alphaTab(alpha:Float, time:Float) {
         for(i in curTab) {
             var alphaF = alpha;
-            if(SaveData.shop.get(i.info[0])) {
+            if(SaveData.shop.get(i.info[0]) && i.info[0] != "mic") {
                 if (alpha > 0.3)
                     alphaF = 0.3;
             }
@@ -488,7 +488,8 @@ class ShopTab extends FlxTypedGroup<ShopItem>
             ["mic", "Used Microphone", 50],
             ["crown", "Golden Crown", 100],
             ["ticket", "Rave Ticket", 50],
-            ["shack", "Hair Dye", 75]
+            ["shack", "Hair Dye", 75],
+            ["time", "Time Machine", 50],
         ],
         "skins" => [
             ["base", "Classic FNF", 15],
@@ -513,8 +514,10 @@ class ShopTab extends FlxTypedGroup<ShopItem>
         for(i in 0...itemList.get(tab).length) {
             var itemX:Float = x + 40;
             var itemY:Float = y + 30;
-            if(i >= 2)
-                itemY = y + 30 + 200;
+            if(i >= 4)
+                itemY = y + 15 + 400;
+            else if(i >= 2)
+                itemY = y + 15 + 200;
             if(i == 1 || i == 3)
                 itemX = x + 40 + 200;
             var item = new ShopItem(itemList.get(tab)[i], itemX, itemY);
@@ -631,11 +634,18 @@ class ShopItem extends FlxGroup
             alpha = tempalpha;
 
         if(SaveData.shop.get(info[0])) {
-            if (alpha > 0.3)
-                alpha = 0.3;
+            if(info[0] == "mic") {
+                if(name.text != "REPLAY")
+                    name.text = "REPLAY";
+            }
+            else {
+                if (alpha > 0.3)
+                    alpha = 0.3;
 
-            if(name.text != "SOLD")
-                name.text = "SOLD";
+                if(name.text != "SOLD")
+                    name.text = "SOLD";
+            }
+
         }
     }
 }

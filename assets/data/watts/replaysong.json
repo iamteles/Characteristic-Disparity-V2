@@ -1,0 +1,35 @@
+{
+    "ident": "replaysong",
+    "lines": [
+        [
+            "…",
+            "confused",
+            0.05
+        ],
+        [
+            "what?",
+            "confused",
+            0.05
+        ],
+        [
+            "You wanna go at it again?",
+            "confused",
+            0.05
+        ],
+        [
+            "..",
+            "confused",
+            0.05
+        ],
+        [
+            "I guess that's fine by me... Do what you have to...",
+            "sad",
+            0.05
+        ],
+        [
+            "A. Plead\n* B. Taunt",
+            "sad",
+            0.05
+        ]
+    ]
+}

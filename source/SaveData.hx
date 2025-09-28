@@ -196,6 +196,10 @@ class SaveData
 			false,
 			"A ticket to a flavorfull festival. Didn't feel like going myself, schedule too busy."
 		],
+		"time" => [
+			false,
+			"...I don't remember that ever being there. Are you sure you want this?"
+		],
 		"tails" => [
 			false,
 			"Its just a can of fake blood. I'm not sure why someone would want it."
