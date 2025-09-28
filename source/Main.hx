@@ -125,8 +125,8 @@ class Main extends Sprite
 		possibleTitles = temp;
 		randomized = FlxG.random.int(0, possibleTitles.length-1);
 
-		//trace(randomized);
-		//trace(Main.possibleTitles);
+		trace(randomized);
+		trace(Main.possibleTitles);
 	}
 
 	#if desktop

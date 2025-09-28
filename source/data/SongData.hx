@@ -64,7 +64,7 @@ class SongData
 		if(!Paths.fileExists(('songs/$jsonInput/$formatPath.json')))
 			formatPath = '$jsonInput';
 			
-		//trace('$jsonInput/$formatPath');
+		trace('$jsonInput/$formatPath');
 		
 		var daSong:SwagSong = cast Paths.json('songs/$jsonInput/$formatPath').song;
 		

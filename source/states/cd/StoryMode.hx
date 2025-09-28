@@ -170,12 +170,12 @@ class StoryMode extends MusicBeatState
         else {
             PlayState.playList = [];
 
-            //trace(PlayState.playList);
+            trace(PlayState.playList);
     
             var week = weekData[id][0];
             var name = weekData[id][1];
     
-            //trace(week);
+            trace(week);
     
             PlayState.curWeek = name;
             PlayState.songDiff = "normal";
@@ -186,7 +186,7 @@ class StoryMode extends MusicBeatState
             PlayState.playList = week;
             PlayState.playList.remove(week[0]);
     
-            //trace(PlayState.playList);
+            trace(PlayState.playList);
             
             //CoolUtil.playMusic();
             Main.switchState(new LoadSongState());

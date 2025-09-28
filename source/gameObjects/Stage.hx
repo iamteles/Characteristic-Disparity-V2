@@ -78,7 +78,7 @@ class Stage extends FlxGroup
 	}
 
 	function loadFromJson() {
-		////trace('Finish load.');
+		//trace('Finish load.');
 
 		if(stageData.zoom != null) 
 			PlayState.defaultCamZoom = stageData.zoom;
@@ -133,7 +133,7 @@ class Stage extends FlxGroup
 					{
 						newSpr.setGraphicSize(Std.int(newSpr.width * object.scale));
 						newSpr.updateHitbox();
-						////trace('Scaled.');
+						//trace('Scaled.');
 					}
 	
 					if (object.alpha != null)
@@ -150,7 +150,7 @@ class Stage extends FlxGroup
 					}
 	
 					objectMap.set(object.objName, newSpr);
-					//trace('added ' + object.objName);
+					trace('added ' + object.objName);
 					add(newSpr);
 				}
 			}
@@ -179,7 +179,7 @@ class Stage extends FlxGroup
 					{
 						newSpr.setGraphicSize(Std.int(newSpr.width * object.scale));
 						newSpr.updateHitbox();
-						////trace('Scaled.');
+						//trace('Scaled.');
 					}
 
 					if(object.height)
@@ -226,7 +226,7 @@ class Stage extends FlxGroup
 				}
 				catch (e)
 				{
-					//trace('Uncaught Error: $e');
+					trace('Uncaught Error: $e');
 		
 					reloadStage("stage");
 				}

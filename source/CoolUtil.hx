@@ -184,7 +184,7 @@ class CoolUtil
 		if (Paths.dumpExclusions.contains('music/' + curMusic + '.ogg'))
 			Paths.dumpExclusions.remove  ('music/' + curMusic + '.ogg');
 
-		if(key == null)
+		if(key == null || key == "")
 		{
 			curMusic = "none";
 			FlxG.sound.music.stop();

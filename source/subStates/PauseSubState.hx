@@ -8,7 +8,7 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.Conductor;
 import data.GameData.MusicBeatSubState;
 import gameObjects.menu.AlphabetMenu;

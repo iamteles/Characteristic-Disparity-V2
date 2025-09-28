@@ -30,14 +30,16 @@ class Init extends MusicBeatState
 
 		Main.randomizeTitle();
 
+		Main.switchState(new TitleScreen());
+
 		Main.skipTrans = true;
-		if(SaveData.progression.get("firstboot"))
+		/*if(SaveData.progression.get("firstboot"))
 			#if mobile
 			Main.switchState(new TitleScreen());
 			#else
 			Main.switchState(new Intro.IntroLoading());
 			#end
 		else
-			Main.switchState(new Intro.Warning());
+			Main.switchState(new Intro.Warning());*/
 	}
 }

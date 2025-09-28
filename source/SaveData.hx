@@ -297,7 +297,7 @@ class SaveData
 		
 		if(progressionFile.data.shop == null)
 		{
-			//trace("shop save null");
+			trace("shop save null");
 			for(key => values in displayShop)
 				shop[key] = values[0];
 			
@@ -325,13 +325,13 @@ class SaveData
 		if(findMod("gameSettings", "fitdon"))
 		{
 			buyItem("fitdon");
-			//trace("found fitdon");
+			trace("found fitdon");
 		}
 		else {
-			//trace("not found fitdon");
+			trace("not found fitdon");
 		}
 
-		//trace(percentage());
+		trace(percentage());
 
 		save();
 	}
@@ -414,7 +414,7 @@ class SaveData
 		var skinArray = displaySettings.get("Skin")[3];
 		var index:Int = skinArray.indexOf(curMain);
 		string = skinCodes[index]; 
-		////trace('current skin is $string');
+		//trace('current skin is $string');
 		return string;
 	}
 
@@ -479,7 +479,7 @@ class SaveData
 					"cupid" => false
 				];
 				money = 0;
-				////trace ("Wiping progress " + progressionSave.data.progression + ' ' + progressionSave.data.clowns);
+				//trace ("Wiping progress " + progressionSave.data.progression + ' ' + progressionSave.data.clowns);
 			case 'HIGHSCORE':
 				FlxG.save.erase();
 			case 'OPTIONS':

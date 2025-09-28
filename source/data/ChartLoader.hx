@@ -23,7 +23,7 @@ class ChartLoader
 				if(event.stepTime == (daSection * 16))
 				{
 					noteCrochet = Conductor.calcStep(event.bpm);
-					//trace('changed note bpm ${event.bpm}');
+					trace('changed note bpm ${event.bpm}');
 				}
 			
 			for (songNotes in section.sectionNotes)

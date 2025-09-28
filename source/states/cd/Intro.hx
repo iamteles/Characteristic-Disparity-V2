@@ -10,7 +10,7 @@ import flixel.addons.display.FlxBackdrop;
 import data.GameData.MusicBeatState;
 import flixel.text.FlxText;
 import hxvlc.flixel.FlxVideo;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 #if !html5
 import sys.thread.Mutex;
 import sys.thread.Thread;
@@ -264,7 +264,7 @@ class IntroLoading extends MusicBeatState
 
 
 			loadPercent = 1.0;
-			//trace('finished loading');
+			trace('finished loading');
 
 			FlxSprite.defaultAntialiasing = oldAnti;
 			#if !html5

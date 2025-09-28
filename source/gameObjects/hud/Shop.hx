@@ -9,7 +9,7 @@ import states.PlayState;
 import flixel.tweens.FlxTween;
 import flixel.addons.text.FlxTypeText;
 import flixel.tweens.FlxEase;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import flixel.input.keyboard.FlxKey;
 import states.ShopState;
 import flixel.util.FlxTimer;
@@ -98,10 +98,10 @@ class ShopTalk extends FlxGroup
 		add(tex);
 
         if(!SaveData.progression.get("shopentrance")) {
-            //trace(SaveData.progression.get("shopentrance"));
+            trace(SaveData.progression.get("shopentrance"));
             starting = "intro";
             SaveData.progression.set("shopentrance", true);
-            //trace(SaveData.progression.get("shopentrance"));
+            trace(SaveData.progression.get("shopentrance"));
             SaveData.save();
         }
 
@@ -593,7 +593,7 @@ class ShopItem extends FlxGroup
                 ShopBuy.scrollText(SaveData.displayShop.get(info[0])[1]);
 
                 if(FlxG.mouse.justPressed) {
-                    //trace('PRESSED' + info[0]);
+                    trace('PRESSED' + info[0]);
 
                     if(!SaveData.shop.get(info[0]) && SaveData.money >= info[2]) {
                         FlxG.sound.play(Paths.sound("csin"));

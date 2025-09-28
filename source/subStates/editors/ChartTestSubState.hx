@@ -11,7 +11,7 @@ import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -762,7 +762,7 @@ class ChartTestSubState extends MusicBeatSubState
 				if(Math.abs(Conductor.songPos - music.time) >= 40 || forced)
 				{
 					// makes everyone sync to the instrumental
-					////trace("synced song");
+					//trace("synced song");
 					music.time = Conductor.songPos;
 				}
 			}

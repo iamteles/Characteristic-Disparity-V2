@@ -1,7 +1,7 @@
 package states;
 
 import hxvlc.flixel.FlxVideo;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.GameData.MusicBeatState;
 import data.Discord.DiscordClient;
 

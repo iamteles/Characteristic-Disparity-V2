@@ -214,8 +214,8 @@ class Freeplay extends MusicBeatState
                 selected = true;
                 var diff = CoolUtil.getDiffs()[curDiff];
         
-                ////trace('$diff');
-                ////trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
+                //trace('$diff');
+                //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
                 
                 PlayState.playList = [];
                 PlayState.SONG = SongData.loadFromJson(songs[curSelected][0], diff);

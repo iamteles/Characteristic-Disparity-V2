@@ -38,14 +38,14 @@ class BGChar extends FlxSprite
         super.update(elapsed);
 
         if(side == "right" && x <= -2100) {
-            //trace('went');
+            trace('went');
             velocity.x = 0;
             //x = 2800;
             goOtherWay();
             PlayState.charGroup.ammtWalking--;
         }
         else if(side == "left" && x >= 3000) {
-            //trace('went');
+            trace('went');
             velocity.x = 0;
             //x = -2100;
             goOtherWay();

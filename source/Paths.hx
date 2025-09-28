@@ -5,7 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import lime.utils.Assets;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
@@ -32,11 +32,16 @@ class Paths
 	{
 		if(!renderedSounds.exists(key))
 		{
+			if(!fileExists('$key.ogg')) {
+				trace('$key.ogg doesnt exist');
+				key = 'sounds/menu/select';
+			}
+			trace('created new sound $key');
 			renderedSounds.set(key, Sound.fromFile(getPath('$key.ogg')));
 		}
-		
 		return renderedSounds.get(key);
 	}
+
 	public static function getGraphic(key:String):FlxGraphic
 	{
 		var path = getPath('images/$key.png');
@@ -51,14 +56,14 @@ class Paths
 				#end
 				
 				var newGraphic = FlxGraphic.fromBitmapData(bitmap, false, key, false);
-				//trace('created new image $key');
+				trace('created new image $key');
 				
 				renderedGraphics.set(key, newGraphic);
 			}
 			
 			return renderedGraphics.get(key);
 		}
-		//trace('$key doesnt exist, fuck');
+		trace('$key doesnt exist, fuck');
 		return null;
 	}
 
@@ -80,7 +85,7 @@ class Paths
 		{
 			if(dumpExclusions.contains(key + '.png')) continue;
 
-			////trace('cleared $key');
+			//trace('cleared $key');
 			//clearCount++;
 			clearCount.push(key);
 
@@ -93,8 +98,8 @@ class Paths
 			renderedGraphics.remove(key);
 		}
 
-		//trace('cleared $clearCount');
-		//trace('cleared ${clearCount.length} assets');
+		trace('cleared $clearCount');
+		trace('cleared ${clearCount.length} assets');
 		
 		// sound clearing
 		for (key => sound in renderedSounds)
@@ -191,7 +196,7 @@ class Paths
 		} catch(e) {}
 		#end
 		
-		//trace(theList);
+		trace(theList);
 		return theList;
 	}
 

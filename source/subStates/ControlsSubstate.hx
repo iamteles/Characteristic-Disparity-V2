@@ -10,7 +10,7 @@ import flixel.text.FlxText;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepadInputID as FlxPad;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.Conductor;
 import data.GameData.MusicBeatSubState;
 import gameObjects.hud.HealthIcon;

@@ -5,7 +5,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import data.GameData.MusicBeatState;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.Conductor;
 import flixel.ui.FlxBar;
 import gameObjects.android.FlxVirtualPad;
@@ -127,7 +127,7 @@ class MusicPlayer extends MusicBeatState
             var text = new FlxText(0,0,0,"");
             text.setFormat(Main.gFont, 30, 0xFF000000, CENTER);
             text.text = num + songs[i][0];
-            //trace(num + songs[i][0]);
+            trace(num + songs[i][0]);
             text.x = 774.85;
             text.y = holder.y + 10;
             text.ID = i;
@@ -213,7 +213,7 @@ class MusicPlayer extends MusicBeatState
         songComposer.y = songName.y + songName.height + 2;
         add(songComposer);
 
-        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\n- / +: Decrease / Increase Volume\nSPACE: Resume / Play\nV: Mute Vocals\n");
+        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\n- / +: Change Volume\nSPACE: Play / Pause\nV: Mute Vocals\n");
         hints.setFormat(Main.gFont, 20, 0xFF000000, LEFT);
         hints.x = frame.x + 70;
         hints.y = 9;

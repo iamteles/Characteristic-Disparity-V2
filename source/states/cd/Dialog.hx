@@ -10,7 +10,7 @@ import states.*;
 import gameObjects.DialogChar;
 import flixel.addons.text.FlxTypeText;
 import flixel.input.keyboard.FlxKey;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.Discord.DiscordClient;
 
 // same dialog code as mlc btw

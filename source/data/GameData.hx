@@ -13,7 +13,7 @@ class MusicBeatState extends FlxUIState
 	{
 		super.create();
 		Main.activeState = this;
-		//trace('switched to ${Type.getClassName(Type.getClass(FlxG.state))}');
+		trace('switched to ${Type.getClassName(Type.getClass(FlxG.state))}');
 		
 		Controls.setSoundKeys();
 
@@ -86,7 +86,7 @@ class MusicBeatState extends FlxUIState
 		super.onFocusLost();
 
 		focused = false;
-		//trace(focused);
+		trace(focused);
 	}
 
 	override function onFocus():Void
@@ -98,7 +98,7 @@ class MusicBeatState extends FlxUIState
 			focused = true;
 		});
 
-		//trace(focused);
+		trace(focused);
 	}
 }
 
@@ -181,7 +181,7 @@ class MusicBeatSubState extends FlxSubState
 		super.onFocusLost();
 
 		focused = false;
-		//trace(focused);
+		trace(focused);
 	}
 
 	override function onFocus():Void
@@ -193,7 +193,7 @@ class MusicBeatSubState extends FlxSubState
 			focused = true;
 		});
 
-		//trace(focused);
+		trace(focused);
 	}
 }
 

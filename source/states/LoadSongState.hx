@@ -133,7 +133,7 @@ class LoadSongState extends MusicBeatState
 				stageBuild.reloadStageFromSong(stage);
 			}
 
-			//trace('preloaded stage and hud');
+			trace('preloaded stage and hud');
 			
 			loadPercent = 0.2;
 
@@ -163,7 +163,7 @@ class LoadSongState extends MusicBeatState
 						charList.push("bella-hp2");
 						charList.push("bex-hp2");
 					default:
-						////trace('loaded lol');
+						//trace('loaded lol');
 				}
 			}
 
@@ -173,7 +173,7 @@ class LoadSongState extends MusicBeatState
 				char.reloadChar(i);
 				addBehind(char);
 				
-				////trace('preloaded $i');
+				//trace('preloaded $i');
 
 				var icon = new HealthIcon();
 				icon.setIcon(i, false);
@@ -181,14 +181,14 @@ class LoadSongState extends MusicBeatState
 				loadPercent += (0.6 - 0.2) / charList.length;
 			}
 			
-			//trace('preloaded characters');
+			trace('preloaded characters');
 			loadPercent = 0.6;
 			
 			Paths.preloadSound('songs/${SONG.song}/Inst');
 			if(SONG.needsVoices)
 				Paths.preloadSound('songs/${SONG.song}/Voices');
 			
-			//trace('preloaded music');
+			trace('preloaded music');
 			loadPercent = 0.75;
 			
 			var thisStrumline = new Strumline(0, null, false, false, true, assetModifier);
@@ -206,7 +206,7 @@ class LoadSongState extends MusicBeatState
 				loadPercent += (0.9 - 0.75) / noteList.length;
 			}
 			
-			//trace('preloaded notes');
+			trace('preloaded notes');
 			loadPercent = 0.9;
 			
 			// add custom preloads here!!
@@ -224,12 +224,12 @@ class LoadSongState extends MusicBeatState
 					case "nefarious" | "euphoria":
 						Paths.preloadGraphic('backgrounds/week1/bgchars');
 					default:
-						////trace('loaded lol');
+						//trace('loaded lol');
 				}
 			}
 			
 			loadPercent = 1.0;
-			//trace('finished loading');
+			trace('finished loading');
 
 			FlxSprite.defaultAntialiasing = oldAnti;
 			#if !html5
@@ -355,7 +355,7 @@ class LoadMusicPlayer extends MusicBeatState
 			}
 
 			loadPercent = 1.0;
-			//trace('finished loading');
+			trace('finished loading');
 
 			FlxSprite.defaultAntialiasing = oldAnti;
 			#if !html5

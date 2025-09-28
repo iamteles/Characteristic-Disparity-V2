@@ -165,7 +165,7 @@ class OptionsState extends MusicBeatState
 
 	public function reloadCat(curCat:String = "main")
 	{
-		//trace("went to " + curCat);
+		trace("went to " + curCat);
 		storedSelected.set(OptionsState.curCat, curSelected);
 
 		OptionsState.curCat = curCat;
@@ -369,7 +369,7 @@ class OptionsState extends MusicBeatState
 				infoTxt.y -= 30;
 				
 			} catch(e) {
-				//trace("no description found");
+				trace("no description found");
 			}
 		}
 

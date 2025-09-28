@@ -13,7 +13,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -187,7 +187,7 @@ class PlayState extends MusicBeatState
 			invertedCharacters = false;
 
 		SaveData.songs.set(daSong, true);
-		//trace(SaveData.songs.get(daSong));
+		trace(SaveData.songs.get(daSong));
 		SaveData.save();
 		
 		// adjusting the conductor
@@ -1147,7 +1147,7 @@ class PlayState extends MusicBeatState
 						FlxG.sound.play(Paths.sound('countdown/caution/$caution'));
 				}
 	
-				////trace(daCount);
+				//trace(daCount);
 
 				countdown.cycle(daCount);
 	
@@ -1360,8 +1360,10 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-		if(strumline.isPlayer && !note.isHold && !note.isHoldEnd)
-			FlxG.sound.play(Paths.sound('hitsounds/' + SaveData.data.get("Hitsounds")), 1);
+		if(strumline.isPlayer && !note.isHold && !note.isHoldEnd) {
+			if(SaveData.data.get("Hitsounds") != "OFF")
+				FlxG.sound.play(Paths.sound('hitsounds/' + SaveData.data.get("Hitsounds")), 1);
+		}
 	}
 	function onNoteMiss(note:Note, strumline:Strumline)
 	{
@@ -3723,7 +3725,7 @@ class PlayState extends MusicBeatState
 			SONG = SongData.loadFromJson(playList[0], songDiff);
 			playList.remove(playList[0]);
 			
-			////trace(playList);
+			//trace(playList);
 			Main.switchState(new LoadSongState());
 		}
 	}

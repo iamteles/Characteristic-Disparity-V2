@@ -286,7 +286,7 @@ class LoadShopState extends MusicBeatState
 			var stageBuild = new Stage();
 			stageBuild.reloadStageFromSong("irritation"); //just the one
 
-			//trace('preloaded stage and hud');
+			trace('preloaded stage and hud');
 			
 			loadPercent = 0.2;
 
@@ -298,7 +298,7 @@ class LoadShopState extends MusicBeatState
 				char.reloadChar(i);
 				//behind.add(char);
 				
-				////trace('preloaded $i');
+				//trace('preloaded $i');
 
 				loadPercent += (0.6 - 0.2) / charList.length;
 			}
@@ -308,7 +308,7 @@ class LoadShopState extends MusicBeatState
 				icon.setIcon(i, false);
             }
 			
-			//trace('preloaded characters');
+			trace('preloaded characters');
 			loadPercent = 0.6;
 			
             for (i in songs) {
@@ -318,7 +318,7 @@ class LoadShopState extends MusicBeatState
             }
 
 			
-			//trace('preloaded music');
+			trace('preloaded music');
 			loadPercent = 0.75;
 			
 			var thisStrumline = new Strumline(0, null, false, false, true, assetModifier);
@@ -338,7 +338,7 @@ class LoadShopState extends MusicBeatState
                 }
             }
 			
-			//trace('preloaded notes');
+			trace('preloaded notes');
 			loadPercent = 0.9;
 			
 			// shop preloads
@@ -371,7 +371,7 @@ class LoadShopState extends MusicBeatState
             //Paths.shader("shaders/bloom");
 			
 			loadPercent = 1.0;
-			//trace('finished loading');
+			trace('finished loading');
 			FlxSprite.defaultAntialiasing = oldAnti;
 
             #if !html5
