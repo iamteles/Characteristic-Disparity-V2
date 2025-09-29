@@ -132,6 +132,14 @@ class Controls
 			[FlxKey.ENTER, FlxKey.ESCAPE],
 			[FlxPad.START],
 		],
+		'L_SPECIAL' => [
+			[FlxKey.Q],
+			[FlxPad.LEFT_SHOULDER, LEFT_TRIGGER_BUTTON],
+		],
+		'R_SPECIAL' => [
+			[FlxKey.E],
+			[FlxPad.RIGHT_SHOULDER, RIGHT_TRIGGER_BUTTON],
+		],
 	];
 
 	public static function load()

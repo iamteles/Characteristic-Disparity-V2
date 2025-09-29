@@ -9,19 +9,20 @@ import flixel.text.FlxText;
 import data.GameData.MusicBeatState;
 import data.SongData;
 import flixel.tweens.FlxTween;
-import gameObjects.android.FlxVirtualPad;
 import data.Highscore;
 import data.Highscore.ScoreData;
 import data.GameData.MusicBeatSubState;
+import flixel.effects.FlxFlicker;
+import flixel.addons.display.FlxBackdrop;
 import states.*;
 
 class Freeplay extends MusicBeatState
 {
     var songs:Array<Array<Dynamic>> = [
         // default
-        ["euphoria", "bella", 0xFFF85E4D],
-        ["nefarious", "bex", 0xFF5B7A9E],
-        ["divergence", "duo", 0xFF970F00],
+        ["euphoria", "bella", 0xFFF85E4D, "Week 1"],
+        ["nefarious", "bex", 0xFF5B7A9E, "Week 1"],
+        ["divergence", "duo", 0xFF970F00, "Week 1"],
     ];
     static var curSelected:Int = 0;
     static var curDiff:Int = 0;
@@ -57,47 +58,47 @@ class Freeplay extends MusicBeatState
         selected = false;
 
         if(SaveData.progression.get("week2")) {
-            songs.push(["allegro", "duo", 0xFF0C2E55]);
-            songs.push(["panic-attack", "bree", 0xFFF85EA4]);
-            songs.push(["convergence", "bree", 0xFFB6318E]);
-            songs.push(["desertion", "bree-angry", 0xFFFF0000]);
+            songs.push(["allegro", "duo", 0xFF0C2E55, "Week 2"]);
+            songs.push(["panic-attack", "bree", 0xFFF85EA4, "Week 2"]);
+            songs.push(["convergence", "bree", 0xFFB6318E, "Week 2"]);
+            songs.push(["desertion", "bree-angry", 0xFFFF0000, "Week 2"]);
         }
 
         if(SaveData.progression.get("intimidated")) {
-            songs.push(["sin", "helica", 0xFFE17B00]);
-            songs.push(["intimidate", "bex-scared", 0xFF0A203B]);
+            songs.push(["sin", "helica", 0xFFE17B00, "Epilogue"]);
+            songs.push(["intimidate", "bex-scared", 0xFF0A203B, "Epilogue"]);
         }
 
         if(SaveData.shop.get("mic")) {
-            songs.push(["conservation", "watts", 0xFFFEC404]);
-            songs.push(["irritation", "watts", 0xFFFEC404]);
+            songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper"]);
+            songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper"]);
         }
 
         if(SaveData.progression.get("vip")) {
-            songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F]);
-            songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F]);
-            songs.push(["divergence-vip", "duovip", 0xFFFFCB1F]);
+            songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP"]);
+            songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP"]);
+            songs.push(["divergence-vip", "duovip", 0xFFFFCB1F, "Week VIP"]);
         }
 
         if(SaveData.shop.get("ticket")) {
-            songs.push(["kaboom", "spicy-v2", 0xFFFF006A]);
+            songs.push(["kaboom", "spicy-v2", 0xFFFF006A, "FRxCD"]);
         }
 
         if(SaveData.shop.get("shack")) {
-            songs.push(["ripple", "drown", 0xFF049AFE]);
-            songs.push(["customer-service", "empitri", 0xFFfdacbc]);
+            songs.push(["ripple", "drown", 0xFF049AFE, "The Shack"]);
+            songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack"]);
         }
 
         if(SaveData.progression.get("week2")) {
-            songs.push(["heartpounder", "duo", 0xFFF85EA4]);
+            songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra"]);
         }
 
         if(SaveData.progression.get("vip")) {
-            songs.push(["exotic", "cutenevil", 0xFFFFFFFF]);
+            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra"]);
         }
 
         if(SaveData.progression.get("finished"))
-            songs.push(["cupid", "duo", 0xFFF85EA4]);
+            songs.push(["cupid", "duo", 0xFFF85EA4, "Extra"]);
 
 
 
@@ -165,9 +166,9 @@ class Freeplay extends MusicBeatState
 		add(scores);
 
         diff = new FlxText(0, 0, 0, "< FODASE >");
-		diff.setFormat(Main.gFont, 55, 0xFFFFFFFF, CENTER);
+		diff.setFormat(Main.gFont, 50, 0xFFFFFFFF, CENTER);
         diff.x = box.x + (box.width/2 - diff.width/2);
-        diff.y = scores.y + 168;
+        diff.y = scores.y + 175;
 		add(diff);
 
         realValues = {score: 0, accuracy: 0, misses: 0};
@@ -176,65 +177,40 @@ class Freeplay extends MusicBeatState
         arrows = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/arrows'));
         arrows.angle = 90;
         arrows.updateHitbox();
-        arrows.x = 20;
+        arrows.x = 28;
         arrows.y = FlxG.height - arrows.height + 8;
 		add(arrows);
 
         fr = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/fr_collab'));
         fr.scale.set(0.66, 0.66);
         fr.updateHitbox();
+        fr.x = 5;
+        fr.y = 5;
 		add(fr);
 
         shack = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/fs_collab'));
         shack.scale.set(0.66, 0.66);
         shack.updateHitbox();
+        shack.x = 5;
+        shack.y = 5;
 		add(shack);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_FULL, A_B);
-            add(virtualPad);
-        }
-
         changeSelection();
-        changeDiff();
     }
-    var virtualPad:FlxVirtualPad;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(left)
+        if(Controls.justPressed("UI_LEFT"))
             changeSelection(-1);
-        if(right)
+        if(Controls.justPressed("UI_RIGHT"))
             changeSelection(1);
-        //if(left)
-		//	changeDiff(-1);
-		//if(right)
-		//	changeDiff(1);
+        if(Controls.justPressed("L_SPECIAL"))
+			changeCategory(-1);
+		if(Controls.justPressed("R_SPECIAL"))
+			changeCategory(1);
 
-        if(back)
+        if(Controls.justPressed("BACK"))
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
@@ -260,7 +236,7 @@ class Freeplay extends MusicBeatState
                 item.alpha = 0;
         }
 
-        if(accept && focused)
+        if(Controls.justPressed("ACCEPT") && focused)
         {
             try
             {
@@ -326,6 +302,30 @@ class Freeplay extends MusicBeatState
             shack.alpha = 1;
         else
             shack.alpha = 0;
+
+        fr.y = FlxMath.lerp(fr.y, 5, elapsed*6);
+        shack.y = FlxMath.lerp(shack.y, 5, elapsed*6);
+    }
+
+    public function changeCategory(change:Int = 0)
+    {
+        if(selected || songs[curSelected][3] == null) return;
+        var ammt:Int = 0;
+        var realI:Int = 0;
+
+        for(i in 0...songs.length) {
+            if(songs[curSelected+(realI*change)] == null)
+                realI = -curSelected;
+            if(songs[curSelected][3] != songs[curSelected+(realI*change)][3]) {
+                break;
+            }
+
+            ammt++;
+            realI++;
+        }
+
+        curSelected += change*ammt;
+        changeSelection(0);
     }
 
     public function changeSelection(change:Int = 0)
@@ -344,17 +344,17 @@ class Freeplay extends MusicBeatState
         if(bgTween != null) bgTween.cancel();
 		bgTween = FlxTween.color(bg, 0.4, bg.color, songs[curSelected][2]);
 
-        updateScoreCount();
-    }
-
-    public function changeDiff(change:Int = 0)
-    {
-        curDiff += change;
-        curDiff = FlxMath.wrap(curDiff, 0, CoolUtil.getDiffs().length - 1);
-
-        diff.text = CoolUtil.getDiffs()[curDiff].toUpperCase();
+        var category:String = "EXTRA";
+        if(songs[curSelected][3] != null)
+            category = songs[curSelected][3].toUpperCase();
+        diff.text = category;
         diff.x = box.x + (box.width/2 - diff.width/2);
-        
+
+        if(songs[curSelected][0] == "kaboom")
+            fr.y -= 10;
+        if((songs[curSelected][0] == "ripple" && change == 1) || (songs[curSelected][0] == "customer-service" && change == -1))
+            shack.y -= 10;
+
         updateScoreCount();
     }
 
@@ -368,6 +368,10 @@ class CharacterSelect extends MusicBeatSubState
 {
     var spicy:FlxSprite;
     var bree:FlxSprite;
+    var select:FlxSprite;
+
+    var curSelected:Int = 0;
+    var usingMouse:Bool = false;
 	public function new()
     {
         super();
@@ -375,32 +379,66 @@ class CharacterSelect extends MusicBeatSubState
         var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
 
-        Main.setMouse(true);
+        //Main.setMouse(true);
 
 		banana.alpha = 0;
 
-        var select:FlxSprite = new FlxSprite(408.15, 28.4).loadGraphic(Paths.image('menu/freeplay/select/select'));
+        var tiles = new FlxBackdrop(Paths.image('menu/title/tiles/main'), XY, 0, 0);
+        tiles.velocity.set(FlxG.random.bool(50) ? 90 : -90, FlxG.random.bool(50) ? 90 : -90);
+        tiles.screenCenter();
+		tiles.alpha = 0;
+		FlxTween.tween(tiles, {alpha: 0.4}, 0.6);
+        add(tiles);
+
+        select = new FlxSprite(0, 28.4 - 30).loadGraphic(Paths.image('menu/freeplay/select/select'));
         select.scale.set(0.9,0.9);
         select.updateHitbox();
         select.screenCenter(X);
+        select.alpha = 0;
 		add(select);
 
-        spicy = new FlxSprite(18.3, 240.85).loadGraphic(Paths.image('menu/freeplay/select/spicy'));
+        spicy = new FlxSprite(0, 240.85).loadGraphic(Paths.image('menu/freeplay/select/spicy'));
         spicy.scale.set(0.9,0.9);
         spicy.updateHitbox();
+        spicy.screenCenter(X);
+        spicy.x -= 340;
+        spicy.y += 50;
+        spicy.y += 60;
+        spicy.ID = 0;
 		add(spicy);
 
-        bree = new FlxSprite(670.75, 261.1).loadGraphic(Paths.image('menu/freeplay/select/bree'));
+        bree = new FlxSprite(0, 261.1).loadGraphic(Paths.image('menu/freeplay/select/bree'));
         bree.scale.set(0.9,0.9);
         bree.updateHitbox();
+        bree.screenCenter(X);
+        bree.x += 340;
+        bree.y += 50;
+        bree.y += 40;
+        bree.ID = 1;
 		add(bree);
         
-		FlxTween.tween(banana, {alpha: 0.4}, 0.1);
+		FlxTween.tween(banana, {alpha: 0.4}, 0.4);
+        FlxTween.tween(select, {alpha: 1}, 0.4);
+
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
+
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
 
     override function update(elapsed:Float)
     {
         super.update(elapsed);
+
+        select.y = FlxMath.lerp(select.y, 28.4, elapsed*6);
+        spicy.y = FlxMath.lerp(spicy.y, 240.85+50, elapsed*6);
+        bree.y = FlxMath.lerp(bree.y, 261.1+50, elapsed*6);
+
+        if(Controls.justPressed("UI_LEFT"))
+            changeSelection(-1);
+        if(Controls.justPressed("UI_RIGHT"))
+            changeSelection(1);
 
         if(Controls.justPressed("BACK") || FlxG.mouse.justPressedRight)
         {
@@ -410,24 +448,68 @@ class CharacterSelect extends MusicBeatSubState
             close();
         }
 
-        for(button in [spicy, bree]) {
-            if(CoolUtil.mouseOverlap(button, FlxG.camera)) {
-                button.scale.x = FlxMath.lerp(button.scale.x, 1, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 1, elapsed*6);
-                if(FlxG.mouse.justPressed) {
-                    FlxG.sound.play(Paths.sound("menu/select"));
+        if(!selected) {
+            for(button in [spicy, bree]) {
+                var isIt:Bool = (usingMouse && CoolUtil.mouseOverlap(button, FlxG.camera)) || (!usingMouse && curSelected == button.ID);
+                if(isIt) {
+                    button.scale.x = FlxMath.lerp(button.scale.x, 1, elapsed*8);
+                    button.scale.y = FlxMath.lerp(button.scale.y, 1, elapsed*8);
 
-                    PlayState.invertedCharacters = (button == spicy);
-                    Main.switchState(new LoadSongState());
-                    //sliderActive = true;
-                    //openSubState(new SliderL());
+                    if(button.ID != curSelected) {
+                        curSelected = button.ID; 
+                        FlxG.sound.play(Paths.sound("menu/scroll"));
+                    }
+                    if((FlxG.mouse.justPressed || Controls.justPressed("ACCEPT"))) {
+                        selected = true;
+
+                        if(FlxG.sound.music != null)
+                            FlxTween.tween(FlxG.sound.music, {volume: 0.4}, 0.4);
+
+                        var sound:String = "bree";
+                        if(button.ID == 0)
+                            sound = "rave";
+                        FlxG.sound.play(Paths.sound(sound));
+
+                        if(button.ID == 0)
+                            FlxTween.tween(bree, {alpha: 0}, 0.5);
+                        else
+                            FlxTween.tween(spicy, {alpha: 0}, 0.5);
+
+                        FlxFlicker.flicker(button, 2, 0.06, true, false, function(_)
+                        {
+                            PlayState.invertedCharacters = (button == spicy);
+                            Main.switchState(new LoadSongState());
+                        });
+                    }
                 }
-                    //enterWeek(weekData[item.ID][0], weekData[item.ID][1]);
-            }
-            else {
-                button.scale.x = FlxMath.lerp(button.scale.x, 0.9, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 0.9, elapsed*6);
+                else {
+                    button.scale.x = FlxMath.lerp(button.scale.x, 0.9, elapsed*8);
+                    button.scale.y = FlxMath.lerp(button.scale.y, 0.9, elapsed*8);
+                }
             }
         }
+
+
+        if(lastMouseX != FlxG.mouse.getScreenPosition(FlxG.camera).x || lastMouseY != FlxG.mouse.getScreenPosition(FlxG.camera).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+        }
+    }
+
+    var selected = false;
+    public function changeSelection(change:Int = 0)
+    {
+        if(selected) return; //do not
+        curSelected += change;
+        curSelected = FlxMath.wrap(curSelected, 0, 1);
+        if(change != 0)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+
+        usingMouse = false;
+        Main.setMouse(false);
     }
 }

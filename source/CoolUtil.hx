@@ -187,7 +187,8 @@ class CoolUtil
 		if(key == null || key == "")
 		{
 			curMusic = "none";
-			FlxG.sound.music.stop();
+			if(FlxG.sound.music != null)
+				FlxG.sound.music.stop();
 		}
 		else if(key == "MENU")
 		{

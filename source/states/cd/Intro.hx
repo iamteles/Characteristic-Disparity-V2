@@ -9,8 +9,8 @@ import flixel.tweens.FlxEase;
 import flixel.addons.display.FlxBackdrop;
 import data.GameData.MusicBeatState;
 import flixel.text.FlxText;
-import hxvlc.flixel.FlxVideo;
-import flixel.sound.FlxSound ;
+import flixel.sound.FlxSound;
+import data.DoidoVideoSprite;
 #if !html5
 import sys.thread.Mutex;
 import sys.thread.Thread;
@@ -39,22 +39,6 @@ class Intro extends MusicBeatState
 		sprite.alpha = 0;
 		add(sprite);
 
-		/*
-
-		spriteSD = new FlxSprite();
-		spriteSD.frames = Paths.getSparrowAtlas("menu/intros/shatterdisk");
-		spriteSD.animation.addByPrefix('start', 		'opening', 24, false);
-		spriteSD.animation.addByPrefix('startI', 		'opening0000', 24, false);
-		spriteSD.animation.play('startI');
-		spriteSD.updateHitbox();
-		spriteSD.screenCenter();
-		spriteSD.x -= 110;
-		spriteSD.alpha = 0;
-		add(spriteSD);
-
-		*/
-
-
 		new FlxTimer().start(0.5, function(tmr:FlxTimer)
 		{
 			sprite.alpha = 1;
@@ -65,21 +49,6 @@ class Intro extends MusicBeatState
 		new FlxTimer().start(3.2, function(tmr:FlxTimer)
 		{
 			finish();
-			/*
-			FlxTween.tween(sprite, {alpha: 0}, 0.5, {ease: FlxEase.circInOut, onComplete: function(twn:FlxTween)
-			{
-				finish();
-				/*
-				FlxTween.tween(spriteSD, {alpha: 1}, 0.4);
-				spriteSD.animation.play('start');
-				FlxG.sound.play(Paths.sound("intro/shatterdisk"), 1, false, null, true);
-
-				new FlxTimer().start(4, function(tmr:FlxTimer)
-				{
-					finish();
-				});
-			}});
-			*/
 		});
 	
 	}
@@ -88,17 +57,7 @@ class Intro extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		var click:Bool = FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER || FlxG.mouse.justPressed;
-
-		#if mobile
-		for (touch in FlxG.touches.list)
-		{
-			if (touch.justPressed && SaveData.progression.get("firstboot"))
-				finish();
-		}
-		#end
-
-		if (click && SaveData.progression.get("firstboot"))
+		if (Controls.justPressed("ACCEPT") && SaveData.progression.get("firstboot"))
 		{
 			finish();
 		}
@@ -107,7 +66,8 @@ class Intro extends MusicBeatState
 	private function finish():Void
 	{
 		Main.skipClearMemory = true;
-		Main.switchState(new states.cd.Intro.Video());
+		states.VideoState.name = "intro";
+		Main.switchState(new states.VideoState());
 	}
 	
 }
@@ -143,69 +103,15 @@ class Warning extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		var click:Bool = FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER || FlxG.mouse.justPressed;
-
-		#if mobile
-		for (touch in FlxG.touches.list)
-		{
-			if (touch.justPressed)
-				finish();
-		}
-		#end
-
-		if (click)
-		{
+		if (Controls.justPressed("ACCEPT"))
 			finish();
-		}
 	}
 	
 	private function finish():Void
 	{
-		#if mobile
-		Main.switchState(new TitleScreen());
-		#else
 		Main.switchState(new Intro.IntroLoading());
-		#end
 	}
 	
-}
-
-
-
-class Video extends MusicBeatState
-{
-    var video:FlxVideo;
-
-    public static var name:String = "intro";
-	override public function create():Void
-	{
-		video = new FlxVideo();
-		video.onEndReached.add(onComplete);
-		video.load(Paths.video("intro"));
-        video.play();
-
-		CoolUtil.playMusic("intro");
-
-		super.create();
-	}
-
-    public function onComplete():Void
-    {
-        video.dispose();
-
-		Main.skipStuff();
-		Main.switchState(new states.cd.TitleScreen());
-    }
-
-    override function update(elapsed:Float) {
-        super.update(elapsed);
-        
-		var click:Bool = FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.ENTER || FlxG.mouse.justPressed;
-
-        if(click && SaveData.progression.get("firstboot")) {
-            onComplete();
-        }
-    }
 }
 
 class IntroLoading extends MusicBeatState
@@ -221,6 +127,8 @@ class IntroLoading extends MusicBeatState
 
 	var loadBar:FlxSprite;
 	var loadPercent:Float = 0;
+
+	var timerLol:Bool = false;
 	
 	override function create()
 	{
@@ -257,14 +165,21 @@ class IntroLoading extends MusicBeatState
 			Paths.preloadGraphic("menu/intros/flixel");
 			Paths.preloadSound("intro/haxe");
 
-			var video = new FlxVideo();
-			//video.play(Paths.video("video"));
+       		var video = new DoidoVideoSprite();
 			video.load(Paths.video("intro"));
-			video.dispose();
+			video.destroy();
 
+			var video2 = new DoidoVideoSprite();
+			video2.load(Paths.video("test"));
+			video2.destroy();
 
 			loadPercent = 1.0;
 			trace('finished loading');
+
+			new FlxTimer().start(3.2, function(tmr:FlxTimer)
+			{
+				timerLol = true;
+			});
 
 			FlxSprite.defaultAntialiasing = oldAnti;
 			#if !html5
@@ -284,11 +199,16 @@ class IntroLoading extends MusicBeatState
 		super.update(elapsed);
 
 		#if !html5
-		if(!threadActive && !byeLol)
+		if(!threadActive && !byeLol && timerLol)
 		{
 			byeLol = true;
 			Main.skipClearMemory = true;
-			Main.switchState(new states.cd.Intro());
+			if(FlxG.random.bool(1)) {
+				states.VideoState.name = "test";
+				Main.switchState(new states.VideoState());
+			}
+			else
+				Main.switchState(new states.cd.Intro());
 		}
 		#end
 	}

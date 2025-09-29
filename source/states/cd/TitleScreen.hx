@@ -10,6 +10,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
 import flixel.addons.display.FlxBackdrop;
+import data.Conductor;
 
 class TitleScreen extends MusicBeatState
 {
@@ -18,12 +19,13 @@ class TitleScreen extends MusicBeatState
     var logo:FlxSprite;
     var info:FlxText;
 
+    public static var fromIntro:Bool = false;
     override public function create():Void 
     {
         super.create();
 
-        //CoolUtil.playMusic("MENU");
         CoolUtil.playMusic("intro");
+        Conductor.setBPM(185);
         SaveData.progression.set("firstboot", true);
         SaveData.save();
 
@@ -32,6 +34,13 @@ class TitleScreen extends MusicBeatState
         DiscordClient.changePresence("In the Menus...", null);
 
         CoolUtil.flash(FlxG.camera, 0.5);
+
+        if(fromIntro) {
+            if(FlxG.sound.music != null)
+			    FlxG.sound.music.time = (Conductor.crochet * (8*4));
+
+            fromIntro = false;
+        }
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/title/gradients/' + Main.possibleTitles[Main.randomized][0]));
 		bg.updateHitbox();
@@ -50,16 +59,20 @@ class TitleScreen extends MusicBeatState
 		FlxTween.tween(logo, {y: storeY + 20}, 1.6, {type: FlxTweenType.PINGPONG, ease: FlxEase.sineInOut});
 		add(logo);
 
-        var text:String = "Press ENTER to start!";
-        if(SaveData.data.get("Touch Controls"))
-            text = "Touch Screen to start!";
-
+        var text:String = "Press START!";
         info = new FlxText(0,0,0,text);
 		info.setFormat(Main.gFont, 50, 0xFFFFFFFF, CENTER);
 		info.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.4);
         info.screenCenter(X);
         info.y = 599.95;
         add(info);
+
+        var verTxt = new FlxText(0,0,0,'@Team Shatterdisk 2025');
+		verTxt.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
+		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
+        verTxt.x = 5;
+        verTxt.y = FlxG.height - verTxt.height - 5;
+		add(verTxt);
     }
 
     var isTouch:Bool = false;
@@ -68,15 +81,7 @@ class TitleScreen extends MusicBeatState
     {
         super.update(elapsed);
 
-        #if mobile
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.justPressed)
-                isTouch = true;
-        }
-        #end
-
-        if(Controls.justPressed("ACCEPT") || isTouch || (FlxG.mouse.justPressed && focused))
+        if(Controls.justPressed("ACCEPT"))
             end();
     }
 

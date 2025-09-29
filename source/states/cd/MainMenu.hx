@@ -13,7 +13,6 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
 import flixel.input.keyboard.FlxKey;
-import gameObjects.android.FlxVirtualPad;
 
 class MainMenu extends MusicBeatState
 {
@@ -39,14 +38,11 @@ class MainMenu extends MusicBeatState
     var arrowR:FlxSprite;
     var info:FlxText;
     var bar:FlxSprite;
-    var mouseInfo:FlxSprite;
 
     var popUp:FlxSprite;
     var popUpTxt:FlxText;
     var isPop:Bool = false;
     public static var unlocks:Array<String> = [];
-
-    public static var virtualPad:FlxVirtualPad;
 
 	override function create()
 	{
@@ -144,11 +140,13 @@ class MainMenu extends MusicBeatState
 		add(bar);
         add(info);
 
+        /*
         mouseInfo = new FlxSprite().loadGraphic(Paths.image("menu/main/info"));
 		mouseInfo.updateHitbox();
         mouseInfo.x = 0;
         mouseInfo.y = FlxG.height - mouseInfo.height;
 		add(mouseInfo);
+        */
 
         changeSelection();
 
@@ -157,7 +155,6 @@ class MainMenu extends MusicBeatState
             SaveData.progression.set("finished", true);
             SaveData.save();
         }
-
 
         if(unlocks.length > 0) {
             Paths.preloadSound('sounds/gift');
@@ -198,11 +195,6 @@ class MainMenu extends MusicBeatState
                 }});
             }});
         }
-
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
-            add(virtualPad);
-        }
     }
 
     var shaking:Bool = false;
@@ -211,39 +203,14 @@ class MainMenu extends MusicBeatState
     {
         super.update(elapsed);
 
-        //info.text = CoolUtil.posToTimer(SaveData.curTime());
-
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(back)
-        {
+        if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.TitleScreen());
         }
 
-		if(left)
+		if(Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(right)
+		if(Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
         if(Controls.pressed("UI_LEFT") && !selected)
@@ -255,7 +222,7 @@ class MainMenu extends MusicBeatState
         else if(!selected)
             arrowR.alpha = 0.7;
 
-        if(accept && !selected && focused)
+        if(Controls.justPressed("ACCEPT") && !selected && focused)
         {
             if(returnMenu(curSelected)) {
                 selected = true;
@@ -316,7 +283,7 @@ class MainMenu extends MusicBeatState
                 });
             }
         }
-        else if(accept && isPop) {
+        else if(Controls.justPressed("ACCEPT") && isPop) {
             selected = false;
             isPop = false;
             popUp.alpha = 0;
