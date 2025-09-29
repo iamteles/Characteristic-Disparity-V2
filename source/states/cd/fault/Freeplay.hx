@@ -129,11 +129,6 @@ class Freeplay extends MusicBeatState
         arrows.y = 637.2;
 		add(arrows);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_FULL, A_B);
-            add(virtualPad);
-        }
-
         changeSelection();
         changeDiff();
 
@@ -143,45 +138,21 @@ class Freeplay extends MusicBeatState
         vg.alpha = 0.8;
 		add(vg);
     }
-    var virtualPad:FlxVirtualPad;
+
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(left)
+        if(Controls.justPressed("UI_LEFT"))
             changeSelection(-1);
-        if(right)
+        if(Controls.justPressed("UI_RIGHT"))
             changeSelection(1);
         //if(left)
 		//	changeDiff(-1);
 		//if(right)
 		//	changeDiff(1);
 
-        if(back)
+        if(Controls.justPressed("BACK"))
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.fault.MainMenu());
@@ -207,7 +178,7 @@ class Freeplay extends MusicBeatState
                 item.alpha = 0;
         }
 
-        if(accept && focused)
+        if(Controls.justPressed("ACCEPT") && focused)
         {
             try
             {

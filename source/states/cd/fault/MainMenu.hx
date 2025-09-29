@@ -33,8 +33,6 @@ class MainMenu extends MusicBeatState
     var info:FlxText;
     var bar:FlxSprite;
 
-    public static var virtualPad:FlxVirtualPad;
-
 	override function create()
 	{
         super.create();
@@ -132,11 +130,6 @@ class MainMenu extends MusicBeatState
 
         changeSelection();
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
-            add(virtualPad);
-        }
-
         var vg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('vignette')); //like the???
 		vg.updateHitbox();
 		vg.screenCenter();
@@ -150,39 +143,9 @@ class MainMenu extends MusicBeatState
     {
         super.update(elapsed);
 
-        //info.text = CoolUtil.posToTimer(SaveData.curTime());
-
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-        var back:Bool = false;
-        //if(SaveData.data.get("Touch Controls"))
-        //    back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed);
-
-        if(back)
-        {
-            FlxG.sound.play(Paths.sound('menu/back'));
-            Main.switchState(new states.cd.TitleScreen());
-        }
-
-		if(left)
+		if(Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(right)
+		if(Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
         if(Controls.pressed("UI_LEFT") && !selected)
@@ -194,7 +157,7 @@ class MainMenu extends MusicBeatState
         else if(!selected)
             arrowR.alpha = 0.7;
 
-        if(accept && !selected && focused)
+        if(Controls.justPressed("ACCEPT") && !selected && focused)
         {
             if(returnMenu(curSelected)) {
                 selected = true;
@@ -269,37 +232,7 @@ class MainMenu extends MusicBeatState
             else
                 item.alpha = 0;
         }
-
-        //YLYL EASTER EGG
-        if (FlxG.keys.firstJustPressed() != FlxKey.NONE && !selected)
-		{
-            var keyPressed:FlxKey = FlxG.keys.firstJustPressed();
-            var keyName:String = Std.string(keyPressed);
-            if(allowedKeys.contains(keyName)) {
-                keysBuffer += keyName;
-                if(keysBuffer.length >= 32) keysBuffer = keysBuffer.substring(1);
-                for (wordRaw in easterEggKeys)
-				{
-                    var word:String = wordRaw.toUpperCase();
-                    if (keysBuffer.contains(word))
-					{
-                        FlxG.sound.play(Paths.sound('secret/$word'));
-                        switch (word) {
-                            case "WEDNESDAY":
-                                SaveData.buyItem("ylyl");
-                        }
-                        keysBuffer = '';
-                    }
-                }
-            }
-        }
     }
-
-    var keysBuffer:String = "";
-    var easterEggKeys:Array<String> = [
-		'WEDNESDAY'
-	];
-	var allowedKeys:String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     public function changeSelection(change:Int = 0)
     {

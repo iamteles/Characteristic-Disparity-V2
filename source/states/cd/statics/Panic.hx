@@ -57,16 +57,7 @@ class Panic extends MusicBeatState
             //    panel.alpha = FlxMath.lerp(panel.alpha, 0, elapsed*12);
         }
 
-        var isTouch:Bool = false;
-        #if mobile
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.justPressed)
-                isTouch = true;
-        }
-        #end
-
-        if((FlxG.keys.justPressed.SPACE || isTouch)) {
+        if(Controls.justPressed("ACCEPT")) {
             if(curLine == (imgs.length-1)) {
                 states.cd.Dialog.dialog = "panic-attack";
                 Main.switchState(new states.cd.Dialog());
