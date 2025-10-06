@@ -161,9 +161,9 @@ class IntroLoading extends MusicBeatState
 			Paths.preloadGraphic('menu/title/gradients/' + Main.possibleTitles[Main.randomized][0]);
 			Paths.preloadGraphic('menu/title/tiles/' + Main.possibleTitles[Main.randomized][0]);
 			Paths.preloadGraphic('menu/title/logo');
-			Paths.preloadSound("intro/end");
+			//Paths.preloadSound("intro/end");
 			Paths.preloadGraphic("menu/intros/flixel");
-			Paths.preloadSound("intro/haxe");
+			//Paths.preloadSound("intro/haxe");
 
        		var video = new DoidoVideoSprite();
 			video.load(Paths.video("intro"));

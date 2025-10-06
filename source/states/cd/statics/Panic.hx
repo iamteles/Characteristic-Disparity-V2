@@ -12,7 +12,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 using StringTools;
 
@@ -32,7 +32,7 @@ class Panic extends MusicBeatState
 
         Main.setMouse(false);
 
-        DiscordClient.changePresence("Reading dialogue...", null);
+        DiscordIO.changePresence("Reading dialogue...", null);
 
         panelGroup = new FlxTypedGroup<FlxSprite>();
 		add(panelGroup);

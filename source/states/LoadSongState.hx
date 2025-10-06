@@ -12,12 +12,9 @@ import gameObjects.*;
 import gameObjects.hud.*;
 import gameObjects.hud.note.*;
 import flixel.addons.display.FlxBackdrop;
-import data.Discord.DiscordClient;
-
-#if !html5
+import data.Discord.DiscordIO;
 import sys.thread.Mutex;
 import sys.thread.Thread;
-#end
 
 /*
 *	preloads all the stuff before going into playstate
@@ -26,10 +23,7 @@ import sys.thread.Thread;
 class LoadSongState extends MusicBeatState
 {
 	var threadActive:Bool = true;
-
-	#if !html5
 	var mutex:Mutex;
-	#end
 	
 	//var behind:FlxGroup;
 	var behind:FlxGroup;
@@ -49,13 +43,9 @@ class LoadSongState extends MusicBeatState
 	{
 		super.create();
 
-		#if !html5
 		mutex = new Mutex();
-		#end
-
 		Main.setMouse(false);
-
-		DiscordClient.changePresence("Loading...", null);
+		DiscordIO.changePresence("Loading...", null);
 
 		behind = new FlxGroup();
 		add(behind);
@@ -85,30 +75,15 @@ class LoadSongState extends MusicBeatState
 		
 		var oldAnti:Bool = FlxSprite.defaultAntialiasing;
 		FlxSprite.defaultAntialiasing = false;
-		
-		PlayState.resetStatics();
-		var assetModifier = PlayState.assetModifier;
-		var SONG = PlayState.SONG;
 
-		#if !html5
 		var preloadThread = Thread.create(function()
 		{
 			mutex.acquire();
-			#end
+			PlayState.resetStatics();
+			var assetModifier = PlayState.assetModifier;
+			var SONG = PlayState.SONG;
 			Paths.preloadPlayStuff(SONG.song);
 			Rating.preload(assetModifier);
-
-			if(!SaveData.data.get("Low Quality")) {
-				Paths.preloadGraphic('hud/base/healthBar');
-				Paths.preloadGraphic('vignette');
-			}
-
-			Paths.preloadGraphic('hud/base/blackBar');
-
-			Paths.preloadGraphic("hud/pause/botplay");
-			Paths.preloadGraphic("hud/pause/buttons");
-			Paths.preloadGraphic("hud/pause/pause");
-			Paths.preloadGraphic("hud/pause/selector");
 			
 			var stageBuild = new Stage();
 			addBehind(stageBuild);
@@ -179,7 +154,16 @@ class LoadSongState extends MusicBeatState
 				icon.setIcon(i, false);
 				addBehind(icon);
 				loadPercent += (0.6 - 0.2) / charList.length;
+
+				if(i == "bex-2d")
+					Paths.preloadSound('sounds/death/duo_death');
+				else if(Paths.fileExists('sounds/death/${CoolUtil.formatChar(i)}_death.ogg') && (i == SONG.player1))
+					Paths.preloadSound('sounds/death/${CoolUtil.formatChar(i)}_death');
 			}
+
+			var center = new HealthIcon();
+			center.setIcon("center", false, SONG.song);
+			addBehind(center);
 			
 			trace('preloaded characters');
 			loadPercent = 0.6;
@@ -208,6 +192,9 @@ class LoadSongState extends MusicBeatState
 			
 			trace('preloaded notes');
 			loadPercent = 0.9;
+
+			Paths.preloadGraphic("hud/base/gameover/heart");
+			Paths.preloadGraphic("hud/base/gameover/retry");
 			
 			// add custom preloads here!!
 			if(!SaveData.data.get("Low Quality")) {
@@ -219,10 +206,14 @@ class LoadSongState extends MusicBeatState
 					case "convergence":
 						Paths.preloadGraphic("hud/base/shes going to kill you");
 						Paths.preloadGraphic("hud/base/convergence");
+						Paths.preloadSound("sounds/thunder");
 					case "desertion":
-						Paths.preloadGraphic("hud/base/divergence");
+						Paths.preloadGraphic("backgrounds/desertion/power up");
 					case "nefarious" | "euphoria":
 						Paths.preloadGraphic('backgrounds/week1/bgchars');
+					case "heartpounder": // quarter pounder :joy:
+						Paths.preloadGraphic("hud/base/sidebars");
+						Paths.preloadGraphic("backgrounds/gfd/sd-tv");
 					default:
 						//trace('loaded lol');
 				}
@@ -232,14 +223,9 @@ class LoadSongState extends MusicBeatState
 			trace('finished loading');
 
 			FlxSprite.defaultAntialiasing = oldAnti;
-			#if !html5
 			threadActive = false;
 			mutex.release();
 		});
-		#else
-		Main.skipClearMemory = true;
-		Main.switchState(new PlayState());
-		#end
 	}
 	
 	var byeLol:Bool = false;
@@ -248,7 +234,6 @@ class LoadSongState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		#if !html5
 		if(!threadActive && !byeLol && loadBar.scale.x >= 0.98)
 		{
 			byeLol = true;
@@ -260,7 +245,6 @@ class LoadSongState extends MusicBeatState
 
 		loadBar.scale.x = FlxMath.lerp(loadBar.scale.x, loadPercent, elapsed * 6);
 		loadBar.updateHitbox();
-		#end
 	}
 }
 
@@ -293,7 +277,7 @@ class LoadMusicPlayer extends MusicBeatState
 
 		Main.setMouse(false);
 
-		DiscordClient.changePresence("Loading...", null);
+		DiscordIO.changePresence("Loading...", null);
 
 		#if !html5
 		mutex = new Mutex();

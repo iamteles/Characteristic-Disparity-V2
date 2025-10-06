@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
@@ -29,9 +29,9 @@ class TitleScreen extends MusicBeatState
         SaveData.progression.set("firstboot", true);
         SaveData.save();
 
-        Main.setMouse(false);
+		Main.setMouse(false);
 
-        DiscordClient.changePresence("In the Menus...", null);
+        DiscordIO.changePresence("In the Menus...", null);
 
         CoolUtil.flash(FlxG.camera, 0.5);
 
@@ -72,10 +72,10 @@ class TitleScreen extends MusicBeatState
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.x = 5;
         verTxt.y = FlxG.height - verTxt.height - 5;
+        verTxt.antialiasing = false;
 		add(verTxt);
     }
 
-    var isTouch:Bool = false;
     var started:Bool = false;
     override function update(elapsed:Float)
     {

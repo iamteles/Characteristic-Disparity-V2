@@ -37,14 +37,14 @@
 
 	<!-- _____________________________ Custom Defines ___________________________ -->
 
-	<define name="DISCORD_RPC" if="nopes" unless="web || neko" />
+	<define name="DISCORD_RPC" if="cpp" unless="mobile" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-ui" />
-	<haxelib name="discord_rpc" if="DISCORD_RPC"/>
+	<haxelib name="hxdiscord_rpc" if="DISCORD_RPC" />
 	<!--<haxelib name="hxCodec"/>-->
 	<haxelib name="hxvlc"/>
 	<!--<haxelib name="FlxAnimate"/>-->

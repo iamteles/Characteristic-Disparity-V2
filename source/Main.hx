@@ -11,7 +11,6 @@ import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
 import openfl.Lib;
-import data.Discord.DiscordClient;
 
 using StringTools;
 
@@ -26,16 +25,9 @@ class Main extends Sprite
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 
-		#if DISCORD_RPC
-		if (!DiscordClient.isInitialized) {
-			DiscordClient.initialize();
-			Application.current.window.onClose.add(function() {
-				DiscordClient.shutdown();
-			});
-		}
-		#end
-
-		addChild(new FlxGame(1280, 720, Init, 120, 120, true));
+		var ws:Array<String> = SaveData.displaySettings.get("Resolution")[0].split("x");
+		var windowSize:Array<Int> = [Std.parseInt(ws[0]),Std.parseInt(ws[1])];
+		addChild(new FlxGame(windowSize[0], windowSize[1], Init, 120, 120, true));
 
 		#if desktop
 		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
@@ -98,11 +90,7 @@ class Main extends Sprite
 	
 	public static function setMouse(visibility:Bool = false)
 	{
-		#if !mobile
 		FlxG.mouse.visible = visibility;
-		#else
-		FlxG.mouse.visible = false;
-		#end
 	}
 
 	public static function randomizeTitle()
@@ -164,7 +152,6 @@ class Main extends Sprite
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
-		DiscordClient.shutdown();
 		Sys.exit(1);
 	}
 	#end

@@ -17,9 +17,10 @@
             0.05
         ],
         [
-            "Press SPACE to buy, CTRL to talk and ESC to leave.",
+            "* Buy\n* Talk\n* Leave",
             "neutral",
-            0.05
+            0.05,
+            true
         ]
     ]
 }

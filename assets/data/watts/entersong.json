@@ -27,9 +27,10 @@
             0.05
         ],
         [
-            "A. Plead\n* B. Taunt",
+            "* Plead\n* Taunt",
             "confused",
-            0.05
+            0.05,
+            true
         ]
     ]
 }

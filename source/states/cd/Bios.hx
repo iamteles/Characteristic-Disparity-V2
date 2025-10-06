@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -8,7 +8,6 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import data.GameData.MusicBeatState;
-import gameObjects.android.FlxVirtualPad;
 
 class Bios extends MusicBeatState
 {
@@ -38,7 +37,7 @@ class Bios extends MusicBeatState
     {
         super.create();
 
-        DiscordClient.changePresence("In the Bios Menu...", null);
+        DiscordIO.changePresence("In the Bios Menu...", null);
         CoolUtil.playMusic("LoveLetter");
 
         Main.setMouse(false);

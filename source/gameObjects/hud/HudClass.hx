@@ -66,7 +66,7 @@ class HudClass extends FlxGroup
 		add(healthBar);
 		add(healthBarBG);
 
-		smoothBar = SaveData.data.get('Smooth Healthbar');
+		smoothBar = true;
 
 		iconDad = new HealthIcon();
 		iconDad.setIcon(PlayState.SONG.player2, false);
@@ -80,23 +80,8 @@ class HudClass extends FlxGroup
 		iconBf.visible = !simpleInfo;
 		add(iconBf);
 
-		var centeric:String = "heart";
-
 		iconCenter = new HealthIcon();
-		switch(PlayState.daSong) {
-			case 'panic-attack' | 'convergence' | 'desertion':
-				centeric = 'bolt';
-			case 'irritation' | 'conservation':
-				centeric = 'cent';
-			case 'ripple' | 'customer-service':
-				centeric = 'disk';
-			case 'kaboom':
-				centeric = "star";
-			case 'divergence-vip' | 'nefarious-vip' | 'euphoria-vip':
-				centeric = "vip";
-
-		}
-		iconCenter.setIcon(centeric, false);
+		iconCenter.setIcon("center", false, PlayState.daSong);
 		iconCenter.visible = !simpleInfo;
 		//iconCenter.ID = 0;
 		add(iconCenter);
@@ -114,7 +99,7 @@ class HudClass extends FlxGroup
 		timeTxt = new FlxText(0, 0, 0, "nuts / balls even");
 		timeTxt.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
 		timeTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
-		timeTxt.visible = SaveData.data.get('Song Timer');
+		timeTxt.visible = true;
 		add(timeTxt);
 
 		badScoreTxt = new FlxText(0,0,0,"SAVING SCORES DISABLED");

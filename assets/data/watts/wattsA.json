@@ -32,9 +32,10 @@
             0.05
         ],
         [
-            "A. What do you do?\n* B. What's that framed photo behind you?\n* C. Are you single?\n* D. Do you like to travel?\n* ESC. Go Back.",
+            "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
             "neutral",
-            0.05
+            0.05,
+            true
         ]
     ]
 }

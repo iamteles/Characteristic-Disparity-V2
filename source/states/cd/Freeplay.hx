@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -50,7 +50,7 @@ class Freeplay extends MusicBeatState
     {
         super.create();
 
-        DiscordClient.changePresence("In the Freeplay Menu...", null);
+        DiscordIO.changePresence("In the Freeplay Menu...", null);
         CoolUtil.playMusic("movement");
 
         Main.setMouse(false);
@@ -459,7 +459,7 @@ class CharacterSelect extends MusicBeatSubState
                         curSelected = button.ID; 
                         FlxG.sound.play(Paths.sound("menu/scroll"));
                     }
-                    if((FlxG.mouse.justPressed || Controls.justPressed("ACCEPT"))) {
+                    if(((FlxG.mouse.justPressed && focused) || Controls.justPressed("ACCEPT"))) {
                         selected = true;
 
                         if(FlxG.sound.music != null)

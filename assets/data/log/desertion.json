@@ -15,6 +15,11 @@
             "text": "..."
         },
         {
+            "character": "right",
+            "frame": "conv hurt",
+            "text": "..."
+        },
+        {
             "character": "left",
             "frame": "annoyed",
             "text": "You weren't supposed to do that."
@@ -36,8 +41,8 @@
         },
         {
             "character": "center",
-            "frame": "annoyed",
-            "text": "Y'know after that I don’t think I really want to interact with you anymore bye!"
+            "frame": "playful",
+            "text": "Y'know what, after that I don’t think I really want to interact with you anymore bye!"
         },
         {
             "character": "center",
@@ -62,12 +67,12 @@
         {
             "character": "left",
             "frame": "neutral",
-            "text": "I am a GOD, understand me?"
+            "text": "I am a GOD, understand?"
         },
         {
             "character": "left",
             "frame": "very mad",
-            "text": "You two little pests are no match for ME."
+            "text": "You two little pests are no match for the likes of us."
         },
         {
             "character": "left",

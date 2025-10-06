@@ -12,12 +12,12 @@
         {
             "character": "left",
             "frame": "smug",
-            "text": "Hey where’d that confidence from earlier go"
+            "text": "Hey, where’d that confidence from earlier go?"
         },
         {
             "character": "left",
             "frame": "stun talk",
-            "text": "I cut your arm by the way, look right there"
+            "text": "I cut your arm by the way, right there!"
         },
         {
             "character": "right",
@@ -42,17 +42,22 @@
         {
             "character": "left",
             "frame": "smug",
-            "text": "Bella Wright, so glad you could join us"
+            "text": "Bella Wright, so glad you could join us."
         },
         {
             "character": "center",
             "frame": "confused",
-            "text": "...did you hurt her"
+            "text": "...did you hurt her?"
         },
         {
             "character": "left",
-            "frame": "yap",
-            "text": "I kinda need you two to break up and she didn’t comply soooooo.."
+            "frame": "stunned",
+            "text": "Long story short, I need you two to break up..."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "and your sweetheart decided to go against my wishes, so..."
         },
         {
             "character": "right",
@@ -77,7 +82,7 @@
         {
             "character": "center",
             "frame": "annoyed",
-            "text": "Bex go sit and rest, I’ll take it from here."
+            "text": "Bex. Go sit and rest, I’ll take it from here."
         },
         {
             "character": "left",

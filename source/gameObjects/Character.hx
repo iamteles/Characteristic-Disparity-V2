@@ -240,7 +240,7 @@ class Character extends FlxSprite
 		offset.x += scaleOffset.x;
 		offset.y += scaleOffset.y;
 
-		if(!hasMiss && isPlayer) {
+		if(!hasMiss) {
 			this.color = (!miss ? 0xFF070068 : 0xFFFFFFFF);
 		}
 	}

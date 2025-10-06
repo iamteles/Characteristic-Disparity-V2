@@ -54,7 +54,10 @@ class GameOverSubState extends MusicBeatSubState
 		text.y -= 160;
 		add(text);
 	
-		FlxG.sound.play(Paths.sound('death/${CoolUtil.formatChar(char)}_death'));
+		if(char == "bex-2d")
+			FlxG.sound.play(Paths.sound('death/duo_death'));
+		else if(Paths.fileExists('sounds/death/${CoolUtil.formatChar(char)}_death.ogg'))
+			FlxG.sound.play(Paths.sound('death/${CoolUtil.formatChar(char)}_death'));
 
 		new FlxTimer().start(2.1, function(tmr:FlxTimer)
 		{
@@ -94,7 +97,6 @@ class GameOverSubState extends MusicBeatSubState
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 0.2, false, function()
 				{
-					//Main.switchState(new MenuState());
 					PlayState.sendToMenu();
 				}, true);
 				
@@ -102,14 +104,6 @@ class GameOverSubState extends MusicBeatSubState
 
 			if(Controls.justPressed("ACCEPT"))
 				endBullshit();
-
-			#if mobile
-			for (touch in FlxG.touches.list)
-			{
-				if (touch.justPressed)
-					endBullshit();
-			}
-			#end
 		}
 	}
 

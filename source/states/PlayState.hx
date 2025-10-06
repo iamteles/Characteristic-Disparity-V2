@@ -1,7 +1,7 @@
 package states;
 
 import flixel.input.actions.FlxActionSet;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
@@ -109,7 +109,7 @@ class PlayState extends MusicBeatState
 
 	public static var daSong:String;
 	
-	// paused
+	public static var instance:PlayState;
 	public static var paused:Bool = false;
 
 	public var barUp:FlxSprite;
@@ -173,6 +173,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		super.create();
+		instance = this;
 		CoolUtil.playMusic();
 
 		resetStatics();
@@ -578,14 +579,17 @@ class PlayState extends MusicBeatState
 			dadStrumline.x += strumPos[1]; // goes offscreen //IF I ever want to make something else, set to - for going offscreen
 			bfStrumline.x  -= strumPos[1]; // goes to the middle
 
+			var noteAlpha:Float = 0;
+			if(SaveData.data.get("Middlescroll Style") == "SHOW OPPONENT")
+				noteAlpha = 0.25;
 			for (thing in dadStrumline.strumGroup) {
-				thing.alpha = 0.25;
+				thing.alpha = noteAlpha;
 			}
 
 			for (thing in dadStrumline.allNotes) {
-				thing.alpha = 0.25;
+				thing.alpha = noteAlpha;
 			}
-			dadStrumline.noteAlpha = 0.25;
+			dadStrumline.noteAlpha = noteAlpha;
 
 			dadStrumline.doSplash = false;
 
@@ -789,7 +793,7 @@ class PlayState extends MusicBeatState
 		}
 
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Playing: " + SONG.song.toUpperCase().replace("-", " "), null);
+		DiscordIO.changePresence("Playing: " + SONG.song.toUpperCase().replace("-", " "), null);
 		for(strumline in strumlines.members)
 		{
 			var strumMult:Int = (strumline.downscroll ? 1 : -1);
@@ -1025,8 +1029,6 @@ class PlayState extends MusicBeatState
 			{
 				case "sin":
 					var thing:String = "menu/story/Taiko-tutorial";
-					if(SaveData.data.get("Touch Controls"))
-						thing += "-touch";
 					taikoTutorial = new FlxSprite().loadGraphic(Paths.image(thing));
 					taikoTutorial.cameras = [camOther];
 					taikoTutorial.scrollFactor.set();
@@ -1041,15 +1043,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 			startCountdown();
-
-		if(SaveData.data.get("Touch Controls")) {
-			hitbox = new Hitbox();
-			hitbox.cameras = [camOther];
-			add(hitbox);
-		}
 	}
-
-	var hitbox:Hitbox;
 	
 	public var startedCountdown:Bool = false;
 	public var startedSong:Bool = false;
@@ -1408,6 +1402,11 @@ class PlayState extends MusicBeatState
 				}
 				else {
 					switch (note.noteType) {
+						case 'bella':
+							if(third != null) {
+								third.miss(note.noteData);
+								//if(daSong != "customer-service") bellasings = true;
+							}
 						case 'beam':
 							health -= 0.16;
 	
@@ -1417,9 +1416,10 @@ class PlayState extends MusicBeatState
 							stageBuild.objectMap.get("bex").animation.play("flinch");
 	
 							FlxG.sound.play(Paths.sound("thunder"));
+							thisChar.miss(note.noteData);
+						default:
+							thisChar.miss(note.noteData);
 					}
-	
-					thisChar.miss(note.noteData);
 				}
 			}
 
@@ -1556,8 +1556,6 @@ class PlayState extends MusicBeatState
 	var released:Array<Bool> 	= [];
 	
 	var playerSinging:Bool = false;
-
-	var isTouch:Bool = false;
 	
 	override public function update(elapsed:Float)
 	{
@@ -1605,15 +1603,7 @@ class PlayState extends MusicBeatState
 
 		if(sinStarted != null) {
 			if(!sinStarted) {
-				#if mobile
-				for (touch in FlxG.touches.list)
-				{
-					if (touch.justPressed)
-						isTouch = true;
-				}
-				#end
-		
-				if(Controls.justPressed("ACCEPT") || isTouch) {
+				if(Controls.justPressed("ACCEPT")) {
 					FlxTween.tween(taikoTutorial, {alpha: 0}, 1, {ease: FlxEase.circInOut, onComplete: function(twn:FlxTween)
 					{
 						startCountdown();
@@ -1649,48 +1639,25 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		if(SaveData.data.get("Touch Controls")) {
-			pressed = [
-				hitbox.buttonLeft.pressed,
-				hitbox.buttonDown.pressed,
-				hitbox.buttonUp.pressed,
-				hitbox.buttonRight.pressed
-			];
-			justPressed = [
-				hitbox.buttonLeft.justPressed,
-				hitbox.buttonDown.justPressed,
-				hitbox.buttonUp.justPressed,
-				hitbox.buttonRight.justPressed
-			];
-			released = [
-				hitbox.buttonLeft.released,
-				hitbox.buttonDown.released,
-				hitbox.buttonUp.released,
-				hitbox.buttonRight.released
-			];
-		}
-		else {
-			pressed = [
-				Controls.pressed("LEFT"),
-				Controls.pressed("DOWN"),
-				Controls.pressed("UP"),
-				Controls.pressed("RIGHT")
-			];
-			justPressed = [
-				Controls.justPressed("LEFT"),
-				Controls.justPressed("DOWN"),
-				Controls.justPressed("UP"),
-				Controls.justPressed("RIGHT")
-			];
-			released = [
-				Controls.released("LEFT"),
-				Controls.released("DOWN"),
-				Controls.released("UP"),
-				Controls.released("RIGHT")
-			];
-		}
+		pressed = [
+			Controls.pressed("LEFT"),
+			Controls.pressed("DOWN"),
+			Controls.pressed("UP"),
+			Controls.pressed("RIGHT")
+		];
+		justPressed = [
+			Controls.justPressed("LEFT"),
+			Controls.justPressed("DOWN"),
+			Controls.justPressed("UP"),
+			Controls.justPressed("RIGHT")
+		];
+		released = [
+			Controls.released("LEFT"),
+			Controls.released("DOWN"),
+			Controls.released("UP"),
+			Controls.released("RIGHT")
+		];
 
-		
 		playerSinging = false;
 		
 		// strumline handler!!
@@ -1813,7 +1780,7 @@ class PlayState extends MusicBeatState
 							hold.noteCrochet * (strumline.scrollSpeed * 0.45)
 						];
 						
-						if(SaveData.data.get("Split Holds"))
+						if(false) //splitholds
 							newHoldSize[1] -= 20;
 
 						hold.setGraphicSize(
@@ -1851,7 +1818,7 @@ class PlayState extends MusicBeatState
 							hold.y += holdParent.height;
 					}
 					
-					if(SaveData.data.get('Split Holds'))
+					if(false) //splitholds
 						hold.y += 20 * downMult;
 					
 					if(holdParent.gotHeld && !hold.missed)
@@ -1977,9 +1944,18 @@ class PlayState extends MusicBeatState
 							var canHitNote:Note = null;
 
 							var noteIndex:Int = taikoShit(i);
+							var noteIndex2:Int = -1;
 
 							if(noteIndex == -1)
 								continue;
+
+							if(SaveData.data.get("Taiko Style") != "CD") {
+								trace("accurate, setting index 2");
+								if(noteIndex == 0)
+									noteIndex2 = 1;
+								else if(noteIndex == 3)
+									noteIndex2 = 2;
+							}
 							
 							for(note in strumline.noteGroup)
 							{
@@ -1989,7 +1965,7 @@ class PlayState extends MusicBeatState
 								if(note.mustMiss)
 									minTiming = Timings.timingsMap.get("good")[0];
 	
-								if(noteDiff <= minTiming && !note.missed && !note.gotHit && note.noteData == noteIndex)
+								if(noteDiff <= minTiming && !note.missed && !note.gotHit && (note.noteData == noteIndex || note.noteData == noteIndex2))
 								{
 									if(note.mustMiss && Conductor.songPos >= note.songTime + Timings.timingsMap.get("sick")[0])
 									{
@@ -2396,10 +2372,13 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(thing, {alpha: 0}, 1, {ease: FlxEase.circOut});
 							}
 	
+							var noteAlpha:Float = 0;
+							if(SaveData.data.get("Middlescroll Style") == "SHOW OPPONENT")
+								noteAlpha = 0.25;
 							for (thing in hidden.allNotes) {
-								FlxTween.tween(thing, {alpha: 0.14}, 1, {ease: FlxEase.circOut});
+								FlxTween.tween(thing, {alpha: noteAlpha}, 1, {ease: FlxEase.circOut});
 							}
-							hidden.noteAlpha = 0.25;
+							hidden.noteAlpha = noteAlpha;
 						case 1088:
 							FlxG.camera.fade(0xFF000000, 0.01, true);
 							CoolUtil.flash(camStrum, 0.5);
@@ -2498,10 +2477,13 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(thing, {alpha: 0}, 1, {ease: FlxEase.circOut});
 							}
 	
+							var noteAlpha:Float = 0;
+							if(SaveData.data.get("Middlescroll Style") == "SHOW OPPONENT")
+								noteAlpha = 0.25;
 							for (thing in dadStrumline.allNotes) {
-								FlxTween.tween(thing, {alpha: 0.14}, 1, {ease: FlxEase.circOut});
+								FlxTween.tween(thing, {alpha: noteAlpha}, 1, {ease: FlxEase.circOut});
 							}
-							dadStrumline.noteAlpha = 0.25;
+							dadStrumline.noteAlpha = noteAlpha;
 						case 448:
 							FlxG.camera.fade(0xFFFFFFFF, 0.01, true);
 							CoolUtil.flash(camStrum, 0.5);
@@ -3101,10 +3083,13 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(thing, {alpha: 0}, 1, {ease: FlxEase.circOut});
 							}
 	
+							var noteAlpha:Float = 0;
+							if(SaveData.data.get("Middlescroll Style") == "SHOW OPPONENT")
+								noteAlpha = 0.25;
 							for (thing in dadStrumline.allNotes) {
-								FlxTween.tween(thing, {alpha: 0.14}, 1, {ease: FlxEase.circOut});
+								FlxTween.tween(thing, {alpha: noteAlpha}, 1, {ease: FlxEase.circOut});
 							}
-							dadStrumline.noteAlpha = 0.25;
+							dadStrumline.noteAlpha = noteAlpha;
 							FlxG.camera.fade(0x00000000, 0.17, false);
 							//glitch
 						case 1472:
@@ -3704,7 +3689,7 @@ class PlayState extends MusicBeatState
 						Main.switchState(new states.cd.Dialog());
 					case "convergence":
 						states.cd.Dialog.dialog = "desertion";
-						states.cd.Dialog.introCenterAlpha = 0.6;
+						//states.cd.Dialog.introCenterAlpha = 0.6;
 						Main.switchState(new states.cd.Dialog());
 					case "desertion":
 						Main.switchState(new states.cd.Ending());
@@ -3959,31 +3944,40 @@ class PlayState extends MusicBeatState
 
 	function taikoShit(index:Int):Int
 	{
-		if(index == 0) {
-			if(pressed[3])
-				return 3;
-			else
-				return 2;
+		switch(SaveData.data.get("Taiko Style")) {
+			case "CD":
+				if(index == 0) {
+					if(pressed[3])
+						return 3;
+					else
+						return 2;
+				}
+				else if(index == 1) {
+					if(pressed[2])
+						return 0;
+					else
+						return 1;
+				}
+				else if(index == 2) {
+					if(pressed[1])
+						return 0;
+					else
+						return 1;
+				}
+				else if(index == 3) {
+					if(pressed[0])
+						return 3;
+					else
+						return 2;
+				}
+			default:
+				if(index == 0 || index == 3)
+					return 3;
+				else if(index == 1 || index == 2)
+					return 0;
 		}
-		else if(index == 1) {
-			if(pressed[2])
-				return 0;
-			else
-				return 1;
-		}
-		else if(index == 2) {
-			if(pressed[1])
-				return 0;
-			else
-				return 1;
-		}
-		else if(index == 3) {
-			if(pressed[0])
-				return 3;
-			else
-				return 2;
-		}
-		else
-			return -1;
+
+		trace("index not found, for some reason: " + index);
+		return -1;
 	}
 }

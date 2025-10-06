@@ -13,9 +13,8 @@ import data.GameData.MusicBeatState;
 import gameObjects.menu.AlphabetMenu;
 import gameObjects.menu.options.*;
 import SaveData.SettingType;
-import gameObjects.android.FlxVirtualPad;
 import flixel.addons.display.FlxBackdrop;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 class OptionsState extends MusicBeatState
 {
@@ -32,26 +31,28 @@ class OptionsState extends MusicBeatState
 		"gameplay" => [
 			"Ghost Tapping",
 			"Downscroll",
-			"Cutscenes",
-			"Framerate Cap",
+			"Hitsounds",
 			"Preload Songs",
-			"Hitsounds"
+			"Taiko Style",
+			"Middlescroll Style",
 		],
 		"appearance" => [
 			"Skin",
-			"Song Timer",
+			//"Song Timer",
 			"Note Splashes",
-			"Smooth Healthbar",
-			"Split Holds",
-			"Cutscenes"
+			//"Smooth Healthbar",
+			"Shaders",
+			"Cutscenes",
+			"FPS Cap",
+			"Resolution",
 		],
 		"accessibility" => [
 			"Flashing Lights",
 			"FPS Counter",
 			"Antialiasing",
-			"Shaders",
 			"Low Quality",
-			"Colorblind Filter",
+			"Text Speed",
+			"Discord RPC"
 		],
 		"save" => [
 			"Reset Progression",
@@ -79,9 +80,11 @@ class OptionsState extends MusicBeatState
 	// makes you able to go to the options and go back to the state you were before
 	static var backTarget:FlxState;
 	var buttonsMain:FlxTypedGroup<FlxSprite>;
-	public function new(?newBackTarget:FlxState)
+	var scary:Bool = false;
+	public function new(?newBackTarget:FlxState, scary:Bool = false)
 	{
 		super();
+		this.scary = scary;
 		if(newBackTarget == null)
 		{
 			newBackTarget = new states.cd.MainMenu();
@@ -92,18 +95,18 @@ class OptionsState extends MusicBeatState
 			backTarget = newBackTarget;
 	}
 
-	var virtualPad:FlxVirtualPad;
 	override function create()
 	{
 		super.create();
-		CoolUtil.playMusic("movement");
+		if(scary)
+			CoolUtil.playMusic("fault");
+		else
+			CoolUtil.playMusic("movement");
 		var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFDBBF9B);
 		color.screenCenter();
 		add(color);
 
-		Main.setMouse(true);
-
-		DiscordClient.changePresence("In the Options Menu...", null);
+		DiscordIO.changePresence("In the Options Menu...", null);
 
 		var tiles = new FlxBackdrop(Paths.image('menu/freeplay/tile'), XY, 0, 0);
         tiles.velocity.set(30, 30);
@@ -133,7 +136,6 @@ class OptionsState extends MusicBeatState
 		notes.y += 4;
 		add(notes);
 
-
 		grpTexts = new FlxTypedGroup<FlxText>();
 		grpAttachs = new FlxTypedGroup<FlxBasic>();
 		buttonsMain = new FlxTypedGroup<FlxSprite>();
@@ -148,18 +150,21 @@ class OptionsState extends MusicBeatState
 		infoTxt.antialiasing = false;
 		add(infoTxt);
 
-		if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_FULL, A_B);
-            add(virtualPad);
-        }
-
-		verTxt = new FlxText(0,0,0,'Characteristic Disparity V2.0.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press R to reset your save data.');
+		verTxt = new FlxText(0,0,0,'Characteristic Disparity V2.0.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press R / X to reset your save data.');
 		verTxt.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;
 		verTxt.screenCenter(X);
 		add(verTxt);
 
+		if(scary) {
+			var vg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('vignette')); //like the???
+			vg.updateHitbox();
+			vg.screenCenter();
+			vg.alpha = 0.8;
+			add(vg);
+		}
+	
 		reloadCat();
 	}
 
@@ -410,51 +415,11 @@ class OptionsState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		var up:Bool = Controls.justPressed("UI_UP") || (FlxG.mouse.wheel > 0);
-        if(virtualPad != null)
-            up = (Controls.justPressed("UI_UP") || virtualPad.buttonUp.justPressed) || (FlxG.mouse.wheel > 0);
-
-        var down:Bool = Controls.justPressed("UI_DOWN") || (FlxG.mouse.wheel < 0);
-        if(virtualPad != null)
-            down = (Controls.justPressed("UI_DOWN") || virtualPad.buttonDown.justPressed) || (FlxG.mouse.wheel < 0);
-
-        var left:Bool = Controls.justPressed("UI_LEFT");
-        if(virtualPad != null)
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed);
-
-        var right:Bool = Controls.justPressed("UI_RIGHT");
-        if(virtualPad != null)
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed);
-
-		var leftP:Bool = Controls.pressed("UI_LEFT");
-        if(virtualPad != null)
-            leftP = (Controls.pressed("UI_LEFT") || virtualPad.buttonLeft.pressed);
-
-        var rightP:Bool = Controls.pressed("UI_RIGHT");
-        if(virtualPad != null)
-            rightP = (Controls.pressed("UI_RIGHT") || virtualPad.buttonRight.pressed);
-
-		var leftR:Bool = Controls.released("UI_LEFT");
-        if(virtualPad != null)
-            leftR = (Controls.released("UI_LEFT") || virtualPad.buttonLeft.released);
-
-        var rightR:Bool = Controls.justPressed("UI_RIGHT");
-        if(virtualPad != null)
-            rightR = (Controls.released("UI_RIGHT") || virtualPad.buttonRight.released);
-
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
 		updateAttachPos();
 		if(infoTxt.text != "")
 			infoTxt.y = FlxMath.lerp(infoTxt.y, FlxG.height - infoTxt.height - 16, elapsed * 8);
 
-		if(back)
+		if(Controls.justPressed("BACK"))
 		{
 			if(curCat == "main")
 			{
@@ -467,57 +432,57 @@ class OptionsState extends MusicBeatState
 				reloadCat("main");
 		}
 
-		if(up)
-			changeSelection(-1);
-		if(down)
-			changeSelection(1);
-
-		if(FlxG.keys.justPressed.R && focused) {
-			if(optionShit.exists("save"))
-				reloadCat("save");
-		}
-
-		for(item in buttonsMain.members) {
-			if(CoolUtil.mouseOverlap(item, FlxG.camera)) {
-				item.alpha = 1;
-				if(FlxG.mouse.justPressed && focused) {
-					var justSelected:String = optionShit.get(curCat)[item.ID].toLowerCase();
-					switch(justSelected)
-					{
-						default:
-							if(optionShit.exists(justSelected))
-								reloadCat(justSelected);
-	
-						
-						case "controls":
-							new FlxTimer().start(0.1, function(tmr:FlxTimer)
-							{
-								openSubState(new subStates.ControlsSubstate());
-							});
-						
-					}
+		if(curCat == "main") {
+			for(item in buttonsMain.members) {
+				if(curSelected == item.ID) {
+					item.alpha = 1;
 				}
+				else
+					item.alpha = 0.6;
 			}
-			else
-				item.alpha = 0.6;
+
+			if(Controls.justPressed("UI_UP"))
+				changeSelection(-2);
+			if(Controls.justPressed("UI_DOWN"))
+				changeSelection(2);
+			if(Controls.justPressed("UI_LEFT"))
+				changeSelection(-1);
+			if(Controls.justPressed("UI_RIGHT"))
+				changeSelection(1);
+
+			if(Controls.justPressed("BOTPLAY")) {
+				if(optionShit.exists("save"))
+					reloadCat("save");
+			}
+		}
+		else {
+			if(Controls.justPressed("UI_UP"))
+				changeSelection(-1);
+			if(Controls.justPressed("UI_DOWN"))
+				changeSelection(1);
 		}
 
-		if(accept && focused)
+
+		if(Controls.justPressed("ACCEPT"))
 		{
 			if(curCat == "save")
 			{
 				storedSelected.set("Save Data", curSelected);
 				var daOption:String = grpTexts.members[curSelected].text;
+				FlxG.sound.play(Paths.sound("menu/scroll"));
 				switch(daOption.toLowerCase())
 				{
 					case "reset progression":
 						SaveData.wipe('PROGRESS');
+						Main.switchState(new states.cd.Intro.IntroLoading());
 					case "reset highscores":
 						SaveData.wipe('HIGHSCORE');
 					case "reset options":
 						SaveData.wipe('OPTIONS');
+						//Main.resetState();
 					case "reset all":
 						SaveData.wipe('ALL');
+						Main.switchState(new states.cd.Intro.Warning());
 				}
 			}
 			else if(curCat != "main")
@@ -534,30 +499,50 @@ class OptionsState extends MusicBeatState
 					FlxG.sound.play(Paths.sound("menu/scroll"));
 				}
 			}
+			else {
+				var justSelected:String = optionShit.get(curCat)[curSelected].toLowerCase();
+				switch(justSelected)
+				{
+					default:
+						if(optionShit.exists(justSelected))
+							reloadCat(justSelected);
+
+					
+					case "controls":
+						new FlxTimer().start(0.1, function(tmr:FlxTimer)
+						{
+							openSubState(new subStates.ControlsSubstate());
+						});
+					
+				}
+			}
 		}
 		
-		if(leftP || rightP)
+		if(Controls.pressed("UI_LEFT") || Controls.pressed("UI_RIGHT"))
 		{
 			var curAttach = grpAttachs.members[curSelected];
 			if(Std.isOfType(curAttach, OptionSelector))
 			{
 				var selector = cast(curAttach, OptionSelector);
 
-				if(left || right)
+				if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_RIGHT"))
 				{
 					selectorTimer = -0.5;
 					FlxG.sound.play(Paths.sound("menu/scroll"));
 
-					if(leftP)
+					if(Controls.pressed("UI_LEFT"))
 						selector.updateValue(-1);
 					else
 						selector.updateValue(1);
+
+					if(selector.label == "Resolution")
+						SaveData.updateWindowSize();
 				}
 
-				if(leftP)
+				if(Controls.pressed("UI_LEFT"))
 					selector.arrowL.alpha = 1;
 
-				if(rightP)
+				if(Controls.pressed("UI_RIGHT"))
 					selector.arrowR.alpha = 1;
 
 				if(selectorTimer != Math.NEGATIVE_INFINITY && !Std.isOfType(selector.bounds[0], String))
@@ -566,15 +551,15 @@ class OptionsState extends MusicBeatState
 					if(selectorTimer >= 0.02)
 					{
 						selectorTimer = 0;
-						if(leftP)
+						if(Controls.pressed("UI_LEFT"))
 							selector.updateValue(-1);
-						if(rightP)
+						if(Controls.pressed("UI_RIGHT"))
 							selector.updateValue(1);
 					}
 				}
 			}
 		}
-		if(leftR || rightR)
+		if(Controls.released("UI_LEFT") || Controls.released("UI_RIGHT"))
 		{
 			selectorTimer = Math.NEGATIVE_INFINITY;
 			for(attach in grpAttachs.members)
@@ -582,10 +567,10 @@ class OptionsState extends MusicBeatState
 				if(Std.isOfType(attach, OptionSelector))
 				{
 					var selector = cast(attach, OptionSelector);
-					if(leftR)
+					if(Controls.released("UI_LEFT"))
 						selector.arrowL.animation.play("idle");
 
-					if(rightR)
+					if(Controls.released("UI_RIGHT"))
 						selector.arrowR.animation.play("idle");
 				}
 			}

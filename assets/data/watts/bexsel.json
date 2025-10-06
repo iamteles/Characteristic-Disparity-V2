@@ -2,9 +2,10 @@
     "ident": "bexsel",
     "lines": [
         [
-            "A. How do you know her?\n* B. How close are you two?\n* ESC. Go Back.",
+            "* How do you know her?\n* How close are you two?\n* Go Back.",
             "neutral",
-            0.05
+            0.05,
+            true
         ]
     ]
 }

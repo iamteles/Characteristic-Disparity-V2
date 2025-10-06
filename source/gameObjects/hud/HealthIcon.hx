@@ -15,9 +15,27 @@ class HealthIcon extends FlxSprite
 	public var curIcon:String = "";
 	public var maxFrames:Int = 0;
 
-	public function setIcon(curIcon:String = "face", isPlayer:Bool = false):HealthIcon
+	public function setIcon(curIcon:String = "face", isPlayer:Bool = false, song:String = ""):HealthIcon
 	{
 		this.curIcon = curIcon;
+
+		if(curIcon == "center" && song != "") {
+			var centeric:String = "heart";
+			switch(song.toLowerCase()) { //i don't remember!
+				case 'panic-attack' | 'convergence' | 'desertion':
+					centeric = 'bolt';
+				case 'irritation' | 'conservation':
+					centeric = 'cent';
+				case 'ripple' | 'customer-service':
+					centeric = 'disk';
+				case 'kaboom':
+					centeric = "star";
+				case 'divergence-vip' | 'nefarious-vip' | 'euphoria-vip':
+					centeric = "vip";
+
+			}
+			return setIcon(centeric, isPlayer);
+		}
 
 		if(curIcon == "watts" && isPlayer)
 			return setIcon("bex", isPlayer);
@@ -25,7 +43,7 @@ class HealthIcon extends FlxSprite
 		if(curIcon == "watts-alt" && isPlayer)
 			return setIcon("bella", isPlayer);
 
-		trace("attempt icon " + curIcon);
+		//trace("attempt icon " + curIcon);
 		if(!Paths.fileExists('images/icons/icon-${curIcon}.png'))
 		{
 			if(curIcon.contains('-')) {
@@ -44,7 +62,7 @@ class HealthIcon extends FlxSprite
 				return setIcon("face", isPlayer);
 		}
 
-		trace("loaded icon " + curIcon);
+		//trace("loaded icon " + curIcon);
 
 		var iconGraphic = Paths.image("icons/icon-" + curIcon);
 

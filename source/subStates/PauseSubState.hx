@@ -13,7 +13,6 @@ import data.Conductor;
 import data.GameData.MusicBeatSubState;
 import gameObjects.menu.AlphabetMenu;
 import states.*;
-import gameObjects.android.FlxVirtualPad;
 import flixel.addons.display.FlxBackdrop;
 
 class PauseSubState extends MusicBeatSubState
@@ -28,6 +27,7 @@ class PauseSubState extends MusicBeatSubState
 	var curSelected:Int = 0;
 
 	var pauseSong:FlxSound;
+	var playstate:PlayState;
 
 	var tiles:FlxBackdrop;
 	var buttons:FlxTypedGroup<FlxSprite>;
@@ -39,10 +39,9 @@ class PauseSubState extends MusicBeatSubState
 	public function new()
 	{
 		super();
+		playstate = PlayState.instance;
 		var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
-
-		Main.setMouse(true);
 
 		banana.alpha = 0;
 		FlxTween.tween(banana, {alpha: 0.4}, 0.1);
@@ -140,6 +139,13 @@ class PauseSubState extends MusicBeatSubState
 		deaths.y = skull.y + skull.height;
 		add(deaths);
 
+		var botText = new FlxText(0, 0, 0, Std.string(["X"]));
+		botText.setFormat(Main.gFont, 46, 0xFFFFFFFF, CENTER);
+		botText.setBorderStyle(OUTLINE, 0xFF000000, 2);
+		botText.x = bpButton.x + (bpButton.width/2) - (botText.width/2);
+		botText.y = bpButton.y - botText.height - 5;
+		add(botText);
+
 		var grphic:FlxSprite;
 		grphic = new FlxSprite().loadGraphic(Paths.image("hud/pause/pause"));
 		grphic.scale.set(0.65,0.65);
@@ -149,6 +155,8 @@ class PauseSubState extends MusicBeatSubState
 		add(grphic);
 
 		changeSelection();
+		lastMouseX = FlxG.mouse.getScreenPosition(FlxG.cameras.list[FlxG.cameras.list.length - 1]).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.cameras.list[FlxG.cameras.list.length - 1]).y;
 	}
 
 	override function close()
@@ -157,6 +165,10 @@ class PauseSubState extends MusicBeatSubState
 		pauseSong.stop();
 		super.close();
 	}
+
+	var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
 
 	override function update(elapsed:Float)
 	{
@@ -168,22 +180,18 @@ class PauseSubState extends MusicBeatSubState
 				cast(item, FlxBasic).cameras = [lastCam];
 		}
 
-		// remainders from the old pause menu
-		var up:Bool = Controls.justPressed("UI_UP") || Controls.justPressed("UI_LEFT");
-        var down:Bool = Controls.justPressed("UI_DOWN") || Controls.justPressed("UI_RIGHT");
-        var back:Bool = Controls.justPressed("BACK");
-        var accept:Bool = Controls.justPressed("ACCEPT");
-
-		if(up)
+		if(Controls.justPressed("UI_UP") || Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(down)
+		if(Controls.justPressed("UI_DOWN") || Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
-		if(accept)
+		if(Controls.justPressed("ACCEPT"))
 			select(curSelected);
 
 		for(item in buttons) {
-			if(CoolUtil.mouseOverlap(item, lastCam)) {
+			if(CoolUtil.mouseOverlap(item, lastCam) && usingMouse) {
+				if(curSelected != item.ID)
+					changeSelection(0, item.ID);
 				if(FlxG.mouse.justPressed && focused) {
 					select(item.ID);
 				}
@@ -196,13 +204,21 @@ class PauseSubState extends MusicBeatSubState
 			}
 		}
 
+		if(Controls.justPressed("BOTPLAY"))
+			botplay();
+
+		if(Controls.justPressed("LOOP")) {
+			persistentDraw = false;
+			this.openSubState(new PhotoSubState());
+		}
+
 		if(PlayState.botplay)
 			bpButton.animation.play('on');
 		else
 			bpButton.animation.play('off');
 
 		// works the same as resume
-		if(back)
+		if(Controls.justPressed("BACK"))
 		{
 			PlayState.paused = false;
 			close();
@@ -217,17 +233,32 @@ class PauseSubState extends MusicBeatSubState
 				right.x = FlxMath.lerp(right.x, item.x + item.width - 24, elapsed*12);
 				right.y = FlxMath.lerp(right.y, item.y - 8, elapsed*12);
 			}
-
 		}
+
+		if(lastMouseX != FlxG.mouse.getScreenPosition(lastCam).x || lastMouseY != FlxG.mouse.getScreenPosition(lastCam).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(lastCam).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(lastCam).y;
+        }
 	}
 
-	function changeSelection(change:Int = 0)
+	function changeSelection(change:Int = 0, force:Int = -1)
 	{
-		curSelected += change;
-		curSelected = FlxMath.wrap(curSelected, 0, optionShit.length - 1);
-
-		if(change != 0)
+		if(change != 0) {
+			curSelected += change;
 			FlxG.sound.play(Paths.sound("menu/scroll"));
+			usingMouse = false;
+        	Main.setMouse(false);
+		}
+		else if(force != -1) {
+			curSelected = force;
+			FlxG.sound.play(Paths.sound("menu/scroll"));
+		}
+
+		curSelected = FlxMath.wrap(curSelected, 0, optionShit.length - 1);
 	}
 
 	function select(what:Int = 0)

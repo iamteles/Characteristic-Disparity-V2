@@ -2,7 +2,7 @@ package states;
 
 import flixel.sound.FlxSound;
 import data.GameData.MusicBeatState;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import data.DoidoVideoSprite;
 import flixel.util.FlxTimer;
 import subStates.CutscenePauseSubState;
@@ -15,7 +15,7 @@ class VideoState extends MusicBeatState
 	{
         CoolUtil.playMusic();
         Main.setMouse(false);
-        DiscordClient.changePresence("Watching cutscene...", null);
+        DiscordIO.changePresence("Watching cutscene...", null);
 
         video = new DoidoVideoSprite();
 		video.antialiasing = SaveData.data.get("Antialiasing");

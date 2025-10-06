@@ -3,7 +3,7 @@ package states;
 import data.Conductor;
 import gameObjects.MoneyCounter;
 import gameObjects.hud.Shop;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -21,7 +21,6 @@ import data.SongData.SwagSong;
 import gameObjects.*;
 import gameObjects.hud.*;
 import gameObjects.hud.note.*;
-import gameObjects.android.FlxVirtualPad;
 import flixel.addons.display.FlxBackdrop;
 
 #if sys
@@ -56,9 +55,7 @@ class ShopState extends MusicBeatState
         CoolUtil.playMusic("WhatchaBuyin", 0.8);
         Conductor.setBPM(88);
 
-        Main.setMouse(true);
-
-        DiscordClient.changePresence("In Watts' Shop", null);
+        DiscordIO.changePresence("In Watts' Shop", null);
 
         camGame = new FlxCamera();
         camHUD = new FlxCamera();
@@ -115,56 +112,13 @@ class ShopState extends MusicBeatState
         hudBuy.cameras = [camHUD];
         hudBuy.tweenAlpha(0,0.01);
 		add(hudBuy);
-
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(BLANK, A_B_C_X_Y);
-            virtualPad.cameras = [camHUD];
-            add(virtualPad);
-        }
-
-        //var bloom = new FlxRuntimeShader(File.getContent(Paths.shader('bloom')));
-        //FlxG.camera.setFilters([new ShaderFilter(bloom)]);
     }
-    var virtualPad:FlxVirtualPad;
-
-    public static var A:Bool = false;
-    public static var B:Bool = false;
-    public static var C:Bool = false;
-    public static var X:Bool = false;
-    public static var Y:Bool = false;
-
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
         camGame.followLerp = elapsed * 3;
         camGame.zoom = FlxMath.lerp(camGame.zoom, zoom, elapsed * 6);
-
-        if(SaveData.data.get("Touch Controls"))
-            A = (FlxG.keys.justPressed.A || virtualPad.buttonA.justPressed);
-        else
-            A = FlxG.keys.justPressed.A;
-
-        if(SaveData.data.get("Touch Controls"))
-            B = (FlxG.keys.justPressed.B || virtualPad.buttonB.justPressed);
-        else
-            B = FlxG.keys.justPressed.B;
-
-
-        if(SaveData.data.get("Touch Controls"))
-            C = (FlxG.keys.justPressed.C || virtualPad.buttonC.justPressed);
-        else
-            C = FlxG.keys.justPressed.C;
-
-        if(SaveData.data.get("Touch Controls"))
-            X = (FlxG.keys.justPressed.D || virtualPad.buttonX.justPressed);
-        else
-            X = FlxG.keys.justPressed.D;
-
-        if(SaveData.data.get("Touch Controls"))
-            Y = (Controls.justPressed("BACK") || virtualPad.buttonY.justPressed);
-        else
-            Y = Controls.justPressed("BACK");
 
         //if(Controls.justPressed("BACK"))
 		//	Main.switchState(new MenuState());
@@ -187,6 +141,8 @@ class ShopState extends MusicBeatState
     public static function exitShop(question:Bool = false)
     {
         hudBuy.tweenAlpha(0, 1);
+
+        Main.setMouse(false);
 
         var countTimer = new FlxTimer().start(1, function(tmr:FlxTimer)
         {
@@ -227,9 +183,7 @@ class LoadShopState extends MusicBeatState
 	{
 		super.create();
 
-        Main.setMouse(false);
-
-		DiscordClient.changePresence("Loading...", null);
+		DiscordIO.changePresence("Loading...", null);
         
         #if !html5
 		mutex = new Mutex();

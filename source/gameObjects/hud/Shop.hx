@@ -13,6 +13,7 @@ import flixel.sound.FlxSound ;
 import flixel.input.keyboard.FlxKey;
 import states.ShopState;
 import flixel.util.FlxTimer;
+import flixel.math.FlxMath;
 import data.SongData;
 
 typedef WattsDialog =
@@ -20,7 +21,6 @@ typedef WattsDialog =
     var ident:String;
     var lines:Array<Dynamic>;
 }
-
 
 class ShopTalk extends FlxGroup
 {
@@ -40,6 +40,9 @@ class ShopTalk extends FlxGroup
     var watts4:FlxSound;
 
     var starting:String = 'post';
+
+    var curChoice:Int = 0;
+    var choiceGrp:FlxTypedGroup<FlxText>;
 
     public function new()
     {
@@ -90,12 +93,34 @@ class ShopTalk extends FlxGroup
 		tex.alpha = 1;
 		tex.setFormat(Paths.font("sylfaen.ttf"), 30, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		tex.borderSize = 1.4;
-		tex.skipKeys = [FlxKey.SPACE];
-		tex.delay = 0.05;
+        switch(SaveData.data.get("Text Speed")) {
+            case "FAST":
+                tex.delay = 0.02;
+            case "SLOW":
+                tex.delay = 0.05;
+            case "INSTANT":
+                tex.delay = 0.0000001;
+            default:
+                tex.delay = 0.035;
+        }
         tex.sounds = [watts1, watts2, watts3, watts4];
 		tex.finishSounds = false;
         tex.start();
 		add(tex);
+
+        choiceGrp = new FlxTypedGroup<FlxText>();
+		add(choiceGrp);
+
+        var hahaHeight:Float = 0;
+        for (i in 0...5) {
+            var choice = new FlxText(icon.x + icon.width + 25, icon.y + (i*(hahaHeight)), Std.int(dialogBig.width - (icon.x + icon.width + 25) - 50), 'a', true);
+            choice.alpha = 0;
+            choice.setFormat(Paths.font("sylfaen.ttf"), 30, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
+            choice.borderSize = 1.4;
+            choice.ID = i;
+            hahaHeight = choice.height;
+            choiceGrp.add(choice);
+        }
 
         if(!SaveData.progression.get("shopentrance")) {
             trace(SaveData.progression.get("shopentrance"));
@@ -110,6 +135,8 @@ class ShopTalk extends FlxGroup
         scrollText(dialogData.lines[curLine], dialogData.ident);
     }
 
+    var curSelecting:Bool = false;
+    var choiceCount:Int = 0;
     function scrollText(info:Array<Dynamic>, ident:String = 'doesntmatter') {
         if(ident == 'wattsphoto' && curLine == 1) {
             FlxTween.tween(ShopState.watts, {alpha: 0}, 0.5, {ease: FlxEase.sineInOut});
@@ -121,19 +148,46 @@ class ShopTalk extends FlxGroup
             ShopState.zoom = 0.6;
             ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y + 80);
         }
-        ShopState.watts.animation.play(info[1]);
-        icon.animation.play(info[1]);
-        tex.delay = info[2];
-        tex.resetText('* ' + info[0]);
-        curLine++;
-        tex.start(false, function()
-        {
-            new FlxTimer().start(0.1, function(tmr:FlxTimer)
+
+        if(info[3] != null) {
+            curChoice = 0;
+            tex.resetText(' ');
+            curLine++;
+            tex.start(false, function()
             {
-                ShopState.watts.animation.play(info[1] + "idle");
-                hasScrolled = true;
+                new FlxTimer().start(0.1, function(tmr:FlxTimer)
+                {
+                    hasScrolled = true;
+                });
             });
-        });
+
+            var choices:Array<String> = info[0].split("\n");
+            choiceCount = choices.length;
+            for (i in 0...choices.length) {
+                for(ch in choiceGrp.members) {
+                    if(i == ch.ID) {
+                        ch.text = choices[i];
+                    }
+                }
+            }
+
+            curSelecting = true;
+        }
+        else {
+            curSelecting = false;
+            ShopState.watts.animation.play(info[1]);
+            icon.animation.play(info[1]);
+            tex.resetText('* ' + info[0]);
+            curLine++;
+            tex.start(false, function()
+            {
+                new FlxTimer().start(0.1, function(tmr:FlxTimer)
+                {
+                    ShopState.watts.animation.play(info[1] + "idle");
+                    hasScrolled = true;
+                });
+            });
+        }
     }
 
 
@@ -153,39 +207,62 @@ class ShopTalk extends FlxGroup
         hasScrolled = false;
         scrollText(dialogData.lines[curLine], dialogData.ident);
     }
+
+    public function changeSelection(change:Int = 0)
+    {
+        curChoice += change;
+        curChoice = FlxMath.wrap(curChoice, 0, choiceCount - 1);
+        if(change != 0)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+    }
+
     override function update(elapsed:Float)
     {
         super.update(elapsed);
+
+        if(curSelecting && activeg) {
+                for(ch in choiceGrp.members) {
+                    ch.alpha = FlxMath.lerp(ch.alpha, (curChoice == ch.ID ? 1 : (ch.ID >= choiceCount ? 0 : 0.45)), elapsed*24);
+                }
+
+                if(Controls.justPressed("UI_UP"))
+                    changeSelection(-1);
+                if(Controls.justPressed("UI_DOWN"))
+                    changeSelection(1);
+        }
+        else {
+            for(ch in choiceGrp.members) {
+                ch.alpha = 0;
+            }
+        }
 
         if(activeg) {
             if(hasScrolled) {
                 if(curLine >= dialogData.lines.length) {
                     switch(dialogData.ident) {
                         case "sel":
-                            if(ShopState.A) {
-                                resetDial("bellasel");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("bellasel");
+                                    case 1: resetDial("bexsel");
+                                    case 2: resetDial("bree");
+                                    case 3: resetDial("wattssel");
+                                    case 4: resetDial("postS");
+                                }
                             }
-                            if(ShopState.B) {
-                                resetDial("bexsel");
-                            }
-                            if(ShopState.C) {
-                                resetDial("bree");
-                            }
-                            if(ShopState.X) {
-                                resetDial("wattssel");
-                            }
-                            if(ShopState.Y) {
-                                resetDial("post");
+
+                            if(Controls.justPressed("BACK")) {
+                                resetDial("postS");
                             }
                         case "entersong" | "replaysong":
-                            if(ShopState.A) {
-                                resetDial("conservation");
-                            }
-                            if(ShopState.B) {
-                                resetDial("irritation");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("conservation");
+                                    case 1: resetDial("irritation");
+                                }
                             }
                         case "conservation":
-                            if(FlxG.keys.justPressed.SPACE || FlxG.mouse.justPressed) {
+                            if(Controls.justPressed("ACCEPT")) {
                                 ShopState.watts.animation.play("pull");
                                 new FlxTimer().start(0.6, function(tmr:FlxTimer)
                                 {
@@ -198,7 +275,7 @@ class ShopTalk extends FlxGroup
                                 });
                             }
                         case "irritation":
-                            if(FlxG.keys.justPressed.SPACE || FlxG.mouse.justPressed) {
+                            if(Controls.justPressed("ACCEPT")) {
                                 ShopState.watts.animation.play("pullalt");
                                 new FlxTimer().start(0.6, function(tmr:FlxTimer)
                                 {
@@ -211,64 +288,69 @@ class ShopTalk extends FlxGroup
                                 });
                             }
                         case "bellasel":
-                            if(ShopState.A) {
-                                resetDial("bellaA");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("bellaA");
+                                    case 1: resetDial("bellaB");
+                                    case 2: resetDial("sel");
+                                }
                             }
-                            if(ShopState.B) {
-                                resetDial("bellaB");
-                            }
-                            if(ShopState.Y) {
+
+                            if(Controls.justPressed("BACK")) {
                                 resetDial("sel");
                             }
                         case "bexsel":
-                            if(ShopState.A) {
-                                resetDial("bexA");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("bexA");
+                                    case 1: resetDial("bexB");
+                                    case 2: resetDial("sel");
+                                }
                             }
-                            if(ShopState.B) {
-                                resetDial("bexB");
-                            }
-                            if(ShopState.Y) {
+
+                            if(Controls.justPressed("BACK")) {
                                 resetDial("sel");
                             }
                         case "wattssel":
-                            if(ShopState.A) {
-                                resetDial("wattsA");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("wattsA");
+                                    case 1: resetDial("wattsB");
+                                    case 2: resetDial("wattsC");
+                                    case 3: resetDial("wattsD");
+                                    case 4: resetDial("sel");
+                                }
                             }
-                            if(ShopState.B) {
-                                resetDial("wattsB");
-                            }
-                            if(ShopState.C) {
-                                resetDial("wattsC");
-                            }
-                            if(ShopState.X) {
-                                resetDial("wattsD");
-                            }
-                            if(ShopState.Y) {
+
+                            if(Controls.justPressed("BACK")) {
                                 resetDial("sel");
                             }
                         case "wattsphoto":
-                            if(ShopState.A) {
-                                resetDial("wattsA");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("wattsA");
+                                    case 1: resetDial("wattsB");
+                                    case 2: resetDial("wattsC");
+                                    case 3: resetDial("wattsD");
+                                    case 4: resetDial("sel");
+                                }
                             }
-                            if(ShopState.B) {
-                                resetDial("wattsB");
-                            }
-                            if(ShopState.C) {
-                                resetDial("wattsC");
-                            }
-                            if(ShopState.X) {
-                                resetDial("wattsD");
-                            }
-                            if(ShopState.Y) {
+
+                            if(Controls.justPressed("BACK")) {
                                 resetDial("sel");
                             }
                         case "buy":
-                            if(FlxG.keys.justPressed.SPACE || ShopState.A)
-                                ShopState.enterShop();
-                            if(FlxG.keys.justPressed.CONTROL || ShopState.B) {
-                                resetDial("sel");
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0:
+                                        curSelecting = false;
+                                        ShopState.enterShop();
+                                    case 1: resetDial("sel");
+                                    case 2: Main.switchState(new states.cd.MainMenu());
+                                }
                             }
-                            if(ShopState.Y) {
+
+                            if(Controls.justPressed("BACK")) {
                                 Main.switchState(new states.cd.MainMenu());
                             }
 
@@ -276,7 +358,7 @@ class ShopTalk extends FlxGroup
 
                 }
                 else {
-                    if(FlxG.keys.justPressed.SPACE || FlxG.mouse.justPressed) {
+                    if(Controls.justPressed("ACCEPT")) {
                         FlxG.sound.play(Paths.sound('click'));
     
                         hasScrolled = false;
@@ -285,6 +367,11 @@ class ShopTalk extends FlxGroup
                     }
                 }
 
+            }
+            else {
+                if(Controls.justPressed("ACCEPT")) {
+                    tex.skip();
+                }
             }
         }
     }
@@ -301,6 +388,7 @@ class ShopBuy extends FlxGroup
     var tabs:FlxTypedGroup<FlxSprite>;
     var curTab:ShopTab;
     var curId:Int = 0;
+    public static var curItem:Int = 0;
 
     var songGroup:ShopTab;
     var extrasGroup:ShopTab;
@@ -315,6 +403,7 @@ class ShopBuy extends FlxGroup
     public function new()
     {
         super();
+        curItem = 0;
 
         dialogBig = new FlxSprite(0, 0).loadGraphic(Paths.image('hud/shop/small'));
         dialogBig.scale.set(0.6, 0.6);
@@ -372,8 +461,16 @@ class ShopBuy extends FlxGroup
 		tex.alpha = 1;
 		tex.setFormat(Paths.font("sylfaen.ttf"), 24, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		tex.borderSize = 1.4;
-		tex.skipKeys = [];
-		tex.delay = 0.05;
+        switch(SaveData.data.get("Text Speed")) {
+            case "FAST":
+                tex.delay = 0.02;
+            case "SLOW":
+                tex.delay = 0.05;
+            case "INSTANT":
+                tex.delay = 0.0000001;
+            default:
+                tex.delay = 0.035;
+        }
 		tex.finishSounds = false;
         tex.start();
 		add(tex);
@@ -396,7 +493,6 @@ class ShopBuy extends FlxGroup
         
         ShopState.watts.animation.play("neutral");
         itemDesc = text;
-        tex.delay = delay;
         tex.resetText('* ' + text);
         tex.start(false, function()
         {
@@ -427,12 +523,6 @@ class ShopBuy extends FlxGroup
     public function alphaTab(alpha:Float, time:Float) {
         for(i in curTab) {
             var alphaF = alpha;
-            if(SaveData.shop.get(i.info[0]) && i.info[0] != "mic") {
-                if (alpha > 0.3)
-                    alphaF = 0.3;
-            }
-            else
-                alphaF = alpha;
             FlxTween.tween(i, {alpha: (alphaF > 0.7 ? 0.7 : alphaF)}, time, {
                 ease: FlxEase.sineInOut, onComplete: function(twn:FlxTween)
                     {
@@ -447,8 +537,28 @@ class ShopBuy extends FlxGroup
         super.update(elapsed);
 
         if(activeg) {
-            if(ShopState.Y)
+            if(Controls.justPressed("BACK")) {
                 ShopState.exitShop();
+            }
+
+            if(Controls.justPressed("LOOP"))
+                changeTab(1);
+
+            if(Controls.justPressed("UI_UP"))
+                changeItem(-2);
+            if(Controls.justPressed("UI_DOWN"))
+                changeItem(2);
+            if(Controls.justPressed("UI_LEFT"))
+                changeItem(-1);
+            if(Controls.justPressed("UI_RIGHT"))
+                changeItem(1);
+
+            for(item in curTab.members){
+                if(item.ident == curItem && !usingMouse)
+                    item.hovering = true;
+                else
+                    item.hovering = false;
+            }
     
             for(i in tabs) {
                 if(i.ID == curId) {
@@ -457,17 +567,7 @@ class ShopBuy extends FlxGroup
                 else if(CoolUtil.mouseOverlap(i, ShopState.camHUD, new FlxPoint(holder.x + 10, i.y + i.height))) {
                     i.x = tabPos[1];
                     if(FlxG.mouse.justPressed) {
-                        curId = i.ID;
-                        alphaTab(0, 0.4);
-                        switch (i.ID) {
-                            case 0:
-                                curTab = songGroup;
-                            case 1:
-                                curTab = skinsGroup;
-                            case 2:
-                                curTab = extrasGroup;
-                        }
-                        alphaTab(0.7, 0.4);
+                        changeTab(0, i.ID);
                     }
                 }
                 else {
@@ -476,7 +576,57 @@ class ShopBuy extends FlxGroup
     
                 //i.x = FlxMath.lerp(i.x, 	lerpPos, 	 elapsed * 30);
             }
+            if(lastMouseX != FlxG.mouse.getScreenPosition(FlxG.camera).x || lastMouseY != FlxG.mouse.getScreenPosition(FlxG.camera).y) {
+                if(!usingMouse) {
+                    usingMouse = true;
+                    Main.setMouse(true);
+                }
+                lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+                lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+            }
         }
+    }
+
+    public var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
+    
+    public function changeItem(change:Int = 0, skipSound:Bool = false)
+    {
+        curItem += change;
+        curItem = FlxMath.wrap(curItem, 0, curTab.members.length-1);
+
+        if(change != 0 && !skipSound)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+
+        usingMouse = false;
+        Main.setMouse(false);
+    }
+
+    public function changeTab(change:Int = 0, effective:Int = -1)
+    {
+        curId += change;
+        curId = FlxMath.wrap(curId, 0, 2);
+        if(effective != -1)
+            curId = effective;
+        if(change != 0 || effective != -1)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+
+        curItem = 0;
+
+        alphaTab(0, 0.4);
+        switch (curId) {
+            case 0:
+                curTab = songGroup;
+            case 1:
+                curTab = skinsGroup;
+            case 2:
+                curTab = extrasGroup;
+        }
+        alphaTab(0.7, 0.4);
+
+        usingMouse = false;
+        Main.setMouse(false);
     }
 }
 
@@ -489,7 +639,7 @@ class ShopTab extends FlxTypedGroup<ShopItem>
             ["crown", "Golden Crown", 100],
             ["ticket", "Rave Ticket", 50],
             ["shack", "Hair Dye", 75],
-            ["time", "Time Machine", 50],
+            //["time", "Time Machine", 50],
         ],
         "skins" => [
             ["base", "Classic FNF", 15],
@@ -534,7 +684,6 @@ class ShopItem extends FlxGroup
     public var ident:Int;
     public var display:FlxSprite;
     public var icon:FlxSprite;
-
     public var name:FlxText;
     public var price:FlxText;
 
@@ -552,40 +701,43 @@ class ShopItem extends FlxGroup
         display.animation.play("idle");
         display.scale.set(0.6, 0.6);
         display.updateHitbox();
-        add(display);
 
         name = new FlxText(x, y+140, 0, info[1]);
 		name.setFormat(Main.gFont, 22, 0xFFFFFFFF, LEFT);
 		name.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.4);
-		add(name);
 
         icon = new FlxSprite().loadGraphic(Paths.image("hud/base/money"));
         icon.scale.set(0.6, 0.6);
         icon.updateHitbox();
         icon.x = x;
         icon.y = name.y+name.height;
-        add(icon);
 
 		price = new FlxText(0, 0, 0, Std.string(info[2]));
 		price.setFormat(Main.gFont, 22, 0xFFFFFFFF, LEFT);
 		price.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.4);
         price.x = icon.x+icon.width;
         price.y = name.y+name.height;
-		add(price);
+
+        add(display);
+		add(name);
+        add(icon);
+        add(price);
     }
 
     var overlapinTest:Bool = false;
+    public var hovering:Bool = false;
+    var alphaSold:Float = 1;
 
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
-        display.alpha = alpha;
+        display.alpha = alpha * alphaSold;
         name.alpha = alpha;
         icon.alpha = alpha;
         price.alpha = alpha;
 
-        if(CoolUtil.mouseOverlap(display, ShopState.camHUD))
+        if((CoolUtil.mouseOverlap(display, ShopState.camHUD) && ShopState.hudBuy.usingMouse)|| hovering)
             overlapinTest = true;
         else
             overlapinTest = false;
@@ -595,7 +747,7 @@ class ShopItem extends FlxGroup
             if(alpha != 0) {
                 ShopBuy.scrollText(SaveData.displayShop.get(info[0])[1]);
 
-                if(FlxG.mouse.justPressed) {
+                if((FlxG.mouse.justPressed && ShopState.hudBuy.usingMouse) || (Controls.justPressed("ACCEPT") && !ShopState.hudBuy.usingMouse)) {
                     trace('PRESSED' + info[0]);
 
                     if(!SaveData.shop.get(info[0]) && SaveData.money >= info[2]) {
@@ -627,21 +779,23 @@ class ShopItem extends FlxGroup
             }
         }
         else {
-                tempalpha = 0.7;
+            tempalpha = 0.5;
         }
 
         if(!overAlpha)
             alpha = tempalpha;
 
         if(SaveData.shop.get(info[0])) {
+            alphaSold = 0.3;
+
+            if(price.text != "0")
+                price.text = "0";
+
             if(info[0] == "mic") {
                 if(name.text != "REPLAY")
                     name.text = "REPLAY";
             }
             else {
-                if (alpha > 0.3)
-                    alpha = 0.3;
-
                 if(name.text != "SOLD")
                     name.text = "SOLD";
             }

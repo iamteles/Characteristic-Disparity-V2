@@ -2,9 +2,15 @@
     "ident": "buy",
     "lines": [
         [
-            "Press SPACE to buy, CTRL to talk and ESC to leave.",
+            "Welcome back!",
             "neutral",
             0.05
+        ],
+        [
+            "* Buy\n* Talk\n* Leave",
+            "neutral",
+            0.05,
+            true
         ]
     ]
 }

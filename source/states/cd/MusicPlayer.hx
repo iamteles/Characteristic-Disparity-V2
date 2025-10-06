@@ -8,8 +8,7 @@ import data.GameData.MusicBeatState;
 import flixel.sound.FlxSound ;
 import data.Conductor;
 import flixel.ui.FlxBar;
-import gameObjects.android.FlxVirtualPad;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 class MusicPlayer extends MusicBeatState
 {
@@ -92,10 +91,9 @@ class MusicPlayer extends MusicBeatState
         super.create();
 
         CoolUtil.playMusic();
+        //Main.setMouse(true);
 
-        Main.setMouse(true);
-
-        DiscordClient.changePresence("In the Music Player...", null);
+        DiscordIO.changePresence("In the Music Player...", null);
 
         var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFFFFFFF);
 		color.screenCenter();
@@ -213,18 +211,15 @@ class MusicPlayer extends MusicBeatState
         songComposer.y = songName.y + songName.height + 2;
         add(songComposer);
 
-        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\n- / +: Change Volume\nSPACE: Play / Pause\nV: Mute Vocals\n");
+        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\n- / +: Change Volume\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop");
         hints.setFormat(Main.gFont, 20, 0xFF000000, LEFT);
         hints.x = frame.x + 70;
         hints.y = 9;
         add(hints);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(BLANK, B);
-            add(virtualPad);
-        }
-
         changeSelection();
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
 
     public function updateTimeTxt()
@@ -237,26 +232,26 @@ class MusicPlayer extends MusicBeatState
     }
     
     var formatTime:Float = 0;
-    var virtualPad:FlxVirtualPad;
+    var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
-        var left:Bool = Controls.justPressed("UI_LEFT");
 
-        var right:Bool = Controls.justPressed("UI_RIGHT");
-
-        var back:Bool = Controls.justPressed("BACK");
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed);
-
-        var accept:Bool = FlxG.keys.justPressed.SPACE;
-
-        if(left)
+        if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_UP")) {
             changeSelection(-1);
-        if(right)
-            changeSelection(1);
+            usingMouse = false;
+            Main.setMouse(false);
+        }
 
-        if(back)
+        if(Controls.justPressed("UI_RIGHT") || Controls.justPressed("UI_DOWN")) {
+            changeSelection(1);
+            usingMouse = false;
+            Main.setMouse(false);
+        }
+
+        if(Controls.justPressed("BACK"))
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
@@ -304,11 +299,11 @@ class MusicPlayer extends MusicBeatState
             Conductor.songPos += elapsed * 1000;
         }
 
-        if(accept) {
+        if(Controls.justPressed("ACCEPT")) {
             playSong();
         }
 
-        if(FlxG.keys.justPressed.V) {
+        if(Controls.justPressed("BOTPLAY")) {
             vocalsMuted = !vocalsMuted;
             if(vocals != null && vocalsMuted)
                 vocals.volume = 0;
@@ -343,6 +338,14 @@ class MusicPlayer extends MusicBeatState
         else
             skipB.alpha = 0.8;
 
+        if(Controls.justPressed("LOOP")) {
+            looping = !looping;
+            if(looping)
+                loop.alpha = 1;
+            else
+                loop.alpha = 0.6;
+        }
+
         if(CoolUtil.mouseOverlap(loop, FlxG.camera)) {
             if(FlxG.mouse.justPressed) {
                 looping = !looping;
@@ -351,6 +354,15 @@ class MusicPlayer extends MusicBeatState
                 else
                     loop.alpha = 0.6;
             }
+        }
+
+        if(lastMouseX != FlxG.mouse.getScreenPosition(FlxG.camera).x || lastMouseY != FlxG.mouse.getScreenPosition(FlxG.camera).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
         }
     }
 

@@ -39,7 +39,7 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import states.LoadSongState;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 #if !html5
 import sys.FileSystem;
@@ -99,7 +99,7 @@ class ChartingState extends MusicBeatState
 		Controls.setSoundKeys(true);
 		Main.setMouse(true);
 
-		DiscordClient.changePresence("Editing Chart: " + SONG.song.toUpperCase(), null);
+		DiscordIO.changePresence("Editing Chart: " + SONG.song.toUpperCase(), null);
 
 		// setting up the cameras
 		var camGame = new FlxCamera();

@@ -1,6 +1,6 @@
 package states.cd.fault;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -13,7 +13,6 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
 import flixel.input.keyboard.FlxKey;
-import gameObjects.android.FlxVirtualPad;
 
 class MainMenu extends MusicBeatState
 {
@@ -37,7 +36,7 @@ class MainMenu extends MusicBeatState
 	{
         super.create();
 
-        DiscordClient.changePresence("your fault.", null);
+        DiscordIO.changePresence("your fault.", null);
         CoolUtil.playMusic("fault");
 
         Main.setMouse(false);
@@ -186,7 +185,7 @@ class MainMenu extends MusicBeatState
                                 case "music":
                                     Main.switchState(new states.cd.MusicPlayer());
                                 case "options":
-                                    Main.switchState(new states.menu.OptionsState(new states.cd.fault.MainMenu()));
+                                    Main.switchState(new states.menu.OptionsState(new states.cd.fault.MainMenu(), true));
                                 default:
                                     Main.switchState(new states.DebugState());
                             }

@@ -5,7 +5,8 @@ import flixel.FlxSprite;
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
 import data.Highscore;
-import data.ColorFilters;
+import openfl.system.Capabilities;
+import data.Discord.DiscordIO;
 
 enum SettingType
 {
@@ -17,24 +18,21 @@ class SaveData
 {
 	public static var data:Map<String, Dynamic> = [];
 	public static var displaySettings:Map<String, Dynamic> = [
-		"Touch Controls" => [
-			#if mobile
-			true,
-			#else
-			false,
-			#end
-			CHECKMARK,
-			"Whether to use Mobile Touch Controls."
+		"Resolution" => [
+			"1280x720",
+			SELECTOR,
+			"Change the game's resolution if it doesn't fit your monitor.",
+			["640x360","854x480","960x540","1024x576","1152x648","1280x720","1366x768","1600x900","1920x1080", "2560x1440", "3840x2160"],
 		],
 		"Ghost Tapping" => [
 			true,
 			CHECKMARK,
-			"Makes you able to press keys freely without missing notes."
+			"Makes you able to press keys freely without breaking notes.",
 		],
 		"Downscroll" => [
 			false,
 			CHECKMARK,
-			"Makes the notes scroll down instead of up."
+			"Decides if the notes should scroll down or up."
 		],
 		"Middlescroll" => [
 			false,
@@ -44,7 +42,7 @@ class SaveData
 		"Antialiasing" => [
 			true,
 			CHECKMARK,
-			"Disables smoothing in scaling sprites. Might increase performance."
+			"Smoothing on sprite scaling. Disabling this may improve performance."
 		],
 		"Shaders" => [
 			#if mobile
@@ -53,30 +51,30 @@ class SaveData
 			true,
 			#end
 			CHECKMARK,
-			"Whether to display graphical shaders. Disabling them improves performance."
+			"Fancy graphical effects. Disable this if you get GPU related crashes or low performance."
 		],
 		"Note Splashes" => [
 			"ON",
 			SELECTOR,
-			"Whether a splash appear when you hit a note perfectly.",
+			"Whether a splash should appear when you hit a note perfectly.",
 			["ON", "PLAYER ONLY", "OFF"],
 		],
 		"Skin" => [
 			"CD",
 			SELECTOR,
-			"Skins can be acquired in Watts' Shop!",
+			"Note Skins can be acquired in Watts' Shop!",
 			["CD", "Tails.EXE", "The Funk Shack", "Mirror Life Crisis", "Classic", "Pixel Classic", "YLYL Reloaded", "FITDON", "Doido"],
 		],
 		"Ratings on HUD" => [
 			false,
 			CHECKMARK,
-			"Makes the ratings stick on the HUD."
+			"Makes the ratings stick on the game HUD."
 		],
-		"Framerate Cap"	=> [
-			120,
+		"FPS Cap"	=> [
+			"60", // 120
 			SELECTOR,
-			"How many frames appear on screen in a second.",
-			[30, 360]
+			"How many frames can displayed in a second.",
+			["30", "60", "75", "120", "144"]
 		],
 		
 		"Split Holds" => [
@@ -102,7 +100,7 @@ class SaveData
 			"ON",
 			#end
 			SELECTOR,
-			"Whether to play song cutscenes.",
+			"Decides if the song cutscenes should play.",
 			["ON", "STATIC", "OFF"],
 		],
 
@@ -122,30 +120,57 @@ class SaveData
 		'Hitsounds' => [
 			"OFF",
 			SELECTOR,
-			"Whether to play hitsounds whenever you hit a note.",
+			"Clicking sounds whenever you hit a note.",
 			["CD", "OSU", "OFF"]
 		],
 		'Flashing Lights' => [
 			"ON",
 			SELECTOR,
-			"Whether to show flashing lights and colors.",
+			"Disable this if you have issues with Photosensitivity.",
 			["ON", "REDUCED", "OFF"]
 		],
 		"Preload Songs" => [
 			true,
 			CHECKMARK,
-			"Whether to preload music for the Music Player."
+			"Enable preloading song assets."
 		],
 		"FPS Counter" => [
 			false,
 			CHECKMARK,
-			"Whether to display debug info such as FPS or Memory."
+			"Counter that can display debug information, such as the framerate or the memory usage.",
 		],
 		"Low Quality" => [
 			false,
 			CHECKMARK,
-			"Removes some assets from songs in order to make the mod a smoother experience for low end hardware."
-		]
+			"Disables extra assets that might make very low end computers lag."
+		],
+		"Taiko Style" => [
+			"ACCURATE",
+			SELECTOR,
+			"CD mode requires you to hit both keys to hit a big note, while ACCURATE doesn't.",
+			["CD", "ACCURATE"]
+		],
+		"Middlescroll Style" => [
+			"HIDE OPPONENT",
+			SELECTOR,
+			"Whether opponent notes are shown in Middlescroll song events. HIDE makes notes easier to read.",
+			["SHOW OPPONENT", "HIDE OPPONENT"]
+		],
+		"Text Speed" => [
+			"MEDIUM",
+			SELECTOR,
+			"How fast should the text in the dialogue go by.",
+			["FAST","INSTANT","SLOW","MEDIUM"]
+		],
+		'Discord RPC' => [
+			#if DISCORD_RPC
+			true,
+			#else
+			false,
+			#end
+			CHECKMARK,
+			"Whether to use Discord's game activity.",
+		],
 	];
 
 	public static var progression:Map<String, Dynamic> = [
@@ -267,6 +292,8 @@ class SaveData
 
 		Controls.load();
 		Highscore.load();
+
+		updateWindowSize();
 		
 		// uhhh
 		subStates.editors.ChartAutoSaveSubState.load();
@@ -274,11 +301,26 @@ class SaveData
 	
 	public static function load()
 	{
-		if(saveFile.data.settings == null || Lambda.count(displaySettings) != Lambda.count(saveFile.data.settings))
+		if(saveFile.data.settings == null)
 		{
 			for(key => values in displaySettings)
 				data[key] = values[0];
 			
+			saveFile.data.settings = data;
+		}
+		else if(Lambda.count(displaySettings) != Lambda.count(saveFile.data.settings)) {
+			data = saveFile.data.settings;
+			
+			for(key => values in displaySettings) {
+				if(data[key] == null)
+					data[key] = values[0];
+			}
+
+			for(key => values in data) {
+				if(displaySettings[key] == null)
+					data.remove(key);
+			}
+
 			saveFile.data.settings = data;
 		}
 
@@ -395,8 +437,8 @@ class SaveData
 
 	public static function update()
 	{
-		Main.changeFramerate(data.get("Framerate Cap"));
-		ColorFilter.reload();
+		Main.changeFramerate(Std.parseInt(data.get("FPS Cap")));
+		DiscordIO.check();
 		FlxSprite.defaultAntialiasing = data.get("Antialiasing");
 	}
 
@@ -585,5 +627,20 @@ class SaveData
 		}
 
 		return count == songList.length;
+	}
+
+	public static function updateWindowSize()
+	{
+		#if desktop
+		if(FlxG.fullscreen) return;
+		var ws:Array<String> = data.get("Resolution").split("x");
+        	var windowSize:Array<Int> = [Std.parseInt(ws[0]),Std.parseInt(ws[1])];
+        	FlxG.stage.window.width = windowSize[0];
+        	FlxG.stage.window.height= windowSize[1];
+		
+		// centering the window
+		FlxG.stage.window.x = Math.floor(Capabilities.screenResolutionX / 2 - windowSize[0] / 2);
+		FlxG.stage.window.y = Math.floor(Capabilities.screenResolutionY / 2 - (windowSize[1] + 16) / 2);
+		#end
 	}
 }

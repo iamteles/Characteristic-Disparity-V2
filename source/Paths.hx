@@ -205,11 +205,35 @@ class Paths
 	public static function preloadPlayStuff(song:String = "euphoria"):Void
 	{
 		var assetModifier = states.PlayState.assetModifier;
-		var preGraphics:Array<String> = [];
+		var preGraphics:Array<String> = [
+			"hud/base/countdown",
+			"hud/base/blackbar",
+			"hud/base/you",
+			'hud/base/healthBar',
+			'hud/base/blackBar',
+			"hud/base/underlay 2",
+
+			"hud/pause/botplay",
+			"hud/pause/buttons",
+			"hud/pause/pause",
+			"hud/pause/selector",
+			'menu/title/tiles/main',
+			"icons/icon-face",
+
+			'vignette',
+		];
 		var preSounds:Array<String> = [
+			"sounds/cget",
+
 			"sounds/miss/miss1",
 			"sounds/miss/miss2",
 			"sounds/miss/miss3",
+
+			"sounds/menu/scroll",
+			"sounds/menu/back",
+			"sounds/menu/select",
+			"sounds/botplayOn",
+			"sounds/botplayOff",
 
 			"music/death/deathSound",
 			"music/death/deathMusic",
@@ -232,20 +256,15 @@ class Paths
 			var caution:String = ["1", "1", "1", "2"][i];
 			if(song == "nefarious-vip")
 				preSounds.push('sounds/countdown/caution/$caution');
-
-			if(i >= 1)
-			{
-				var countName:String = ["ready", "set", "go"][i - 1];
-
-				var spritePath:String = assetModifier;
-				if(!Paths.fileExists('images/hud/$spritePath/$countName.png'))
-					spritePath = 'base';
-
-				preGraphics.push('hud/$spritePath/$countName');
-			}
 		}
 
 		preSounds.push("hitsounds/"+SaveData.data.get("HitSounds"));
+
+		var the:String = song;
+		if(!Paths.fileExists('images/hud/songnames/${song}.png')) {
+			the = "allegro";
+		}
+		preGraphics.push('hud/songnames/$the');
 
 		for(i in preGraphics)
 			preloadGraphic(i);

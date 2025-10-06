@@ -2,7 +2,7 @@ package states.cd.fault;
 
 import gameObjects.Character;
 import flixel.tweens.misc.ShakeTween;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -15,7 +15,6 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
-import gameObjects.android.FlxVirtualPad;
 import data.Highscore;
 import data.Highscore.ScoreData;
 import data.GameData.MusicBeatSubState;
@@ -49,7 +48,7 @@ class Freeplay extends MusicBeatState
     {
         super.create();
 
-        DiscordClient.changePresence("your fault.", null);
+        DiscordIO.changePresence("your fault.", null);
         CoolUtil.playMusic("fault");
 
         Main.setMouse(false);

@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -48,7 +48,7 @@ class MainMenu extends MusicBeatState
 	{
         super.create();
 
-        DiscordClient.changePresence("In the Menus...", null);
+        DiscordIO.changePresence("In the Menus...", null);
         CoolUtil.playMusic("MENU");
 
         Main.setMouse(false);
@@ -259,6 +259,7 @@ class MainMenu extends MusicBeatState
                                     else
                                         Main.switchState(new states.cd.MusicPlayer());
                                 case "options":
+                                    //openSubState(new subStates.OptionsSubState());
                                     Main.switchState(new states.menu.OptionsState());
                                 case "credits":
                                     Main.switchState(new states.cd.Credits());

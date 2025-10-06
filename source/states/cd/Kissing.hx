@@ -12,7 +12,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 using StringTools;
 
@@ -44,7 +44,7 @@ class Kissing extends MusicBeatState
         CoolUtil.playMusic("kiss");
         Main.setMouse(false);
 
-        DiscordClient.changePresence("Playing: SUBGAME", null);
+        DiscordIO.changePresence("Playing: SUBGAME", null);
 
         var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));
 		bg.screenCenter();
@@ -129,30 +129,12 @@ class Kissing extends MusicBeatState
     {
         super.update(elapsed);
 
-        var back:Bool = Controls.justPressed("BACK");
-
-        #if mobile
-			back = FlxG.android.justReleased.BACK;
-		#end
-
-        if(back)
-        {
+        if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
         }
 
-        
-        var click:Bool = FlxG.keys.justPressed.SPACE || FlxG.mouse.justPressed;
-
-        #if mobile
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.justPressed)
-                click = true;
-        }
-        #end
-
-		if (click && !dead)
+		if(Controls.justPressed("ACCEPT") && !dead)
 		{
             if(!begun) {
 

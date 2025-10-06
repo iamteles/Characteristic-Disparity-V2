@@ -12,7 +12,12 @@
         {
             "character": "right",
             "frame": "annoyed",
-            "text": "The hell did you call me here for."
+            "text": "Tsk. I'll have you know i was in the middle of something there."
+        },
+        {
+            "character": "right",
+            "frame": "annoyed",
+            "text": "You better have a good reason for summoning me like this."
         },
         {
             "character": "left",
@@ -21,38 +26,58 @@
         },
         {
             "character": "right",
+            "frame": "stunned",
+            "text": "..."
+        },
+        {
+            "character": "right",
             "frame": "annoyed",
-            "text": "…It’s about the murdering isn’t it"
+            "text": "...It’s about the murdering isn’t it."
         },
         {
             "character": "left",
             "frame": "neutral",
-            "text": "You’re lucky I don’t report you to the higher ups, who knows what they’d do if they knew the “god of balance” was killing people."
+            "text": "You’re lucky I don’t report you to the higher ups... Who knows what they’d do if they saw the “god of balance” going around killing people..."
         },
         {
             "character": "right",
-            "frame": "neutral",
-            "text": "But I’m doing my job, that’s just part of the process."
+            "frame": "annoyed",
+            "text": "I’m doing my job, and this is part of the process."
         },
         {
             "character": "right",
             "frame": "yap",
-            "text": "And I-"
+            "text": "And I clearly have a reason to be doing this! The-"
         },
         {
             "character": "left",
             "frame": "neutral",
-            "text": "And those two lovebirds down there, don’t think I didn’t see you attack them for nothing."
+            "text": "Those two lovebirds down there. Don’t think I didn’t see you attack them for nothing."
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Jealous?"
+        },
+        {
+            "character": "right",
+            "frame": "yap",
+            "text": "They’re disrupting the balance! They’re nothing alike! Honestly just irks me to my core even looking their way..."
         },
         {
             "character": "right",
             "frame": "neutral",
-            "text": "They’re disrupting the balance, they’re nothing alike, it irks me to my core."
+            "text": "...!"
         },
         {
             "character": "right",
             "frame": "very mad",
-            "text": "And quit talkin like you’re gonna stop me"
+            "text": "You'll have to take that back. And quit talkin' like you’re gonna stop me, while you're at it."
+        },
+        {
+            "character": "right",
+            "frame": "annoyed",
+            "text": "You know there's nothing you can do."
         },
         {
             "character": "left",

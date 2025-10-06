@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -36,7 +36,7 @@ class Credits extends MusicBeatState
         ["HighPoweredKeyz", "hpk", "@HighPoweredKeyz", "Composer", "Stay kind, stay creative, and stay powerful!", "https://www.youtube.com/@HighPoweredKeyz"],
         ["Jospi", "jospi", "@jospi_music", "Composer", "boo", "https://twitter.com/jospi_music"],
         ["Linguini", "linguini", "@linguini7294", "Animation Helper", "make baby daisy meta again mario kart eight", "https://www.youtube.com/@linguini7294"],
-        ["GeefAnon", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
+        ["PastelDalilah", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
         ["FiveKimz", "kim", "@FiveKimz", "Charter", "hej", "https://twitter.com/FiveKimz"],
         ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
         ["Special Thanks", "special", "Lots'a people!", "Special Thanks", "Press ACCEPT to read Special Thanks!", "SPECIALTHANKS"],
@@ -46,7 +46,7 @@ class Credits extends MusicBeatState
     {
         super.create();
 
-        DiscordClient.changePresence("In the Credits Menu...", null);
+        DiscordIO.changePresence("In the Credits Menu...", null);
         CoolUtil.playMusic("credits");
 
         Main.setMouse(false);
@@ -268,7 +268,7 @@ class SpecialThanks extends MusicBeatSubState
         var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
 
-        var popUpTxt = new FlxText(0,0,0,"> Special Thanks <\n\nDiogoTV - Creator of Doido Engine\n\nPlaytesters\nBepixel, Kal, DiogoTV, Leozito\n\nTeam Shatterdisk\nParallax, Shaya, Astro, Glip Glop\n\nDusterBuster and the rest of Team TBD\nTurtle Pals Tapes\nThe Funkin Crew\n\nGuest Cameos\nAntonyR, YairLK7, LukasP, The Neko No Ni Dansu Team, Top 10 Portugal\n\nYou and everyone who supported us through the development!");
+        var popUpTxt = new FlxText(0,0,0,"> Special Thanks <\n\nDiogoTV - Creator of Doido Engine\n\nPlaytesters\nBepixel, Kal, DiogoTV, Leozito\n\nTeam Shatterdisk\nParallax, Ruevoid, Astro, Glip Glop\n\nDusterBuster and the rest of Team TBD\nTurtle Pals Tapes\nThe Funkin Crew\n\nGuest Cameos\nAntonyR, YairLK7, LukasP, The Neko No Ni Dansu Team, Top 10 Portugal\n\nYou and everyone who supported us through the development!");
 		popUpTxt.setFormat(Main.gFont, 37, 0xFFFFFFFF, CENTER);
 		popUpTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.5);
 		popUpTxt.screenCenter();
