@@ -22,7 +22,7 @@
         {
             "character": "left",
             "frame": "blush",
-            "text": "Yknow I can’t believe it’s almost been 6 whole months since we met... wild isn’t it? ^^"
+            "text": "Y'know I can’t believe it’s almost been 6 whole months since we met... wild isn’t it? ^^"
         },
         {
             "character": "right",
@@ -47,12 +47,12 @@
         {
             "character": "right",
             "frame": "loving",
-            "text": "yknow, for old times sake"
+            "text": "y'know, for old times sake"
         },
         {
             "character": "left",
             "frame": "neutral",
-            "text": "Thought you’d never ask.. :D"
+            "text": "Thought you’d never ask! :D"
         }
     ]
 }

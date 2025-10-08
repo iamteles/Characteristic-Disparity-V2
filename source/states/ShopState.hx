@@ -158,7 +158,7 @@ class ShopState extends MusicBeatState
                 }
 
                 else
-                    hudTalk.resetDial("post");
+                    hudTalk.resetDial("postS");
             });
         });
     }
