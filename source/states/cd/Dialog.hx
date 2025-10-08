@@ -197,7 +197,8 @@ class Dialog extends MusicBeatState
         var hud = new FlxSprite().loadGraphic(Paths.image('dialog/hud'));
         hud.scale.set(0.8,0.8);
 		hud.updateHitbox();
-        hud.x = FlxG.width - hud.width;
+        //hud.x = FlxG.width - hud.width;
+        hud.screenCenter(X);
         hud.alpha = 0;
         FlxTween.tween(hud, {alpha: 0.75}, 1, {
             ease: FlxEase.cubeOut,

@@ -170,6 +170,8 @@ class PlayState extends MusicBeatState
 		blueballed = 0;
 	}
 
+	var middlescroll:Bool = false;
+
 	override public function create()
 	{
 		super.create();
@@ -573,7 +575,7 @@ class PlayState extends MusicBeatState
 			add(playArea);
 		}
 		
-		var middlescroll:Bool = (daSong == 'conservation' || daSong == 'irritation');
+		middlescroll = (daSong == 'conservation' || daSong == 'irritation');
 		if(middlescroll)
 		{
 			dadStrumline.x += strumPos[1]; // goes offscreen //IF I ever want to make something else, set to - for going offscreen
@@ -912,6 +914,8 @@ class PlayState extends MusicBeatState
 				}
 				');
 				echo = new ShaderFilter(echoR);
+				FlxG.camera.setFilters([echo]);
+				FlxG.camera.setFilters([]);
 			}
 		}
 
@@ -1524,19 +1528,19 @@ class PlayState extends MusicBeatState
 
 		var daRating = new Rating(rating, Timings.combo, note.assetModifier);
 
-		/*
-		if(SaveData.data.get("Ratings on HUD"))
+	
+		/*if(SaveData.data.get("Ratings on HUD"))
 		{
 			hudBuild.add(daRating);
 			
 			for(item in daRating.members)
 				item.cameras = [camHUD];
-
-			var daX:Float = (FlxG.width / 2) - 64;
-			if(SaveData.data.get("Middlescroll"))
+			
+			var daX:Float = (FlxG.width / 2);
+			if(middlescroll)
 				daX -= FlxG.width / 4;
 
-			daRating.setPos(daX, FlxG.height / 2);
+			daRating.setPos(daX, SaveData.data.get('Downscroll') ? FlxG.height - 100 : 100);
 		}
 		else
 		{*/
@@ -2077,7 +2081,7 @@ class PlayState extends MusicBeatState
 
 	var camDisplaceX:Float;
 	var camDisplaceY:Float;
-	var cameraMoveItensity:Float = 25;
+	var cameraMoveItensity:Float = 15;
 	var zoomInOpp:Bool = false;
 	var zoomOppVal:Float = 0.2;
 	var bleh:Float = 90;
@@ -2126,7 +2130,7 @@ class PlayState extends MusicBeatState
 
 				}
 				else {
-					if(bfStrumline.character.animation.curAnim != null) {
+					if(bfStrumline.character.animation.curAnim != null && daSong != "conservation" || daSong != "irritation") {
 						switch (bfStrumline.character.animation.curAnim.name)
 						{
 							case 'singLEFT':
@@ -2379,6 +2383,7 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(thing, {alpha: noteAlpha}, 1, {ease: FlxEase.circOut});
 							}
 							hidden.noteAlpha = noteAlpha;
+							middlescroll = true;
 						case 1088:
 							FlxG.camera.fade(0xFF000000, 0.01, true);
 							CoolUtil.flash(camStrum, 0.5);
@@ -2484,6 +2489,7 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(thing, {alpha: noteAlpha}, 1, {ease: FlxEase.circOut});
 							}
 							dadStrumline.noteAlpha = noteAlpha;
+							middlescroll = true;
 						case 448:
 							FlxG.camera.fade(0xFFFFFFFF, 0.01, true);
 							CoolUtil.flash(camStrum, 0.5);
@@ -3091,6 +3097,7 @@ class PlayState extends MusicBeatState
 							}
 							dadStrumline.noteAlpha = noteAlpha;
 							FlxG.camera.fade(0x00000000, 0.17, false);
+							middlescroll = true;
 							//glitch
 						case 1472:
 							FlxG.camera.fade(0x00000000, 0.001, true);

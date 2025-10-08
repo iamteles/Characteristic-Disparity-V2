@@ -143,7 +143,7 @@ class Character extends FlxSprite
 
 		if(animation.getByName('danceLeft') != null && animation.getByName('danceRight') != null) {
 			quickDancer = true;
-			if(curChar == "bella-vip-slow" || curChar == "bex-vip-slow")
+			if(curChar == "bella-vip-slow" || curChar == "bex-vip-slow" || curChar == "bex-1" || curChar == "bex-1alt" || curChar == "bex-1e")
 				quickDancer = false;
 			idleAnims = ['danceLeft', 'danceRight'];
 		}
