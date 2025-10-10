@@ -32,7 +32,8 @@ class OptionsState extends MusicBeatState
 			"Ghost Tapping",
 			"Downscroll",
 			"Hitsounds",
-			"Preload Songs",
+			//"Preload Songs", // very misleading i guess so its getting axed
+			"Preload in Dialogue",
 			"Taiko Style",
 			"Middlescroll Style",
 		],
@@ -151,10 +152,11 @@ class OptionsState extends MusicBeatState
 		add(infoTxt);
 
 		verTxt = new FlxText(0,0,0,'Characteristic Disparity V2.0.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press R / X to reset your save data.');
-		verTxt.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
+		verTxt.setFormat(Main.dsFont, 28, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;
 		verTxt.screenCenter(X);
+		verTxt.antialiasing = false;
 		add(verTxt);
 
 		if(scary) {

@@ -91,6 +91,7 @@ class Bios extends MusicBeatState
 		name.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         name.x = box.x + 18;
         name.y = box.y + 18;
+        name.antialiasing = false;
         add(name);
 
         desc = new FlxText(0,0,box.width-(18*2),"Desc");
@@ -98,6 +99,7 @@ class Bios extends MusicBeatState
 		desc.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         desc.x = box.x + 18;
         desc.y = name.y + name.height;
+        desc.antialiasing = false;
         add(desc);
 
         changeSelection();

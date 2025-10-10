@@ -45,6 +45,7 @@ class VideoState extends MusicBeatState
     public function close():Void
     {
         video.destroy();
+        skipped = true;
 
         switch(name) {
             case "test":
@@ -73,11 +74,12 @@ class VideoState extends MusicBeatState
 
     }
 
+    var skipped:Bool = false;
     var hasPause:Array<String> = ["intro", "test"];
     override function update(elapsed:Float) {
         super.update(elapsed);
         
-        if(Controls.justPressed("ACCEPT")) {
+        if(Controls.justPressed("ACCEPT") && !skipped) {
             if(!hasPause.contains(name))
                 pauseVideo();
             else if(SaveData.progression.get("firstboot"))
@@ -93,7 +95,7 @@ class VideoState extends MusicBeatState
         
         openSubState(new subStates.CutscenePauseSubState(function(exit:PauseExit) {
             switch(exit) {
-                case SKIP:                    
+                case SKIP:                
                     close();
                 case RESTART:
                     video.restart();

@@ -121,6 +121,7 @@ class MainMenu extends MusicBeatState
 		info.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		info.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         info.y = FlxG.height - info.height - 5;
+        info.antialiasing = false;
 
         bar = new FlxSprite().makeGraphic(FlxG.width, Std.int(info.height) + 10, 0xFF000000);
 		bar.y = FlxG.height - bar.height;

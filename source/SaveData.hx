@@ -171,6 +171,11 @@ class SaveData
 			CHECKMARK,
 			"Whether to use Discord's game activity.",
 		],
+		"Preload in Dialogue" => [
+			true,
+			CHECKMARK,
+			"Lets the game load while reading dialogue, for a smoother experience."
+		]
 	];
 
 	public static var progression:Map<String, Dynamic> = [
@@ -380,6 +385,11 @@ class SaveData
 		trace(percentage());
 
 		save();
+
+		trace("taiko " + data.get("Taiko Style"));
+		trace("ms "+ data.get("Middlescroll Style"));
+		trace("ts "+ data.get("Text Speed"));
+		trace("rpc "+ data.get("Discord RPC"));
 	}
 
 	public static function findMod(file:String, localPath:String) {

@@ -145,8 +145,8 @@ class IntroLoading extends MusicBeatState
 		logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
 		logo.scale.set(0.3,0.3);
 		logo.updateHitbox();
-		logo.x = FlxG.width - logo.width - 10;
-		logo.y = FlxG.height - logo.height - 10;
+		logo.x = FlxG.width - logo.width - 15;
+		logo.y = FlxG.height - logo.height - 15;
 		add(logo);
 		
 		var oldAnti:Bool = FlxSprite.defaultAntialiasing;
@@ -176,7 +176,7 @@ class IntroLoading extends MusicBeatState
 			loadPercent = 1.0;
 			trace('finished loading');
 
-			new FlxTimer().start(3.2, function(tmr:FlxTimer)
+			new FlxTimer().start(2.3, function(tmr:FlxTimer)
 			{
 				timerLol = true;
 			});

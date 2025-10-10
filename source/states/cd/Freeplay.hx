@@ -15,14 +15,15 @@ import data.GameData.MusicBeatSubState;
 import flixel.effects.FlxFlicker;
 import flixel.addons.display.FlxBackdrop;
 import states.*;
+import flixel.util.FlxTimer;
 
 class Freeplay extends MusicBeatState
 {
     var songs:Array<Array<Dynamic>> = [
         // default
-        ["euphoria", "bella", 0xFFF85E4D, "Week 1"],
-        ["nefarious", "bex", 0xFF5B7A9E, "Week 1"],
-        ["divergence", "duo", 0xFF970F00, "Week 1"],
+        ["euphoria", "bella", 0xFFF85E4D, "Week 1", true, "Unlocked by default"],
+        ["nefarious", "bex", 0xFF5B7A9E, "Week 1", true, "Unlocked by default"],
+        ["divergence", "duo", 0xFF970F00, "Week 1", true, "Unlocked by default"],
     ];
     static var curSelected:Int = 0;
     static var curDiff:Int = 0;
@@ -57,50 +58,30 @@ class Freeplay extends MusicBeatState
 
         selected = false;
 
-        if(SaveData.progression.get("week2")) {
-            songs.push(["allegro", "duo", 0xFF0C2E55, "Week 2"]);
-            songs.push(["panic-attack", "bree", 0xFFF85EA4, "Week 2"]);
-            songs.push(["convergence", "bree", 0xFFB6318E, "Week 2"]);
-            songs.push(["desertion", "bree-angry", 0xFFFF0000, "Week 2"]);
-        }
-
-        if(SaveData.progression.get("intimidated")) {
-            songs.push(["sin", "helica", 0xFFE17B00, "Epilogue"]);
-            songs.push(["intimidate", "bex-scared", 0xFF0A203B, "Epilogue"]);
-        }
-
-        if(SaveData.shop.get("mic")) {
-            songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper"]);
-            songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper"]);
-        }
-
-        if(SaveData.progression.get("vip")) {
-            songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP"]);
-            songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP"]);
-            songs.push(["divergence-vip", "duovip", 0xFFFFCB1F, "Week VIP"]);
-        }
-
-        if(SaveData.shop.get("ticket")) {
-            songs.push(["kaboom", "spicy-v2", 0xFFFF006A, "FRxCD"]);
-        }
-
-        if(SaveData.shop.get("shack")) {
-            songs.push(["ripple", "drown", 0xFF049AFE, "The Shack"]);
-            songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack"]);
-        }
+        songs.push(["allegro", "duo", 0xFF0C2E55, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+        songs.push(["panic-attack", "bree", 0xFFF85EA4, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+        songs.push(["convergence", "bree", 0xFFB6318E, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+        songs.push(["desertion", "bree-angry", 0xFFFF0000, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
 
         if(SaveData.progression.get("week2")) {
-            songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra"]);
+            songs.push(["sin", "helica", 0xFFE17B00, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
+            songs.push(["intimidate", "bex-scared", 0xFF0A203B, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
+            
+            songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+            songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+
+            songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+            songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+            songs.push(["divergence-vip", "duovip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+
+            songs.push(["kaboom", "spicy-v2", 0xFFFF006A, "FRxCD", SaveData.shop.get("ticket"), "Purchasable in Watts' Shop"]);
+            songs.push(["ripple", "drown", 0xFF049AFE, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
+            songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
+
+            songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra", SaveData.progression.get("vip"), "Unlocked by beating Week VIP"]);
+            songs.push(["cupid", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("finished"), "Unlocked by beating everything else"]);
         }
-
-        if(SaveData.progression.get("vip")) {
-            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra"]);
-        }
-
-        if(SaveData.progression.get("finished"))
-            songs.push(["cupid", "duo", 0xFFF85EA4, "Extra"]);
-
-
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/desat'));
 		bg.updateHitbox();
@@ -123,7 +104,7 @@ class Freeplay extends MusicBeatState
             var song:String = songs[i][0];
             var charN:String = songs[i][1];
 
-            if(!Paths.fileExists('images/menu/freeplay/names/${song}.png') || !SaveData.songs.get(songs[i][0]))
+            if(!Paths.fileExists('images/menu/freeplay/names/${song}.png') /*|| !SaveData.songs.get(songs[i][0])*/ || !songs[i][4])
                 song = "nan";
             if(!Paths.fileExists('images/menu/freeplay/characters/${charN}.png'))
                 charN = "bella";
@@ -133,7 +114,7 @@ class Freeplay extends MusicBeatState
             char.x = 30;
             char.y = 0;
             char.alpha = 0;
-            if(!SaveData.songs.get(songs[i][0]))
+            if(/*!SaveData.songs.get(songs[i][0]) ||*/ !songs[i][4])
                 char.color = 0xFF000000;
             characters.add(char);
 
@@ -165,7 +146,7 @@ class Freeplay extends MusicBeatState
         scores.y = box.y + 64;
 		add(scores);
 
-        diff = new FlxText(0, 0, 0, "< FODASE >");
+        diff = new FlxText(0, 0, box.width - 18, "< FODASE >");
 		diff.setFormat(Main.gFont, 50, 0xFFFFFFFF, CENTER);
         diff.x = box.x + (box.width/2 - diff.width/2);
         diff.y = scores.y + 175;
@@ -240,32 +221,34 @@ class Freeplay extends MusicBeatState
         {
             try
             {
-                selected = true;
-                switch(CoolUtil.getDiffs()[curDiff]) {
-                    default:
-                        var diff = CoolUtil.getDiffs()[curDiff];
-                
-                        //trace('$diff');
-                        //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
-                        
-                        PlayState.playList = [];
-                        PlayState.SONG = SongData.loadFromJson(songs[curSelected][0], diff);
-                        PlayState.isStoryMode = false;
-                        //CoolUtil.playMusic();
-                        
-                        PlayState.songDiff = diff;
+                if(songs[curSelected][4]) {
+                    selected = true;
+                    var diff = CoolUtil.getDiffs()[curDiff];
+            
+                    //trace('$diff');
+                    //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
+                    
+                    PlayState.playList = [];
+                    PlayState.SONG = SongData.loadFromJson(songs[curSelected][0], diff);
+                    PlayState.isStoryMode = false;
+                    //CoolUtil.playMusic();
+                    
+                    PlayState.songDiff = diff;
 
-                        switch(songs[curSelected][0]) {
-                            case "kaboom":
-                                openSubState(new CharacterSelect());
-                            case "cupid" | "ripple" | "customer-service":
-                                states.cd.Dialog.dialog = songs[curSelected][0];
-                                Main.switchState(new states.cd.Dialog());
-                            default:
-                                Main.switchState(new LoadSongState());
-                        }
+                    switch(songs[curSelected][0]) {
+                        case "kaboom":
+                            openSubState(new CharacterSelect());
+                        case "cupid" | "ripple" | "customer-service":
+                            states.cd.Dialog.dialog = songs[curSelected][0];
+                            Main.switchState(new states.cd.Dialog());
+                        default:
+                            Main.switchState(new LoadSongState());
+                    }
                 }
-
+                else {
+                    FlxG.sound.play(Paths.sound('menu/locked'));
+                    FlxG.camera.shake(0.005, 0.1, null, true, XY);
+                }
             }
             catch(e)
             {
@@ -275,9 +258,11 @@ class Freeplay extends MusicBeatState
 
         scores.text = "";
 
-		scores.text +=   "SCORE: " + Math.floor(lerpValues.score);
-		scores.text += "\nACCURACY:  " +(Math.floor(lerpValues.accuracy * 100) / 100) + "%";
-		scores.text += "\nBREAKS:    " + Math.floor(lerpValues.misses);
+        if(songs[curSelected][4]) {
+            scores.text +=   "SCORE: " + Math.floor(lerpValues.score);
+            scores.text += "\nACCURACY:  " +(Math.floor(lerpValues.accuracy * 100) / 100) + "%";
+            scores.text += "\nBREAKS:    " + Math.floor(lerpValues.misses);
+        }
 
 		lerpValues.score 	= FlxMath.lerp(lerpValues.score, 	realValues.score, 	 elapsed * 8);
 		lerpValues.accuracy = FlxMath.lerp(lerpValues.accuracy, realValues.accuracy, elapsed * 8);
@@ -344,11 +329,19 @@ class Freeplay extends MusicBeatState
         if(bgTween != null) bgTween.cancel();
 		bgTween = FlxTween.color(bg, 0.4, bg.color, songs[curSelected][2]);
 
-        var category:String = "EXTRA";
-        if(songs[curSelected][3] != null)
-            category = songs[curSelected][3].toUpperCase();
-        diff.text = category;
-        diff.x = box.x + (box.width/2 - diff.width/2);
+        if(songs[curSelected][4]) {
+            var category:String = "EXTRA";
+            if(songs[curSelected][3] != null)
+                category = songs[curSelected][3].toUpperCase();
+            diff.text = category;
+            diff.x = box.x + (box.width/2 - diff.width/2);
+            diff.y = scores.y + 175;
+        }
+        else {
+            diff.text = songs[curSelected][5];
+            diff.x = box.x + (box.width/2 - diff.width/2);
+            diff.y = box.y + (box.height/2 - diff.height/2);
+        }
 
         if(songs[curSelected][0] == "kaboom")
             fr.y -= 10;
@@ -422,6 +415,12 @@ class CharacterSelect extends MusicBeatSubState
 
         lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
         lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+
+        new FlxTimer().start(0.2, function(tmr:FlxTimer)
+		{
+			selected = false;
+		});
+
     }
 
     var lastMouseX:Float = 0;

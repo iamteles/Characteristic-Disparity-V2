@@ -58,6 +58,8 @@ class GameOverSubState extends MusicBeatSubState
 			FlxG.sound.play(Paths.sound('death/duo_death'));
 		else if(Paths.fileExists('sounds/death/${CoolUtil.formatChar(char)}_death.ogg'))
 			FlxG.sound.play(Paths.sound('death/${CoolUtil.formatChar(char)}_death'));
+		else
+			FlxG.sound.play(Paths.sound('death/base_death'));
 
 		new FlxTimer().start(2.1, function(tmr:FlxTimer)
 		{

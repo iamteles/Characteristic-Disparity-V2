@@ -15,6 +15,9 @@ import data.Discord.DiscordIO;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import sys.thread.Mutex;
+import sys.thread.Thread;
+import flixel.group.FlxGroup;
 
 // same dialog code as mlc btw
 typedef Dialogue =
@@ -50,6 +53,11 @@ typedef PastLine =
 
 class Dialog extends MusicBeatState
 {
+    var threadActive:Bool = true;
+    var dialogueActive:Bool = true;
+	var mutex:Mutex;
+    var behind:FlxGroup;
+
     var bg:FlxSprite;
     var box:FlxSprite;
 
@@ -61,6 +69,7 @@ class Dialog extends MusicBeatState
     var right2:DialogChar;
     var log:Dialogue;
     var pastLog:PastDialogue;
+    var logo:FlxSprite;
 
     var curLine:Int = 0;
 	var loaded:Bool = false;
@@ -75,6 +84,7 @@ class Dialog extends MusicBeatState
     override function create()
     {
         super.create();
+		mutex = new Mutex();
 
         try
         {
@@ -93,6 +103,13 @@ class Dialog extends MusicBeatState
         Main.setMouse(false);
 
         DiscordIO.changePresence("Reading dialogue...", null);
+
+        behind = new FlxGroup();
+		add(behind);
+
+        var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFF000000);
+		color.screenCenter();
+		add(color);
 
         bg = new FlxSprite().loadGraphic(Paths.image('dialog/bgs/' + log.background));
 		bg.updateHitbox();
@@ -213,7 +230,34 @@ class Dialog extends MusicBeatState
 		});
 		add(hud);
 
+        logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
+		logo.scale.set(0.3,0.3);
+		logo.updateHitbox();
+		logo.x = FlxG.width - logo.width - 15;
+		logo.y = FlxG.height;
+		add(logo);
+
         pastLog = {lines: [], boxName:boxName};
+
+        //to-do: optimize lol
+        switch (log.finisher) {
+            case "song":
+                //close();
+            default:
+                PlayState.isStoryMode = true;
+                PlayState.SONG = SongData.loadFromJson(log.finisher, "normal");
+        }
+
+        if(SaveData.data.get("Preload in Dialogue")) {
+            var preloadThread = Thread.create(function()
+            {
+                mutex.acquire();
+                LoadSongState.load(behind);
+                threadActive = false;
+                mutex.release();
+            });
+        }
+ 
 
         if(loaded)
             textbox();
@@ -251,25 +295,37 @@ class Dialog extends MusicBeatState
             }
         }
 
-        if(Controls.justPressed("BACK"))
-            end();
+        if(SaveData.data.get("Preload in Dialogue")) {
+            if(!threadActive && !dialogueActive) {
+                Main.skipClearMemory = true;
+                Main.switchState(new PlayState());
+            }
+            else if(threadActive && !dialogueActive) {
+                logo.y = FlxMath.lerp(logo.y, FlxG.height - logo.height - 15, elapsed * 8);
+            }
+        }
 
-        if(Controls.justPressed("LOOP"))
-            FlxG.state.openSubState(new subStates.DialogHistorySubState(pastLog));
+        if(dialogueActive) {
+            if(Controls.justPressed("BACK"))
+                end();
 
-        if((Controls.justPressed("ACCEPT"))) {
-            if(!hasScrolled)
-                tex.skip();
-            else {
-                FlxG.sound.play(Paths.sound('dialog/skip'));
+            if(Controls.justPressed("LOOP"))
+                FlxG.state.openSubState(new subStates.DialogHistorySubState(pastLog));
 
-                if(curLine == log.lines.length) {
-                    if(log.finisher != null) {
-                        end();
+            if((Controls.justPressed("ACCEPT"))) {
+                if(!hasScrolled)
+                    tex.skip();
+                else {
+                    FlxG.sound.play(Paths.sound('dialog/skip'));
+
+                    if(curLine == log.lines.length) {
+                        if(log.finisher != null) {
+                            end();
+                        }
                     }
+                    else
+                        textbox();
                 }
-                else
-                    textbox();
             }
         }
     }
@@ -339,6 +395,14 @@ class Dialog extends MusicBeatState
     }
 
     function end() {
+        dialogueActive = false;
+        tex.skip();
+
+        if(!SaveData.data.get("Preload in Dialogue"))
+            Main.switchState(new LoadSongState());
+
+        //Main.switchState(new LoadSongState());
+        /*
         switch (log.finisher) {
             case "euphoria":
                 PlayState.isStoryMode = true;
@@ -377,5 +441,6 @@ class Dialog extends MusicBeatState
             default:
                 //close();
         }
+        */
     }
 }

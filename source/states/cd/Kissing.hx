@@ -106,6 +106,7 @@ class Kissing extends MusicBeatState
 		scoreTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         scoreTxt.y = FlxG.height - scoreTxt.height;
 		scoreTxt.screenCenter(X);
+        scoreTxt.antialiasing = false;
 		add(scoreTxt);
 
         title = new FlxSprite().loadGraphic(Paths.image('minigame/title'));

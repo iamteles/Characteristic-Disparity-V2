@@ -65,7 +65,7 @@ class Ending extends MusicBeatState
 		tex.setFormat(Main.gFont, 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tex.screenCenter(X);
 		tex.borderSize = 2;
-		tex.skipKeys = [FlxKey.SPACE];
+		//tex.skipKeys = [FlxKey.SPACE];
         switch(SaveData.data.get("Text Speed")) {
             case "FAST":
                 tex.delay = 0.02;
@@ -93,7 +93,8 @@ class Ending extends MusicBeatState
             //    panel.alpha = FlxMath.lerp(panel.alpha, 0, elapsed*12);
         }
 
-        if((Controls.justPressed("ACCEPT")) && hasScrolled) {
+        if((Controls.justPressed("ACCEPT"))) {
+            if(hasScrolled) {
                 FlxG.sound.play(Paths.sound('dialog/skip'));
                 FlxTween.tween(tex, {alpha: 0}, 0.4, {
                     ease: FlxEase.sineInOut,
@@ -115,6 +116,9 @@ class Ending extends MusicBeatState
 
                     }
                 });
+            }
+            else
+                tex.skip();
         }
     }
 
