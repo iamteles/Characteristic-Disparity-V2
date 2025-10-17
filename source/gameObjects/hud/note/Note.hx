@@ -103,6 +103,23 @@ class Note extends FlxSprite
 				animation.addByPrefix('${direction}', colArray[noteData] + '0', 24, true);
 
 				animation.play('${direction}${typeName}');
+
+			case "fnfdon":
+				frames = Paths.getSparrowAtlas('notes/$assetModifier/notes');
+				noteSize = 0.85;
+
+				var typeName:String = (isHold ? (isHoldEnd ? " hold end" : " hold") : "");
+
+				// oxi
+				if(isHoldEnd)
+					animation.addByPrefix('${direction}${typeName}', 'note hold end0', 24, true);
+				else if(isHold)
+					animation.addByPrefix('${direction}${typeName}', 'note hold0', 24, true);
+				else
+					animation.addByPrefix('${direction}${typeName}', 'note ${direction}0', 24, true);
+
+				animation.play('${direction}${typeName}');
+
 			default:
 				switch(noteType)
 				{

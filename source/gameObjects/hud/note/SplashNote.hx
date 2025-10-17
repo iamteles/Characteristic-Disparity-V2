@@ -74,6 +74,9 @@ class SplashNote extends FlxSprite
 							case 'doido':
 								animation.addByPrefix('splash1', '$direction splash', 24, false);
 								animation.addByPrefix('splash2', '$direction splash', 24, false);
+							case "fnfdon":
+								animation.addByPrefix('splash1', 'splash 1', 24, false);
+								animation.addByPrefix('splash2', 'splash 2', 24, false);
 							case 'cd':
 								if(note.noteType == "beam")	{
 									animation.addByPrefix("splash1", 'THUNDER', 24, false);

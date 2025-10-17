@@ -63,7 +63,7 @@ class SaveData
 			"CD",
 			SELECTOR,
 			"Note Skins can be acquired in Watts' Shop!",
-			["CD", "Tails.EXE", "The Funk Shack", "Mirror Life Crisis", "Classic", "Pixel Classic", "YLYL Reloaded", "FITDON", "Doido"],
+			["CD", "Tails.EXE", "The Funk Shack", "Mirror Life Crisis", "Classic", "Pixel Classic", "YLYL Reloaded", "FITDON", "FNFDON", "Doido"],
 		],
 		"Ratings on HUD" => [
 			false,
@@ -262,6 +262,10 @@ class SaveData
 			false,
 			"secret"
 		],
+		"fnfdon" => [
+			false,
+			"secret"
+		],
 		"ylyl" => [
 			false,
 			"secret"
@@ -281,7 +285,7 @@ class SaveData
 	public static var saveFile:FlxSave;
 	public static var progressionFile:FlxSave;
 
-	public static var skinCodes:Array<String> = ["cd", "tails", "shack", "mlc", "base", "pixel", "ylyl", "fitdon", "doido"];
+	public static var skinCodes:Array<String> = ["cd", "tails", "shack", "mlc", "base", "pixel", "ylyl", "fitdon", "fnfdon", "doido"];
 	public static var menuBg:String = 'menu/main/bg';
 	public static function init()
 	{
@@ -380,6 +384,15 @@ class SaveData
 		}
 		else {
 			trace("not found fitdon");
+		}
+
+		if(findMod("save-data", "teles/EELDB"))
+		{
+			buyItem("fnfdon");
+			trace("found fnfdon");
+		}
+		else {
+			trace("not found fnfdon");
 		}
 
 		trace(percentage());
@@ -591,6 +604,7 @@ class SaveData
 			"gallery",
 			"bio",
 			"fitdon",
+			"fnfdon",
 			"ylyl"
 		];
 
