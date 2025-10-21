@@ -57,6 +57,7 @@ class Dialog extends MusicBeatState
     var dialogueActive:Bool = true;
 	var mutex:Mutex;
     var behind:FlxGroup;
+    var storyMode:Bool = true;
 
     var bg:FlxSprite;
     var box:FlxSprite;
@@ -81,6 +82,13 @@ class Dialog extends MusicBeatState
     var thirdpos:Int = 30;
 
     var clickSfx:FlxSound;
+
+    public function new(storyMode:Bool = true)
+    {
+        super();
+        this.storyMode = storyMode;
+    }
+
     override function create()
     {
         super.create();
@@ -122,6 +130,10 @@ class Dialog extends MusicBeatState
             thirdpos = 90;
             //introCenterAlpha = 0.6;
             boxName = "shack";
+        }
+        else if(dialog.endsWith("-old")) {
+            ypos = 60;
+            boxName = "retro";
         }
         else if(dialog == "sin")
             boxName = "bree";
@@ -239,13 +251,9 @@ class Dialog extends MusicBeatState
 
         pastLog = {lines: [], boxName:boxName};
 
-        //to-do: optimize lol
-        switch (log.finisher) {
-            case "song":
-                //close();
-            default:
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson(log.finisher, "normal");
+        if(storyMode) {
+            PlayState.isStoryMode = true;
+            PlayState.SONG = SongData.loadFromJson(log.finisher, "normal");
         }
 
         if(SaveData.data.get("Preload in Dialogue")) {
@@ -400,47 +408,5 @@ class Dialog extends MusicBeatState
 
         if(!SaveData.data.get("Preload in Dialogue"))
             Main.switchState(new LoadSongState());
-
-        //Main.switchState(new LoadSongState());
-        /*
-        switch (log.finisher) {
-            case "euphoria":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("euphoria", "normal");
-                Main.switchState(new LoadSongState());
-            case "nefarious":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("nefarious", "normal");
-                Main.switchState(new LoadSongState());
-            case "divergence":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("divergence", "normal");
-                Main.switchState(new LoadSongState());
-            case "allegro":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("allegro", "normal");
-                Main.switchState(new LoadSongState());
-            case "panic-attack":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("panic-attack", "normal");
-                Main.switchState(new LoadSongState());
-            case "convergence":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("convergence", "normal");
-                Main.switchState(new LoadSongState());
-            case "desertion":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("desertion", "normal");
-                Main.switchState(new LoadSongState());
-            case "sin":
-                PlayState.isStoryMode = true;
-                PlayState.SONG = SongData.loadFromJson("sin", "normal");
-                Main.switchState(new LoadSongState());
-            case "song":
-                Main.switchState(new LoadSongState());
-            default:
-                //close();
-        }
-        */
     }
 }

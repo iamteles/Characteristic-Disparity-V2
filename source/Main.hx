@@ -83,10 +83,15 @@ class Main extends Sprite
 		}
 	}
 
-	public static var possibleTitles:Array<Array<String>> = [
-		["main", "overTheHorizon"]
+	public static var curTitle:Array<String> = ["main", "overTheHorizon"];
+	public static var titles:Map<String, Array<String>> = [
+		"HORIZON" => ["main", "overTheHorizon", "free"],
+		"THUNDER" => ["bree", "overTheHorizonBree", "week2"],
+		"COUNTER" => ["watts", "shopkeeper", "shopentrance"],
+		"CLOUDS" => ["helica", "overTheHorizonHelica", "sin"],
+		"CLOUDS-OLD" => ["helica", "overTheHorizonHelica-old", "sin"],
+		"V1" => ["retro", "speaker", "free"],
 	];
-	public static var randomized:Int = 0;
 	
 	public static function setMouse(visibility:Bool = false)
 	{
@@ -95,26 +100,23 @@ class Main extends Sprite
 
 	public static function randomizeTitle()
 	{
-		var temp:Array<Array<String>> = [
-			["main", "overTheHorizon"]
-		];
+		if(SaveData.data.get("Menu Style") == "RANDOMIZE") {
+			var temp:Array<Array<String>> = [titles.get("HORIZON")];
 
-		if(SaveData.progression.get("week2")) {
-			temp.push(["bree", "overTheHorizonBree"]);
+			for(style in ["THUNDER", "COUNTER", "CLOUDS"])
+				if(titles.get(style)[2] == "free" || SaveData.progression.get(titles.get(style)[2]))
+					temp.push(titles.get(style));
+
+			curTitle = temp[FlxG.random.int(0, temp.length-1)];
 		}
-
-		if(SaveData.progression.get("shopentrance")) {
-			temp.push(["watts", "shopkeeper"]);
+		else {
+			var eyup:String = SaveData.data.get("Menu Style").toUpperCase();
+			trace(eyup);
+			if(titles.get(eyup)[2] == "free" || SaveData.progression.get(titles.get(eyup)[2]))
+				curTitle = titles.get(eyup);
+			else
+				curTitle = titles.get("HORIZON");
 		}
-
-		if(SaveData.songs.get("sin"))
-			temp.push(["helica", "overTheHorizonHelica"]); // celica
-
-		possibleTitles = temp;
-		randomized = FlxG.random.int(0, possibleTitles.length-1);
-
-		trace(randomized);
-		trace(Main.possibleTitles);
 	}
 
 	#if desktop

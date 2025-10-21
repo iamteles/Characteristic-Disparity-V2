@@ -1,0 +1,73 @@
+{
+    "characters": ["cute", "evil"],
+    "background": "retro",
+    "finisher": "euphoria-old",
+    "song": "freeplay",
+    "lines": [
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Hiiiiiiiiiii :D"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "..."
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "My name is Bella! :P"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "And you are?????? ;3"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "..."
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "why do you care"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "I wanna be your friend! :DD"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "go away"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Come on!!!! :B"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "We should rap battle! :P"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "ugh fine"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "but you leave me alone"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Yayyyyyyyyy :DDDDDDDDD"
+        }
+    ]
+}

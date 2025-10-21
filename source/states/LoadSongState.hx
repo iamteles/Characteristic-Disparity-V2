@@ -347,7 +347,7 @@ class LoadMusicPlayer extends MusicBeatState
 		var oldAnti:Bool = FlxSprite.defaultAntialiasing;
 		FlxSprite.defaultAntialiasing = false;
 
-		var songList = MusicPlayer.songs;
+		var songList = MusicPlayer.songs[1];
 		var percentageCalc = (1 - 0.2) / songList.length;
 
 		#if !html5

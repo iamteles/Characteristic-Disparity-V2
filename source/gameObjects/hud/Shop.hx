@@ -393,6 +393,7 @@ class ShopBuy extends FlxGroup
     var songGroup:ShopTab;
     var extrasGroup:ShopTab;
     var skinsGroup:ShopTab;
+    var label:FlxText;
 
     var tabPos:Array<Float>;
 
@@ -484,7 +485,15 @@ class ShopBuy extends FlxGroup
         extrasGroup = new ShopTab("extras", holder.x, holder.y);
 		add(extrasGroup);
 
+        label = new FlxText(880, 25, 0, "Press Y to change Tab");
+		label.setFormat(Main.gFont, 28, 0xFFFFFFFF, CENTER);
+		label.setBorderStyle(OUTLINE, 0xFF000000, 1.4);
+		add(label);
+
         curTab = songGroup;
+
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
 
     public static function scrollText(text:String, ?delay:Float = 0.05) {
@@ -512,6 +521,7 @@ class ShopBuy extends FlxGroup
         FlxTween.tween(icon, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(holder, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        FlxTween.tween(label, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
 
         for(i in tabs) {
             FlxTween.tween(i, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
@@ -523,10 +533,10 @@ class ShopBuy extends FlxGroup
     public function alphaTab(alpha:Float, time:Float) {
         for(i in curTab) {
             var alphaF = alpha;
-            FlxTween.tween(i, {alpha: (alphaF > 0.7 ? 0.7 : alphaF)}, time, {
+            FlxTween.tween(i, {alpha: (alphaF > 0.5 ? 0.5 : alphaF)}, time, {
                 ease: FlxEase.sineInOut, onComplete: function(twn:FlxTween)
                     {
-                        i.overAlpha = (alphaF >= 0.7 ? false : true);
+                        i.overAlpha = (alphaF >= 0.5 ? false : true);
                     }
                 });
         }
@@ -625,8 +635,8 @@ class ShopBuy extends FlxGroup
         }
         alphaTab(0.7, 0.4);
 
-        usingMouse = false;
-        Main.setMouse(false);
+        //usingMouse = false;
+        //Main.setMouse(false);
     }
 }
 
@@ -639,7 +649,7 @@ class ShopTab extends FlxTypedGroup<ShopItem>
             ["crown", "Golden Crown", 100],
             ["ticket", "Rave Ticket", 50],
             ["shack", "Hair Dye", 75],
-            //["time", "Time Machine", 50],
+            ["time", "Time Machine", 50],
         ],
         "skins" => [
             ["base", "Classic FNF", 15],
@@ -770,6 +780,9 @@ class ShopItem extends FlxGroup
                             //Main.switchState(new states.cd.MainMenu());
                         }
 
+                    }
+                    else if (info[0] != 'mic'){
+                        FlxG.sound.play(Paths.sound("menu/locked"));
                     }
 
                     if(info[0] == 'mic' && (SaveData.money >= info[2] || SaveData.shop.get(info[0]))) {

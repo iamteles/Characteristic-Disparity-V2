@@ -79,7 +79,7 @@ class Freeplay extends MusicBeatState
             songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
 
             songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
-            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra", SaveData.progression.get("vip"), "Unlocked by beating Week VIP"]);
+            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra", (SaveData.shop.get("time") || SaveData.progression.get("vip")), "Purchasable in Watts' Shop\nOR\nUnlocked by beating Week VIP"]);
             songs.push(["cupid", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("finished"), "Unlocked by beating everything else"]);
         }
 
@@ -178,6 +178,8 @@ class Freeplay extends MusicBeatState
 
         changeSelection();
     }
+
+    var old:Array<String> = ["euphoria", "nefarious", "divergence"];
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -218,44 +220,11 @@ class Freeplay extends MusicBeatState
         }
 
         if(Controls.justPressed("ACCEPT") && focused)
-        {
-            try
-            {
-                if(songs[curSelected][4]) {
-                    selected = true;
-                    var diff = CoolUtil.getDiffs()[curDiff];
-            
-                    //trace('$diff');
-                    //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
-                    
-                    PlayState.playList = [];
-                    PlayState.SONG = SongData.loadFromJson(songs[curSelected][0], diff);
-                    PlayState.isStoryMode = false;
-                    //CoolUtil.playMusic();
-                    
-                    PlayState.songDiff = diff;
+            go2Song(songs[curSelected]);
 
-                    switch(songs[curSelected][0]) {
-                        case "kaboom":
-                            openSubState(new CharacterSelect());
-                        case "cupid" | "ripple" | "customer-service":
-                            states.cd.Dialog.dialog = songs[curSelected][0];
-                            Main.switchState(new states.cd.Dialog());
-                        default:
-                            Main.switchState(new LoadSongState());
-                    }
-                }
-                else {
-                    FlxG.sound.play(Paths.sound('menu/locked'));
-                    FlxG.camera.shake(0.005, 0.1, null, true, XY);
-                }
-            }
-            catch(e)
-            {
-                FlxG.sound.play(Paths.sound('menu/back'));
-            }
-        }
-
+        if(old.contains(songs[curSelected][0]) && SaveData.shop.get("time") && Controls.justPressed("BOTPLAY"))
+            go2Song(songs[curSelected], "-old");
+        
         scores.text = "";
 
         if(songs[curSelected][4]) {
@@ -290,6 +259,46 @@ class Freeplay extends MusicBeatState
 
         fr.y = FlxMath.lerp(fr.y, 5, elapsed*6);
         shack.y = FlxMath.lerp(shack.y, 5, elapsed*6);
+    }
+
+    public function go2Song(song:Array<Dynamic>, suffix:String = "") {
+        try {
+            if(song[4]) {
+                selected = true;
+                var diff = CoolUtil.getDiffs()[curDiff];
+        
+                //trace('$diff');
+                //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
+                
+                PlayState.playList = [];
+                PlayState.SONG = SongData.loadFromJson(song[0] + suffix, diff);
+                PlayState.isStoryMode = false;
+                //CoolUtil.playMusic();
+                
+                PlayState.songDiff = diff;
+
+                switch(song[0]) {
+                    case "kaboom":
+                        openSubState(new CharacterSelect());
+                    case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
+                        if(SaveData.data.get("Dialogue in Freeplay")) {
+                            states.cd.Dialog.dialog = song[0] + suffix;
+                            Main.switchState(new states.cd.Dialog(false));
+                        }
+                        else
+                            Main.switchState(new LoadSongState());
+                    default:
+                        Main.switchState(new LoadSongState());
+                }
+            }
+            else {
+                FlxG.sound.play(Paths.sound('menu/locked'));
+                FlxG.camera.shake(0.005, 0.1, null, true, XY);
+            }
+        }
+        catch(e) {
+            FlxG.sound.play(Paths.sound('menu/back'));
+        }
     }
 
     public function changeCategory(change:Int = 0)

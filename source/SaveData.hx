@@ -175,6 +175,22 @@ class SaveData
 			true,
 			CHECKMARK,
 			"Lets the game load while reading dialogue, for a smoother experience."
+		],
+		"Dialogue in Freeplay" => [
+			true,
+			CHECKMARK,
+			"Whether the Freeplay features Dialogue."
+		],
+		"Menu Style" => [
+			"RANDOMIZE",
+			SELECTOR,
+			"What tile + music combo the menu uses. Defaults to HORIZON if you choose a locked style.",
+			["RANDOMIZE","HORIZON","THUNDER", "COUNTER", "CLOUDS", "CLOUDS-OLD", "V1"]
+		],
+		"Miss on Ghost Tap" => [
+			false,
+			CHECKMARK,
+			"Whether the character plays a miss animation when you ghost tap."
 		]
 	];
 
@@ -187,7 +203,8 @@ class SaveData
 		"vip" => false,
 		"oneofthem" => false,
 		"debug" => false,
-		"finished" => false
+		"finished" => false,
+		"beller" => false
 	];
 	public static var songs:Map<String, Dynamic> = [
 		"euphoria" => false,
@@ -386,7 +403,7 @@ class SaveData
 			trace("not found fitdon");
 		}
 
-		if(findMod("save-data", "teles/EELDB"))
+		if(findMod("settings", "teles/EELDB"))
 		{
 			buyItem("fnfdon");
 			trace("found fnfdon");

@@ -53,7 +53,10 @@ class MainMenu extends MusicBeatState
 
         Main.setMouse(false);
 
-        bg = new FlxSprite().loadGraphic(Paths.image(SaveData.menuBg));
+        var menuBg:String = SaveData.menuBg;
+        if(Main.curTitle[0] == "retro")
+            menuBg = 'menu/title/gradients/retro';
+        bg = new FlxSprite().loadGraphic(Paths.image(menuBg));
 		bg.updateHitbox();
 		bg.screenCenter();
 		add(bg);
@@ -151,6 +154,12 @@ class MainMenu extends MusicBeatState
 
         changeSelection();
 
+        if(SaveData.progression.get("intimidated") && !SaveData.progression.get("beller")) {
+            unlocks.push("Song: UM.");
+            SaveData.progression.set("beller", true);
+            SaveData.save();
+        }
+
         if(SaveData.cupidCheck() && !SaveData.progression.get("finished")) {
             unlocks.push("Song: Cupid (FREEPLAY)\nA special Subgame!");
             SaveData.progression.set("finished", true);
@@ -246,6 +255,7 @@ class MainMenu extends MusicBeatState
                                 case "freeplay":
                                     Main.switchState(new states.cd.Freeplay());
                                 case "gallery":
+                                    states.cd.Gallery.curCat = "main";
                                     Main.switchState(new states.cd.Gallery());
                                 case "bio":
                                     Main.switchState(new states.cd.Bios());

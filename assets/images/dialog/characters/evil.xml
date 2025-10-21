@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="evil girl talking.png">
+	<!-- Created with Adobe Animate version 23.0.0.407 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="evil talk0000" x="0" y="0" width="515" height="716" pivotX="0" pivotY="0" frameX="-10" frameY="0" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0001" x="0" y="0" width="515" height="716" frameX="-10" frameY="0" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0002" x="515" y="0" width="531" height="684" frameX="-2" frameY="-32" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0003" x="515" y="0" width="531" height="684" frameX="-2" frameY="-32" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0004" x="1046" y="0" width="535" height="666" frameX="0" frameY="-50" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0005" x="1046" y="0" width="535" height="666" frameX="0" frameY="-50" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0006" x="0" y="716" width="535" height="662" frameX="0" frameY="-54" frameWidth="535" frameHeight="716"/>
+	<SubTexture name="evil talk0007" x="0" y="716" width="535" height="662" frameX="0" frameY="-54" frameWidth="535" frameHeight="716"/>
+</TextureAtlas>

@@ -27,6 +27,13 @@ class CoolUtil
 			return (FlxG.mouse.getScreenPosition(cam).x > sprite.x && FlxG.mouse.getScreenPosition(cam).x < sprite.x + sprite.width && FlxG.mouse.getScreenPosition(cam).y > sprite.y && FlxG.mouse.getScreenPosition(cam).y < sprite.y + sprite.height);
 	}
 
+	inline public static function mouseOverlapWorld(sprite:flixel.FlxSprite, cam:FlxCamera, ?limit:FlxPoint):Bool {
+		if(limit != null)
+			return (FlxG.mouse.getWorldPosition(cam).x > sprite.x && FlxG.mouse.getWorldPosition(cam).x < limit.x && FlxG.mouse.getWorldPosition(cam).y > sprite.y && FlxG.mouse.getWorldPosition(cam).y < limit.y);
+		else
+			return (FlxG.mouse.getWorldPosition(cam).x > sprite.x && FlxG.mouse.getWorldPosition(cam).x < sprite.x + sprite.width && FlxG.mouse.getWorldPosition(cam).y > sprite.y && FlxG.mouse.getWorldPosition(cam).y < sprite.y + sprite.height);
+	}
+
 	public static function setNotePos(note:FlxSprite, target:FlxSprite, angle:Float, offsetX:Float, offsetY:Float)
 	{
 		note.x = target.x
@@ -192,7 +199,7 @@ class CoolUtil
 		}
 		else if(key == "MENU")
 		{
-			var song:String = Main.possibleTitles[Main.randomized][1];
+			var song:String = Main.curTitle[1];
 			Paths.dumpExclusions.push('music/' + song + '.ogg');
 
 			if(curMusic != song || force)

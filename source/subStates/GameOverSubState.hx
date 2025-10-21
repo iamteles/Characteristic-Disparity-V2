@@ -54,7 +54,7 @@ class GameOverSubState extends MusicBeatSubState
 		text.y -= 160;
 		add(text);
 	
-		if(char == "bex-2d")
+		if(char.startsWith("bex-2d"))
 			FlxG.sound.play(Paths.sound('death/duo_death'));
 		else if(Paths.fileExists('sounds/death/${CoolUtil.formatChar(char)}_death.ogg'))
 			FlxG.sound.play(Paths.sound('death/${CoolUtil.formatChar(char)}_death'));

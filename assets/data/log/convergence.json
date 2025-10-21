@@ -11,13 +11,13 @@
         },
         {
             "character": "left",
-            "frame": "smug",
+            "frame": "stun talk",
             "text": "Hey, where’d that confidence from earlier go?"
         },
         {
             "character": "left",
-            "frame": "stun talk",
-            "text": "I cut your arm by the way, right there!"
+            "frame": "smug",
+            "text": "Thought you'd be more of a challenge, but it appears I reign supreme yet again."
         },
         {
             "character": "right",
@@ -52,12 +52,12 @@
         {
             "character": "left",
             "frame": "stunned",
-            "text": "Long story short, I need you two to break up..."
+            "text": "Maybe I did, maybe i didnt."
         },
         {
             "character": "left",
             "frame": "smug",
-            "text": "and your sweetheart decided to go against my wishes, so..."
+            "text": "Would you like to find out?"
         },
         {
             "character": "right",
@@ -71,13 +71,28 @@
         },
         {
             "character": "left",
-            "frame": "annoyed",
-            "text": "Are you defying me as well?"
+            "frame": "stun talk",
+            "text": "Ooooh, blind confidence! Where have I seen THAT before!"
         },
         {
             "character": "center",
             "frame": "angry",
-            "text": "What I’m about to do is beat your ass for hurting my girlfriend."
+            "text": "Ooooh, an ass whopping! That's what im gonna give you."
+        },
+        {
+            "character": "left",
+            "frame": "stunned",
+            "text": "..."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "You're funny."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "Who the hell even talks like that."
         },
         {
             "character": "center",
@@ -86,8 +101,18 @@
         },
         {
             "character": "left",
+            "frame": "annoyed",
+            "text": "I sense a god's presence again..."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "This is what I was talking about. Humans shouldn't have this."
+        },
+        {
+            "character": "left",
             "frame": "smug",
-            "text": "Well then!"
+            "text": "No matter. I'll have you dealt with in no time."
         }
     ]
 }

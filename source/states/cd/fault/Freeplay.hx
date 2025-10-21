@@ -114,7 +114,7 @@ class Freeplay extends MusicBeatState
         scores.y = box.y + 64;
 		add(scores);
 
-        diff = new FlxText(0, 0, 0, "< FODASE >");
+        diff = new FlxText(0, 0, 0, "YOUR FAULT");
 		diff.setFormat(Main.gFont, 55, 0xFFFFFFFF, CENTER);
         diff.x = box.x + (box.width/2 - diff.width/2);
         diff.y = scores.y + 168;
@@ -129,7 +129,7 @@ class Freeplay extends MusicBeatState
 		add(arrows);
 
         changeSelection();
-        changeDiff();
+        //changeDiff();
 
         var vg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('vignette')); //like the???
 		vg.updateHitbox();
@@ -240,17 +240,6 @@ class Freeplay extends MusicBeatState
         if(bgTween != null) bgTween.cancel();
 		bgTween = FlxTween.color(bg, 0.4, bg.color, songs[curSelected][2]);
 
-        updateScoreCount();
-    }
-
-    public function changeDiff(change:Int = 0)
-    {
-        curDiff += change;
-        curDiff = FlxMath.wrap(curDiff, 0, CoolUtil.getDiffs().length - 1);
-
-        diff.text = CoolUtil.getDiffs()[curDiff].toUpperCase();
-        diff.x = box.x + (box.width/2 - diff.width/2);
-        
         updateScoreCount();
     }
 

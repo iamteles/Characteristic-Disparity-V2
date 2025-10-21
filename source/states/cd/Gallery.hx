@@ -43,12 +43,22 @@ class Gallery extends MusicBeatState
 	var descTextTwo:FlxText;
     var bg:FlxSprite;
 
-    var items:Array<Array<String>> = [
-        ["menu/gallery/fanart/" + "daiseydraws", "", "@daiseydraws on Instagram"],
-        ["menu/gallery/fanart/" + "sammy_jiru", "", "@sammy_jiru on Instagram"],
-        ["menu/gallery/fanart/" + "Pankiepoo", "", "@Pankiepoo on Twitter"],
-        ["menu/gallery/fanart/" + "Spamtune", "", "@thesound_crows (Spamtune) on Twitter"],
-        ["menu/gallery/fanart/" + "OOBO3310", "", "@OOBO3310 on Twitter"]
+	public static var curCat:String = "main";
+
+    var items:Map<String, Array<Array<String>>> = [
+		"main" => [
+			["menu/gallery/main/" + "fanart", "fanart", ""],
+			["menu/gallery/main/" + "concepts", "concepts", ""],
+			["menu/gallery/main/" + "videos", "videos", ""],
+			//["menu/gallery/main/" + "fanart", "fanart", ""],
+		],
+		"fanart" => [
+			["menu/gallery/fanart/" + "daiseydraws", "", "@daiseydraws on Instagram"],
+			["menu/gallery/fanart/" + "sammy_jiru", "", "@sammy_jiru on Instagram"],
+			["menu/gallery/fanart/" + "Pankiepoo", "", "@Pankiepoo on Twitter"],
+			["menu/gallery/fanart/" + "Spamtune", "", "@thesound_crows (Spamtune) on Twitter"],
+			["menu/gallery/fanart/" + "OOBO3310", "", "@OOBO3310 on Twitter"]
+		]
     ];
 	public override function create()
 	{
@@ -63,9 +73,9 @@ class Gallery extends MusicBeatState
 		bg.screenCenter();
 		add(bg);
 
-		for(i in 0...items.length)
+		for(i in 0...items.get(curCat).length)
 		{
-			var item:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image(items[i][0]));
+			var item:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image(items.get(curCat)[i][0]));
 			item.screenCenter(X);
 			item.screenCenter(Y);
 			menuItems.add(item);
@@ -105,6 +115,8 @@ class Gallery extends MusicBeatState
 		tipText.scrollFactor.set();
 		tipText.borderSize = 2;
 		add(tipText);*/
+		
+		changeItem(0);
 	}
 	public override function update(elapsed:Float)
 	{
@@ -121,30 +133,36 @@ class Gallery extends MusicBeatState
             Main.switchState(new states.cd.MainMenu());
         }
 
-		//dont even think about it
-		if (Controls.justPressed("BOTPLAY")) {
-			itemScale = 1;
-		}
-		
-		if (Controls.pressed("R_SPECIAL") && itemScale < 3) {
-			itemScale += elapsed * itemScale;
-			if(itemScale > 3) itemScale = 3;
-		}
-		if (Controls.pressed("L_SPECIAL") && itemScale > 0.1) {
-			itemScale -= elapsed * itemScale;
-			if(itemScale < 0.1) itemScale = 0.1;
+		if(curCat == "fanart") {
+			if (Controls.justPressed("BOTPLAY")) {
+				itemScale = 1;
+			}
+			
+			if (Controls.pressed("R_SPECIAL") && itemScale < 3) {
+				itemScale += elapsed * itemScale;
+				if(itemScale > 3) itemScale = 3;
+			}
+			if (Controls.pressed("L_SPECIAL") && itemScale > 0.1) {
+				itemScale -= elapsed * itemScale;
+				if(itemScale < 0.1) itemScale = 0.1;
+			}
+
+			if (Controls.justPressed("ACCEPT_SPECIAL"))
+			{
+				SaveData.menuBg = items.get(curCat)[curSelected][0];
+				SaveData.save();
+			}
+
+			if (Controls.justPressed("RESET_SPECIAL"))
+			{
+				SaveData.menuBg = 'menu/main/bg';
+				SaveData.save();
+			}
 		}
 
-		if (Controls.justPressed("ACCEPT_SPECIAL"))
-		{
-			SaveData.menuBg = items[curSelected][0];
-			SaveData.save();
-		}
-
-		if (Controls.justPressed("RESET_SPECIAL"))
-		{
-			SaveData.menuBg = 'menu/main/bg';
-			SaveData.save();
+		if(Controls.justPressed("ACCEPT") && curCat == "main") {
+			curCat = items.get(curCat)[curSelected][1];
+			Main.switchState();
 		}
 
 		menuItems.forEach(function(item:FlxSprite)
@@ -160,16 +178,15 @@ class Gallery extends MusicBeatState
 				item.visible = false;
 			}
 		});
-
-		descText.text = items[curSelected][1];
-		descTextTwo.text = items[curSelected][2];
 	}
 	function changeItem(val:Int = 0)
 	{
 		curSelected += val;
-        curSelected = FlxMath.wrap(curSelected, 0, items.length - 1);
+        curSelected = FlxMath.wrap(curSelected, 0, items.get(curCat).length - 1);
 
         if(val != 0)
             FlxG.sound.play(Paths.sound("menu/scroll"));
+
+		descTextTwo.text = items.get(curCat)[curSelected][2];
 	}
 }

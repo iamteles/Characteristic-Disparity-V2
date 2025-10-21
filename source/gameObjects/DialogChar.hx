@@ -112,6 +112,20 @@ class DialogChar extends FlxSprite
 				playAnim("neutral");
 
 				name = "Bree";
+		
+			case "cute":
+				frames = Paths.getSparrowAtlas("dialog/characters/cute");
+				animation.addByPrefix('neutral', 'cute talk0007', 10, true);
+				playAnim("neutral");
+				scale.set(0.65,0.65);
+				name = "Bella";
+
+			case "evil":
+				frames = Paths.getSparrowAtlas("dialog/characters/evil");
+				animation.addByPrefix('neutral', 'evil talk0007', 10, true);
+				playAnim("neutral");
+				scale.set(0.65,0.65);
+				name = "Bex";
 
 			case "drown":
 				frames = Paths.getSparrowAtlas("dialog/characters/shack");

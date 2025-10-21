@@ -33,16 +33,18 @@ class OptionsState extends MusicBeatState
 			"Downscroll",
 			"Hitsounds",
 			//"Preload Songs", // very misleading i guess so its getting axed
-			"Preload in Dialogue",
 			"Taiko Style",
 			"Middlescroll Style",
+			"Preload in Dialogue",
+			"Dialogue in Freeplay",
 		],
 		"appearance" => [
 			"Skin",
-			//"Song Timer",
 			"Note Splashes",
+			"Menu Style",
+			//"Song Timer",
 			//"Smooth Healthbar",
-			"Shaders",
+			"Miss on Ghost Tap",
 			"Cutscenes",
 			"FPS Cap",
 			"Resolution",
@@ -51,6 +53,7 @@ class OptionsState extends MusicBeatState
 			"Flashing Lights",
 			"FPS Counter",
 			"Antialiasing",
+			"Shaders",
 			"Low Quality",
 			"Text Speed",
 			"Discord RPC"
@@ -132,9 +135,10 @@ class OptionsState extends MusicBeatState
 		notes.animation.add("doido", [6], 0, false);
 		notes.animation.add("ylyl", [7], 0, false);
 		notes.animation.add("fitdon", [8], 0, false);
+		notes.animation.add("fnfdon", [9], 0, false);
 		notes.animation.play(SaveData.skin());
 		notes.screenCenter(X);
-		notes.y += 4;
+		notes.y -= 4;
 		add(notes);
 
 		grpTexts = new FlxTypedGroup<FlxText>();
@@ -151,7 +155,7 @@ class OptionsState extends MusicBeatState
 		infoTxt.antialiasing = false;
 		add(infoTxt);
 
-		verTxt = new FlxText(0,0,0,'Characteristic Disparity V2.0.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press R / X to reset your save data.');
+		verTxt = new FlxText(0,0,0,'Characteristic Disparity v2.5.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press X to reset your save data.');
 		verTxt.setFormat(Main.dsFont, 28, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;
@@ -539,6 +543,8 @@ class OptionsState extends MusicBeatState
 
 					if(selector.label == "Resolution")
 						SaveData.updateWindowSize();
+					else if(selector.label == "Menu Style")
+						Main.randomizeTitle();
 				}
 
 				if(Controls.pressed("UI_LEFT"))

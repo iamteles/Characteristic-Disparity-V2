@@ -161,7 +161,15 @@ class PlayState extends MusicBeatState
 		Timings.init();
 		SplashNote.resetStatics();
 
-		assetModifier = SaveData.skin();
+		if(SONG != null) {
+			if(SONG.song.endsWith("-old") || SONG.song.toLowerCase() == "exotic")
+				assetModifier = "base";
+			else
+				assetModifier = SaveData.skin();
+		}
+		else
+			assetModifier = SaveData.skin();
+
 		if(SONG == null) return;
 	}
 
@@ -348,7 +356,7 @@ class PlayState extends MusicBeatState
 				bellaPop.cameras = [camOther];
 				add(bellaPop);
 			}
-			else if(daSong == 'divergence') {
+			else if(daSong == 'divergence' || daSong == 'divergence-old') {
 				divTxt = new FlxSprite().loadGraphic(Paths.image("hud/base/divergence"));
 				divTxt.screenCenter();
 				divTxt.cameras = [camHUD];
@@ -442,14 +450,12 @@ class PlayState extends MusicBeatState
 		songLogo.visible = logoExists;
 		add(songLogo);
 
-		
 		if(!SaveData.data.get("Low Quality")) {
 			vgblack = new FlxSprite().loadGraphic(Paths.image("vignette"));
 			vgblack.alpha = 0;
 			vgblack.cameras = [camOther];
 			add(vgblack);
 		}
-
 
 		countdown = new Countdown();
 		countdown.cameras = [camOther];
@@ -463,7 +469,7 @@ class PlayState extends MusicBeatState
 		barUp.cameras = [camVg];
 		barDown.cameras = [camVg];
 
-		var barsByDefault = ['allegro', 'euphoria', 'nefarious', 'divergence', "intimidate", "exotic", "ripple", 'euphoria-vip', 'nefarious-vip', 'divergence-vip', "customer-service", 'cupid'];
+		var barsByDefault = ['allegro', 'euphoria', 'nefarious', 'divergence', "intimidate", "exotic", "ripple", 'euphoria-vip', 'nefarious-vip', 'divergence-vip', "customer-service", 'cupid', 'euphoria-old', 'nefarious-old', 'divergence-old'];
 		if(barsByDefault.contains(daSong)) {
 			barUp.y = 0-55;
 			barDown.y = FlxG.height - barDown.height+55;
@@ -499,7 +505,7 @@ class PlayState extends MusicBeatState
 			noteColors = [boyfriend.noteColor, dad.noteColor];
 
 		var positions:Array<Float> = [strumPos[0] - strumPos[1], strumPos[0] + strumPos[1]];
-		if(daSong == "divergence" || daSong == "euphoria-vip" || daSong == "cupid")
+		if(daSong == "divergence" || daSong == "divergence-old" || daSong == "euphoria-vip" || daSong == "cupid")
 			positions = [strumPos[0] + strumPos[1], strumPos[0] - strumPos[1]];
 		
 		dadStrumline = new Strumline(positions[0], (isSwapped ? boyfriend : dad), downscroll, invertedCharacters, !invertedCharacters, assetModifier);
@@ -517,7 +523,7 @@ class PlayState extends MusicBeatState
 		var you:FlxSprite = new FlxSprite().loadGraphic(Paths.image("hud/base/you" + isit));
 		you.scale.set(0.35, 0.35);
 		you.updateHitbox();
-		if((isSwapped || invertedCharacters) && (daSong != "divergence" && daSong != "euphoria-vip" && daSong != "cupid"))
+		if(((isSwapped || invertedCharacters) && (daSong != "divergence" && daSong != "euphoria-vip" && daSong != "cupid")) || daSong == "nefarious-old")
 			you.x = dadStrumline.x - (you.width/2);
 		else
 			you.x = bfStrumline.x - (you.width/2);
@@ -530,7 +536,7 @@ class PlayState extends MusicBeatState
 		you.cameras = [camStrum];
 		add(you);
 
-		if(daSong == "nefarious-vip" || daSong == "nefarious" || daSong == "kaboom" || daSong == "cupid") {
+		if(daSong == "nefarious-vip" || daSong == "nefarious" || daSong == "nefarious-old" || daSong == "kaboom" || daSong == "cupid") {
 			FlxTween.tween(you, {alpha: 1}, 0.6, {
 				ease: FlxEase.cubeOut,
 				startDelay: 0.8,
@@ -544,7 +550,7 @@ class PlayState extends MusicBeatState
 			});
 		}
 
-		if(daSong == "euphoria-vip" || daSong == "divergence") {
+		if(daSong == "euphoria-vip" || daSong == "divergence" || daSong == "divergence-old") {
 			FlxTween.tween(you, {alpha: 1}, 0.6, {
 				ease: FlxEase.cubeOut,
 				startDelay: 0.5,
@@ -602,7 +608,7 @@ class PlayState extends MusicBeatState
 			camStrum.setFilters([new openfl.filters.ShaderFilter(cast guitar.shader)]);
 			*/
 		}
-		else if(daSong == 'divergence' || daSong == 'euphoria-vip' || daSong == 'cupid') {
+		else if(daSong == 'divergence' || daSong == 'euphoria-vip' || daSong == 'cupid' || daSong == 'divergence-old') {
 
 			for (thing in dadStrumline.strumGroup) {
 				thing.alpha = 0.5;
@@ -939,7 +945,7 @@ class PlayState extends MusicBeatState
 				zoomInOpp = true;
 				zoomOppVal = -0.2;
 
-			case "divergence":
+			case "divergence" | "divergence-old":
 				if(!SaveData.data.get("Low Quality")) {
 					camHUD.alpha = 0;
 					camStrum.alpha = 0;
@@ -1023,7 +1029,6 @@ class PlayState extends MusicBeatState
 				if(!SaveData.data.get("Low Quality")) {
 					FlxG.camera.fade(0xFF000000, 0.01, false);
 				}
-
 		}
 
 		
@@ -1089,7 +1094,7 @@ class PlayState extends MusicBeatState
 			{
 				Conductor.songPos = -Conductor.crochet * (4 - daCount);
 	
-				if(daCount == 1 && (daSong == "nefarious")) {
+				if(daCount == 1 && (daSong == "nefarious" || daSong == "nefarious-old")) {
 					noteSwap(false);
 				}
 	
@@ -1275,7 +1280,7 @@ class PlayState extends MusicBeatState
 		
 		if(note.mustMiss) return;
 
-		thisStrum.playAnim("confirm");
+		thisStrum.playAnim("confirm", true);
 
 		// when the player hits notes
 		vocals.volume = 1;
@@ -1446,7 +1451,7 @@ class PlayState extends MusicBeatState
 			singLogged = singList.contains(thisChar.animation.curAnim.name);
 		
 		vocals.volume = 1;
-		thisStrum.playAnim("confirm");
+		thisStrum.playAnim("confirm", true);
 		
 		// DIE!!!
 		if(note.mustMiss)
@@ -1918,7 +1923,7 @@ class PlayState extends MusicBeatState
 								if(!songHasTaiko) {
 									var songsThatAreFuckedUp:Array<String> = ["panic-attack", "cupid"];
 
-									if(!songsThatAreFuckedUp.contains(daSong)) {
+									if(!songsThatAreFuckedUp.contains(daSong) && SaveData.data.get("Miss on Ghost Tap")) {
 										var thisChar = strumline.character;
 										if(thisChar != null)
 										{
@@ -2244,8 +2249,10 @@ class PlayState extends MusicBeatState
 			camFollow.x += offsetX;
 			camFollow.y += offsetY;
 	
-			camFollow.x += camDisplaceX;
-			camFollow.y += camDisplaceY;
+			if(!daSong.endsWith("-old")) {
+				camFollow.x += camDisplaceX;
+				camFollow.y += camDisplaceY;
+			}
 		}
 	}
 
@@ -3032,7 +3039,7 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(camHUD, {alpha: 0}, 3, {ease: FlxEase.expoOut});
 							FlxTween.tween(camStrum, {alpha: 0}, 3, {ease: FlxEase.expoOut});
 					}
-				case 'divergence':
+				case 'divergence' | 'divergence-old':
 					switch(curStep) {
 						case 1:
 							CoolUtil.flash(camTaiko, 20);
@@ -3102,8 +3109,10 @@ class PlayState extends MusicBeatState
 						case 1472:
 							FlxG.camera.fade(0x00000000, 0.001, true);
 							CoolUtil.flash(camOther, 1);
-							if(SaveData.data.get("Shaders"))FlxG.camera.setFilters([echo]);
-							changeChar(dad, "bella-1alt");
+							if(daSong != "divergence-old") {
+								if(SaveData.data.get("Shaders"))FlxG.camera.setFilters([echo]);
+								changeChar(dad, "bella-1alt");
+							}
 							beatSpeed = 2;
 						case 1600:
 							CoolUtil.flash(camOther, 1);
@@ -3115,7 +3124,7 @@ class PlayState extends MusicBeatState
 						case 1728:
 							defaultCamZoom = 0.7;
 							beatSpeed = 1;
-							if(SaveData.data.get("Shaders"))FlxG.camera.setFilters([]);
+							if(SaveData.data.get("Shaders") && daSong != "divergence-old")FlxG.camera.setFilters([]);
 							CoolUtil.flash(camOther, 1);
 						case 2240:
 							defaultCamZoom = 0.6;
@@ -3125,7 +3134,7 @@ class PlayState extends MusicBeatState
 						case 2635:
 							FlxG.camera.fade(0x00000000, 0.33, false);
 					}
-				case 'nefarious':
+				case 'nefarious' | 'nefarious-old':
 					switch(curStep) {
 						case 64:
 							defaultCamZoom = 0.65;
@@ -3160,7 +3169,8 @@ class PlayState extends MusicBeatState
 							CoolUtil.flash(camOther);
 							defaultCamZoom = 0.7;
 							beatSpeed = 1;
-							changeChar(boyfriend, "bex-1alt");
+							if(daSong != "nefarious-old")
+								changeChar(boyfriend, "bex-1alt");
 							for (strum in strumlines)
 								FlxTween.tween(strum, {scrollSpeed: 3.3}, 0.4, {ease: FlxEase.linear});
 						case 1696:
@@ -3169,7 +3179,7 @@ class PlayState extends MusicBeatState
 							beatSpeed = 4;
 							focusMiddle = true;
 					}
-				case 'euphoria':
+				case 'euphoria' | 'euphoria-old':
 					switch (curStep) {
 						case 2:
 							defaultCamZoom = 0.65;

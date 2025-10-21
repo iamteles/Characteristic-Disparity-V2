@@ -42,17 +42,27 @@ class TitleScreen extends MusicBeatState
             fromIntro = false;
         }
 
-        bg = new FlxSprite().loadGraphic(Paths.image('menu/title/gradients/' + Main.possibleTitles[Main.randomized][0]));
+        bg = new FlxSprite().loadGraphic(Paths.image('menu/title/gradients/' + Main.curTitle[0]));
 		bg.updateHitbox();
 		bg.screenCenter();
 		add(bg);
         
-		tiles = new FlxBackdrop(Paths.image('menu/title/tiles/' + Main.possibleTitles[Main.randomized][0]), XY, 0, 0);
+        var tile:String = Main.curTitle[0];
+        var tileAlpha:Float = 1;
+        if(tile == "retro") {
+            tile = "main";
+            tileAlpha = 0;
+        }
+		tiles = new FlxBackdrop(Paths.image('menu/title/tiles/' + tile), XY, 0, 0);
         tiles.velocity.set(40,40);
         tiles.screenCenter();
+        tiles.alpha = tileAlpha;
         add(tiles);
 
-        logo = new FlxSprite(204.05, 46.7).loadGraphic(Paths.image('menu/title/logo'));
+        var logoName:String = "";
+        if(Main.curTitle[0] == "retro")
+            logoName = "-retro";
+        logo = new FlxSprite(204.05, 46.7).loadGraphic(Paths.image('menu/title/logo' + logoName));
         logo.screenCenter(X);
         var storeY:Float = logo.y;
 		logo.y -= 20;

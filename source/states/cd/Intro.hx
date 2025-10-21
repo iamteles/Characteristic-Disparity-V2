@@ -158,8 +158,8 @@ class IntroLoading extends MusicBeatState
 			mutex.acquire();
 			#end
 
-			Paths.preloadGraphic('menu/title/gradients/' + Main.possibleTitles[Main.randomized][0]);
-			Paths.preloadGraphic('menu/title/tiles/' + Main.possibleTitles[Main.randomized][0]);
+			Paths.preloadGraphic('menu/title/gradients/' + Main.curTitle[0]);
+			Paths.preloadGraphic('menu/title/tiles/' + Main.curTitle[0]);
 			Paths.preloadGraphic('menu/title/logo');
 			//Paths.preloadSound("intro/end");
 			Paths.preloadGraphic("menu/intros/flixel");
