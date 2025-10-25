@@ -28,6 +28,7 @@ class Swat extends MusicBeatState
     var cooldownTimer:FlxTimer;
     override function create() {
         super.create();
+        CoolUtil.playMusic("kiss");
 
         playerHealth = 5;
         swatted = 0;
@@ -65,6 +66,7 @@ class Swat extends MusicBeatState
             Main.switchState();
 
         if(FlxG.mouse.justPressed && !cooldown) {
+            var playedSound:Bool = false;
             for(fly in flies) {
                 if(CoolUtil.mouseOverlap(fly, FlxG.camera) && !fly.swatted) {
                     fly.swat();
@@ -74,8 +76,16 @@ class Swat extends MusicBeatState
                         });
                     }
                     swatted++;
+
+                    if(!playedSound) {
+                        FlxG.sound.play(Paths.sound('thunder-loud'));
+                        playedSound = true;
+                    }
                 }
             }
+
+            if(!playedSound)
+                FlxG.sound.play(Paths.sound('botplayOff'));
             
             cooldown = true;
             if(cooldownTimer.active)
@@ -139,7 +149,7 @@ class Swat extends MusicBeatState
     }
 
     public static function sizeRoll(type:Int = 1) {
-        if(diff < 3 && type == 3)
+        if(diff < 3 || type == 3)
             return 1;
         else if(type == 4)
             return 3;
@@ -168,7 +178,7 @@ class Swat extends MusicBeatState
 
     public static function typeRoll() {
         if(diff < 2)
-            return 2;
+            return 1;
         else {
             var roll:Int = FlxG.random.int(1,100);
             var rangeHelica:Int = 101;
@@ -226,7 +236,7 @@ class Fly extends FlxSprite
 	{
 		super.update(elapsed);
 
-        if(!cooldown) {
+        /*if(!cooldown) {
             if(type == 2) {
                 if(CoolUtil.mouseOverlap(this, FlxG.camera) && !swatted) {
                     startFly(false, true);
@@ -247,7 +257,7 @@ class Fly extends FlxSprite
                     cooldown = false;
                 });
             }
-        }
+        }*/
     }
 
     public var flyTween:FlxTween;

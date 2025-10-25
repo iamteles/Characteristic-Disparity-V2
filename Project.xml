@@ -38,6 +38,7 @@
 	<!-- _____________________________ Custom Defines ___________________________ -->
 
 	<define name="DISCORD_RPC" if="cpp" unless="mobile" />
+	<define name="HXVLC_NO_SHARE_DIRECTORY" if="desktop || android" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 

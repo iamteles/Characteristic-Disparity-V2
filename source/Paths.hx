@@ -92,7 +92,9 @@ class Paths
 			if (openfl.Assets.cache.hasBitmapData(key)) 
 				openfl.Assets.cache.removeBitmapData(key);
 			
+			#if (flixel < "6.0.0")
 			graphic.dump();
+			#end
 			graphic.destroy();
 			FlxG.bitmap.remove(graphic);
 			renderedGraphics.remove(key);

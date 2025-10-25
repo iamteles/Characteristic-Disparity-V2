@@ -1175,7 +1175,9 @@ class ChartingState extends MusicBeatState
 
 	function updateInfoTxt()
 	{
+		#if (flixel < "6.0.0")
 		infoTxt.graphic.dump();
+		#end
 		infoTxt.text = ""
 		+ "Time: " + Std.string(Math.floor(Conductor.songPos / 1000 * 100) / 100)
 		+ " // "   + Std.string(Math.floor(songLength		 / 1000 * 100) / 100)
