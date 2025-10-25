@@ -28,7 +28,7 @@ class Credits extends MusicBeatState
 
 	static var curSelected:Int = 0;
     var list:Array<Array<String>> = [
-        ["Coco Puffs", "coco", "@file_corruption", "Artist\nComposer\nCharter", "Eat the brown part of this banana.", "https://twitter.com/file_corruption"],
+        ["mochoco", "coco", "@mochocofrappe", "Artist\nComposer\nCharter", "Eat the brown part of this banana.", "https://twitter.com/mochocofrappe"],
         ["teles", "starry", "@telesfnf", "Coder\nComposer", "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
         ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://twitter.com/CharaWhyy"],
         ["DiamondDiglett", "diamond", "@DiamonDiglett42", "Charter", "Do you ever just sit back", "https://twitter.com/DiamonDiglett42"],
@@ -38,6 +38,7 @@ class Credits extends MusicBeatState
         ["Linguini", "linguini", "@linguini7294", "Animation Helper", "make baby daisy meta again mario kart eight", "https://www.youtube.com/@linguini7294"],
         ["PastelDalilah", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
         ["FiveKimz", "kim", "@FiveKimz", "Charter", "hej", "https://twitter.com/FiveKimz"],
+        ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
         ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
         ["Special Thanks", "special", "Lots'a people!", "Special Thanks", "Press ACCEPT to read Special Thanks!", "SPECIALTHANKS"],
     ];

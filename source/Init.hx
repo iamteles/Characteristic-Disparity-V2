@@ -33,6 +33,8 @@ class Init extends MusicBeatState
 		Main.randomizeTitle();
 
 		Main.skipTrans = true;
+		//Main.switchState(new Swat());
+		
 		if(SaveData.progression.get("firstboot"))
 			Main.switchState(new Intro.IntroLoading());
 		else
