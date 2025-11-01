@@ -81,6 +81,7 @@ class MusicPlayer extends MusicBeatState
     var vocalsMuted:Bool = false;
 
     var clouds:FlxSprite;
+    var cloudsL:FlxSprite;
     var frame:FlxSprite;
     var frameL:FlxSprite;
     var arrow:FlxSprite;
@@ -96,6 +97,7 @@ class MusicPlayer extends MusicBeatState
 
     var timeBar:FlxBar;
     var icon:FlxSprite;
+    var iconL:FlxSprite;
     var timeTxt:FlxText;
 
     var songName:FlxText;
@@ -137,6 +139,12 @@ class MusicPlayer extends MusicBeatState
         clouds.y = -2.55;
 		add(clouds);
 
+        cloudsL = new FlxSprite().loadGraphic(Paths.image('menu/music/sky-pink'));
+        cloudsL.x = -5.2;
+        cloudsL.y = -2.55;
+        cloudsL.alpha = 0;
+		add(cloudsL);
+
         holders = new FlxTypedGroup<FlxSprite>();
 		add(holders);
 
@@ -171,7 +179,7 @@ class MusicPlayer extends MusicBeatState
             if(i <= 8)
                 num = "0" + num;
 
-            var holder = new FlxSprite().loadGraphic(Paths.image('menu/music/song'));
+            var holder = new FlxSprite().loadGraphic(Paths.image('menu/music/song-pink'));
             holder.x = -holder.width - 65;
             holder.y = 143.25 + ((i-curSelected)*holder.height);
             holder.ID = i;
@@ -192,7 +200,7 @@ class MusicPlayer extends MusicBeatState
         frame.y = -3.8;
 		add(frame);
 
-        frameL = new FlxSprite().loadGraphic(Paths.image('menu/music/list-overlay'));
+        frameL = new FlxSprite().loadGraphic(Paths.image('menu/music/list-overlay-pink'));
         frameL.flipX = true;
         frameL.x = -frameL.width;
         frameL.y = -3.8;
@@ -203,7 +211,7 @@ class MusicPlayer extends MusicBeatState
         arrow.y = 149.7;
 		add(arrow);
 
-        arrowL = new FlxSprite().loadGraphic(Paths.image('menu/music/arrow'));
+        arrowL = new FlxSprite().loadGraphic(Paths.image('menu/music/arrow-pink'));
         //arrowL.flipX = true;
         arrowL.x = -93;
         arrowL.y = 149.7;
@@ -214,8 +222,10 @@ class MusicPlayer extends MusicBeatState
 
         pause = new FlxSprite();
         pause.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        pause.animation.addByPrefix('pause',  'play button', 24, true);
-        pause.animation.addByPrefix('play',  'pause button', 24, true);
+        pause.animation.addByPrefix('pause',  'play0', 24, true);
+        pause.animation.addByPrefix('play',  'pause0', 24, true);
+        pause.animation.addByPrefix('pause-pink',  'play-pink', 24, true);
+        pause.animation.addByPrefix('play-pink',  'pause-pink', 24, true);
         pause.animation.play('pause');
         pause.x = 57.7 + what + 5;//290.05;
         pause.y = where;
@@ -224,7 +234,8 @@ class MusicPlayer extends MusicBeatState
 
         skipB = new FlxSprite();
         skipB.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        skipB.animation.addByPrefix('idle',  'last track', 24, true);
+        skipB.animation.addByPrefix('idle',  'last0', 24, true);
+        skipB.animation.addByPrefix('idle-pink',  'last-pink', 24, true);
         skipB.animation.play('idle');
         skipB.x = 57.7;
         skipB.y = where;
@@ -233,7 +244,8 @@ class MusicPlayer extends MusicBeatState
 
         skipF = new FlxSprite();
         skipF.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        skipF.animation.addByPrefix('idle',  'next track', 24, true);
+        skipF.animation.addByPrefix('idle',  'next0', 24, true);
+        skipF.animation.addByPrefix('idle-pink',  'next-pink', 24, true);
         skipF.animation.play('idle');
         skipF.x = 57.7 + (what*2) + 7;//512.65;
         skipF.y = where;
@@ -242,7 +254,8 @@ class MusicPlayer extends MusicBeatState
 
         loop = new FlxSprite();
         loop.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        loop.animation.addByPrefix('idle',  'Loop0000', 24, true);
+        loop.animation.addByPrefix('idle',  'loop0', 24, true);
+        loop.animation.addByPrefix('idle-pink',  'loop-pink', 24, true);
         loop.animation.play('idle');
         loop.x = 512.65 + 5;//293.1;
         loop.y = where;
@@ -270,13 +283,18 @@ class MusicPlayer extends MusicBeatState
 			482,
 			13.5
 		);
-		timeBar.createFilledBar(0xFFFFFFFF, 0xFF3B4877);
+		timeBar.createFilledBar(0xFFFFFFFF, 0xFF3B4877); //0xFF773B5C
 		timeBar.updateBar();
         add(timeBar);
 
         icon = new FlxSprite().loadGraphic(Paths.image('menu/music/cursor'));
         icon.y = 520.4 + 8;
 		add(icon);
+
+        iconL = new FlxSprite().loadGraphic(Paths.image('menu/music/cursor-pink'));
+        iconL.y = 520.4 + 8;
+        iconL.alpha = 0;
+		add(iconL);
 
         timeTxt = new FlxText(0,0,0,"0:00 / 0:00");
         timeTxt.setFormat(Main.gFont, 30, 0xFF3B4877, CENTER);
@@ -335,6 +353,7 @@ class MusicPlayer extends MusicBeatState
         super.update(elapsed);
 
         camGame.followLerp = elapsed * 6;
+        cloudsL.alpha = FlxMath.lerp(cloudsL.alpha, vol, elapsed*6);
         
         if(Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) {
             if(vol == 0)
@@ -346,6 +365,18 @@ class MusicPlayer extends MusicBeatState
             vol2.alpha = vol;
 
             playSong(false);
+
+            icon.alpha = 1-vol;
+            iconL.alpha = vol;
+
+            skipB.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+            skipF.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+            loop.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+
+            timeBar.createFilledBar(0xFFFFFFFF, (vol == 0 ? 0xFF3B4877 : 0xFF773B5C)); //
+            timeTxt.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
+            songName.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
+            songComposer.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
 
             camFollow.setPosition((!(vol == 1) ? (FlxG.width/2) : (FlxG.width/2) - 581), FlxG.height/2);
             curSelected = 0;
@@ -386,6 +417,7 @@ class MusicPlayer extends MusicBeatState
 
         formatTime = ((Conductor.songPos / songLength));
         icon.x = (timeBar.x + (timeBar.width * (formatTime))) - (icon.width/2);
+        iconL.x = (timeBar.x + (timeBar.width * (formatTime))) - (iconL.width/2);
         timeBar.percent = formatTime*100;
         updateTimeTxt();
 
@@ -488,9 +520,9 @@ class MusicPlayer extends MusicBeatState
         else
             playing = !playing;
         if(playing)
-            pause.animation.play('play');
+            pause.animation.play('play' + (vol == 0 ? "" : '-pink'));
         else
-            pause.animation.play('pause');
+            pause.animation.play('pause' + (vol == 0 ? "" : '-pink'));
     }
 
 	function reloadAudio()

@@ -27,8 +27,8 @@ class Freeplay extends MusicBeatState
     ];
     var oldSongs:Array<Array<Dynamic>> = [
         // default
-        ["euphoria-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
-        ["nefarious-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
+        ["euphoria-old", "cute", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
+        ["nefarious-old", "evil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
         ["divergence-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
         //["desertion-sc", "bree-angry", 0xFFFF0000, "CDv2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]
     ];
@@ -137,8 +137,10 @@ class Freeplay extends MusicBeatState
                 char.color = 0xFF000000;
             characters.add(char);
 
-            if(charN == "cutenevil" || charN == "duo" || charN == "bellavip" || charN == "duovip")
+            if(charN == "cute" || charN == "evil" || charN == "duo" || charN == "bellavip" || charN == "duovip")
                 char.offset.set(50,0);
+            else if(charN == "cutenevil")
+                char.offset.set(100,0);
             else if(charN == "bex" || charN == "bex-scared")
                 char.offset.set(-50,0);
             else if(charN == "spicy-v2")
@@ -299,7 +301,7 @@ class Freeplay extends MusicBeatState
                     case "kaboom":
                         openSubState(new CharacterSelect());
                     case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "euphoria-old" | "nefarious-old" | "divergence-old" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
-                        if(SaveData.data.get("Dialogue in Freeplay")) {
+                        if(SaveData.data.get("Dialogue in Freeplay") == "ON" || (SaveData.data.get("Dialogue in Freeplay") == "UNSEEN" && !SaveData.songs.get(song[0]))) {
                             states.cd.Dialog.dialog = song[0];
                             Main.switchState(new states.cd.Dialog(false));
                         }

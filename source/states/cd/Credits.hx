@@ -28,15 +28,15 @@ class Credits extends MusicBeatState
 
 	static var curSelected:Int = 0;
     var list:Array<Array<String>> = [
-        ["mochoco", "coco", "@mochocofrappe", "Artist\nComposer\nCharter", "Eat the brown part of this banana.", "https://twitter.com/mochocofrappe"],
-        ["teles", "nest", "@telesfnf", "Coder\nComposer", "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
-        ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://twitter.com/CharaWhyy"],
+        ["mochoco", "coco", "@mochocofrappe", "Artist\nComposer\nCharter", "LIGHT PUNCH, MEDIUM PUNCH, LIGHT KICK, HEAVY PUNCH", "https://twitter.com/mochocofrappe"],
+        ["teles", "nest", "@telesfnf", 'Coder\nComposer\nCharter\n"Artist"', "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
+        ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://charawhy.carrd.co/"],
         ["Diamond", "diamond", "@It_Just_Diamond", "Charter", "Do you ever just sit back", "https://twitter.com/It_Just_Diamond"],
         ["YaBoiJustin", "justin", "@YaBoiJustinGG", "Composer", "welcome back king of pop v2", "https://twitter.com/YaBoiJustinGG"],
         ["HighPoweredKeyz", "hpk", "@HighPoweredKeyz", "Composer", "Stay kind, stay creative, and stay powerful!", "https://www.youtube.com/@HighPoweredKeyz"],
         ["Jospi", "jospi", "@jospi_music", "Composer", "boo", "https://twitter.com/jospi_music"],
         ["Linguini", "linguini", "@linguini7294", "Animation Helper", "make baby daisy meta again mario kart eight", "https://www.youtube.com/@linguini7294"],
-        ["PastelDalilah", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
+        ["PastelDalilah", "dalilah", "@PastelDalilah", "Art Help", "TIS THE SEASON TO GET NEKIT", "https://x.com/PastelDalilah"],
         ["FiveKimz", "kim", "@FiveKimz", "Charter", "hej", "https://twitter.com/FiveKimz"],
         ["Annie Stars", "annie", "@annieStarsMC", "Voice Acting", "Voices: Bree", "https://x.com/annieStarsMC"],
         ["Sandy Can", "sandy-can", "@SandyCanVO", "Voice Acting", "Voices: Spicy", "https://twitter.com/SandyCanVO"],

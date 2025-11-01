@@ -3875,7 +3875,7 @@ class PlayState extends MusicBeatState
 				Main.switchState(new states.cd.MainMenu());
 			}
 			else
-				Main.switchState(new states.cd.Freeplay());
+				Main.switchState(new states.cd.Freeplay((daSong.endsWith("old") || daSong == "desertion-sc")));
 		}
 	}
 

@@ -177,9 +177,10 @@ class SaveData
 			"Lets the game load while reading dialogue, for a smoother experience."
 		],
 		"Dialogue in Freeplay" => [
-			true,
-			CHECKMARK,
-			"Whether the Freeplay features Dialogue."
+			"UNSEEN",
+			SELECTOR,
+			"Whether the Freeplay features Dialogue.",
+			["ON", "OFF", "UNSEEN"]
 		],
 		"Menu Style" => [
 			"RANDOMIZE",
