@@ -25,6 +25,13 @@ class Freeplay extends MusicBeatState
         ["nefarious", "bex", 0xFF5B7A9E, "Week 1", true, "Unlocked by default"],
         ["divergence", "duo", 0xFF970F00, "Week 1", true, "Unlocked by default"],
     ];
+    var oldSongs:Array<Array<Dynamic>> = [
+        // default
+        ["euphoria-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
+        ["nefarious-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
+        ["divergence-old", "cutenevil", 0xFFFFFFFF, "CDv1", true, "Unlocked by default"],
+        //["desertion-sc", "bree-angry", 0xFFFF0000, "CDv2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]
+    ];
     static var curSelected:Int = 0;
     static var curDiff:Int = 0;
 
@@ -47,6 +54,14 @@ class Freeplay extends MusicBeatState
 	public var lerpValues:ScoreData;
     var scores:FlxText;
     var diff:FlxText;
+    var old:Bool = false;
+
+    public function new(old:Bool = false)
+	{
+		super();
+		this.old = old;
+	}
+
     override function create()
     {
         super.create();
@@ -58,30 +73,34 @@ class Freeplay extends MusicBeatState
 
         selected = false;
 
-        songs.push(["allegro", "duo", 0xFF0C2E55, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
-        songs.push(["panic-attack", "bree", 0xFFF85EA4, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
-        songs.push(["convergence", "bree", 0xFFB6318E, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
-        songs.push(["desertion", "bree-angry", 0xFFFF0000, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+        if(!old) {
+            songs.push(["allegro", "duo", 0xFF0C2E55, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+            songs.push(["panic-attack", "bree", 0xFFF85EA4, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+            songs.push(["convergence", "bree", 0xFFB6318E, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+            songs.push(["desertion", "bree-angry", 0xFFFF0000, "Week 2", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
 
-        if(SaveData.progression.get("week2")) {
-            songs.push(["sin", "helica", 0xFFE17B00, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
-            songs.push(["intimidate", "bex-scared", 0xFF0A203B, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
-            
-            songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
-            songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+            if(SaveData.progression.get("week2")) {
+                songs.push(["sin", "helica", 0xFFE17B00, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
+                songs.push(["intimidate", "bex-scared", 0xFF0A203B, "Epilogue", SaveData.progression.get("intimidated"), "Unlocked by completing Epilogue"]);
+                
+                songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+                songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
 
-            songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
-            songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
-            songs.push(["divergence-vip", "duovip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+                songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+                songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
+                songs.push(["divergence-vip", "duovip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
 
-            songs.push(["kaboom", "spicy-v2", 0xFFFF006A, "FRxCD", SaveData.shop.get("ticket"), "Purchasable in Watts' Shop"]);
-            songs.push(["ripple", "drown", 0xFF049AFE, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
-            songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
+                songs.push(["kaboom", "spicy-v2", 0xFFFF006A, "FRxCD", SaveData.shop.get("ticket"), "Purchasable in Watts' Shop"]);
+                songs.push(["ripple", "drown", 0xFF049AFE, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
+                songs.push(["customer-service", "empitri", 0xFFfdacbc, "The Shack", SaveData.shop.get("shack"), "Purchasable in Watts' Shop"]);
 
-            songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
-            songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra", (SaveData.shop.get("time") || SaveData.progression.get("vip")), "Purchasable in Watts' Shop\nOR\nUnlocked by beating Week VIP"]);
-            songs.push(["cupid", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("finished"), "Unlocked by beating everything else"]);
+                songs.push(["heartpounder", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("week2"), "Unlocked by beating Week 2"]);
+                songs.push(["exotic", "cutenevil", 0xFFFFFFFF, "Extra", (SaveData.shop.get("time") || SaveData.progression.get("vip")), "Purchasable in Watts' Shop\nOR\nUnlocked by beating Week VIP"]);
+                songs.push(["cupid", "duo", 0xFFF85EA4, "Extra", SaveData.progression.get("finished"), "Unlocked by beating everything else"]);
+            }
         }
+        else
+            songs = oldSongs;
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/desat'));
 		bg.updateHitbox();
@@ -179,7 +198,6 @@ class Freeplay extends MusicBeatState
         changeSelection();
     }
 
-    var old:Array<String> = ["euphoria", "nefarious", "divergence"];
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -222,8 +240,8 @@ class Freeplay extends MusicBeatState
         if(Controls.justPressed("ACCEPT") && focused)
             go2Song(songs[curSelected]);
 
-        if(old.contains(songs[curSelected][0]) && SaveData.shop.get("time") && Controls.justPressed("BOTPLAY"))
-            go2Song(songs[curSelected], "-old");
+        if(SaveData.shop.get("time") && Controls.justPressed("BOTPLAY"))
+            Main.switchState(new states.cd.Freeplay(true));
         
         scores.text = "";
 
@@ -261,7 +279,7 @@ class Freeplay extends MusicBeatState
         shack.y = FlxMath.lerp(shack.y, 5, elapsed*6);
     }
 
-    public function go2Song(song:Array<Dynamic>, suffix:String = "") {
+    public function go2Song(song:Array<Dynamic>) {
         try {
             if(song[4]) {
                 selected = true;
@@ -271,7 +289,7 @@ class Freeplay extends MusicBeatState
                 //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
                 
                 PlayState.playList = [];
-                PlayState.SONG = SongData.loadFromJson(song[0] + suffix, diff);
+                PlayState.SONG = SongData.loadFromJson(song[0], diff);
                 PlayState.isStoryMode = false;
                 //CoolUtil.playMusic();
                 
@@ -280,9 +298,9 @@ class Freeplay extends MusicBeatState
                 switch(song[0]) {
                     case "kaboom":
                         openSubState(new CharacterSelect());
-                    case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
+                    case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "euphoria-old" | "nefarious-old" | "divergence-old" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
                         if(SaveData.data.get("Dialogue in Freeplay")) {
-                            states.cd.Dialog.dialog = song[0] + suffix;
+                            states.cd.Dialog.dialog = song[0];
                             Main.switchState(new states.cd.Dialog(false));
                         }
                         else
@@ -425,11 +443,10 @@ class CharacterSelect extends MusicBeatSubState
         lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
         lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
 
-        new FlxTimer().start(0.2, function(tmr:FlxTimer)
+        new FlxTimer().start(0.4, function(tmr:FlxTimer)
 		{
 			selected = false;
 		});
-
     }
 
     var lastMouseX:Float = 0;

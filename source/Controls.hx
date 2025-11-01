@@ -136,6 +136,10 @@ class Controls
 			[FlxKey.X, FlxKey.R],
 			[FlxPad.X],
 		],
+		'X_SPECIAL' => [
+			[FlxKey.X],
+			[FlxPad.X],
+		],
 		'LOOP' => [
 			[FlxKey.Y, FlxKey.TAB],
 			[FlxPad.Y],

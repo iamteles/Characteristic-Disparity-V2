@@ -50,11 +50,11 @@ class MusicPlayer extends MusicBeatState
         ["Allegro (Dialogue)", "mochoco", "music/dialogue/old/21"],
         ["Panic Attack (Dialogue)", "mochoco", "music/dialogue/old/22"],
         ["Convergence (Dialogue)", "teles", "music/dialogue/old/23"],
-        ["Desertion (Dialogue)", "teles", "music/dialogue/24"],
+        ["Desertion (Dialogue)", "teles", "music/dialogue/old/24"],
         ["Godsend (Finale)", "mochoco", "music/godsend"],
         ["Ripple (Dialogue)", "teles", "music/dialogue/freeplay"],
-        ["Reiterate (Game Over Theme)", "teles", "music/death/reiterate"],
-        ["THUNDEROUS", "teles", "music/death/bree"],
+        ["Reiterate (Game Over)", "teles", "music/death/reiterate"],
+        ["THUNDEROUS (Bree Game Over)", "teles", "music/death/bree"],
         ["Speaker", "mochoco", "music/speaker"],
         ["Reiterate (Retro)", "teles", "music/death/reiterate-old"]
     ],[
@@ -84,6 +84,7 @@ class MusicPlayer extends MusicBeatState
     var frame:FlxSprite;
     var frameL:FlxSprite;
     var arrow:FlxSprite;
+    var arrowL:FlxSprite;
 
     var skipF:FlxSprite;
     var skipB:FlxSprite;
@@ -100,6 +101,7 @@ class MusicPlayer extends MusicBeatState
     var songName:FlxText;
     var songComposer:FlxText;
     var hints:FlxText;
+    var hintsL:FlxText;
 
     var holders:FlxTypedGroup<FlxSprite>;
     var names:FlxTypedGroup<FlxSprite>;
@@ -201,7 +203,13 @@ class MusicPlayer extends MusicBeatState
         arrow.y = 149.7;
 		add(arrow);
 
-        var where:Float = 390;
+        arrowL = new FlxSprite().loadGraphic(Paths.image('menu/music/arrow'));
+        //arrowL.flipX = true;
+        arrowL.x = -93;
+        arrowL.y = 149.7;
+		add(arrowL);
+
+        var where:Float = 397;
         var what:Float = 150;
 
         pause = new FlxSprite();
@@ -227,7 +235,7 @@ class MusicPlayer extends MusicBeatState
         skipF.frames = Paths.getSparrowAtlas('menu/music/buttons');
         skipF.animation.addByPrefix('idle',  'next track', 24, true);
         skipF.animation.play('idle');
-        skipF.x = 57.7 + (what*2) + 5;//512.65;
+        skipF.x = 57.7 + (what*2) + 7;//512.65;
         skipF.y = where;
         skipF.alpha = 0.8;
         add(skipF);
@@ -236,7 +244,7 @@ class MusicPlayer extends MusicBeatState
         loop.frames = Paths.getSparrowAtlas('menu/music/buttons');
         loop.animation.addByPrefix('idle',  'Loop0000', 24, true);
         loop.animation.play('idle');
-        loop.x = 512.65;//293.1;
+        loop.x = 512.65 + 5;//293.1;
         loop.y = where;
         loop.alpha = 0.6;
         add(loop);
@@ -257,7 +265,7 @@ class MusicPlayer extends MusicBeatState
 		add(vol2);
 
         timeBar = new FlxBar(
-			115.3, 539.5,
+			115.3, 539.5 + 8,
 			LEFT_TO_RIGHT,
 			482,
 			13.5
@@ -267,32 +275,38 @@ class MusicPlayer extends MusicBeatState
         add(timeBar);
 
         icon = new FlxSprite().loadGraphic(Paths.image('menu/music/cursor'));
-        icon.y = 520.4;
+        icon.y = 520.4 + 8;
 		add(icon);
 
         timeTxt = new FlxText(0,0,0,"0:00 / 0:00");
         timeTxt.setFormat(Main.gFont, 30, 0xFF3B4877, CENTER);
         timeTxt.x = timeBar.x + (timeBar.width/2) - (timeTxt.width/2);
-        timeTxt.y = icon.y + icon.height + 2;
+        timeTxt.y = icon.y + icon.height + 2 + 5;
         add(timeTxt);
 
         songName = new FlxText(0,0,0,"Euphoria");
         songName.setFormat(Main.gFont, 50, 0xFF3B4877, CENTER);
         songName.x = timeBar.x + (timeBar.width/2) - (songName.width/2);
-        songName.y = timeTxt.y + timeTxt.height + 3;
+        songName.y = timeTxt.y + timeTxt.height + 3 + 5;
         add(songName);
 
         songComposer = new FlxText(0,0,0,"mochoco");
         songComposer.setFormat(Main.gFont, 30, 0xFF3B4877, CENTER);
         songComposer.x = timeBar.x + (timeBar.width/2) - (songComposer.width/2);
-        songComposer.y = songName.y + songName.height + 2;
+        songComposer.y = songName.y + songName.height + 2 + 5;
         add(songComposer);
 
-        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nL/Q: Change Album\nR/E: View in Web");
+        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nL/R or Q/E: Change Album\nRESET: View in Web");
         hints.setFormat(Main.gFont, 20, 0xFF000000, LEFT);
         hints.x = frame.x + 70;
-        hints.y = 9;
+        hints.y = 6;
         add(hints);
+
+        hintsL = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nL/R or Q/E: Change Album\nRESET: View in Web");
+        hintsL.setFormat(Main.gFont, 20, 0xFF000000, RIGHT);
+        hintsL.x = -70-hintsL.width;
+        hintsL.y = 6;
+        add(hintsL);
 
         camFollow.setPosition(FlxG.width / 2, FlxG.height / 2);
 		FlxG.camera.follow(camFollow, LOCKON, 1);
@@ -322,7 +336,7 @@ class MusicPlayer extends MusicBeatState
 
         camGame.followLerp = elapsed * 6;
         
-        if(Controls.justPressed("L_SPECIAL")) {
+        if(Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) {
             if(vol == 0)
                 vol = 1;
             else
@@ -331,12 +345,14 @@ class MusicPlayer extends MusicBeatState
             vol1.alpha = 1-vol;
             vol2.alpha = vol;
 
+            playSong(false);
+
             camFollow.setPosition((!(vol == 1) ? (FlxG.width/2) : (FlxG.width/2) - 581), FlxG.height/2);
             curSelected = 0;
             changeSelection(0);
         }
 
-        if(Controls.justPressed("R_SPECIAL")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
+        if(Controls.justPressed("RESET")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
             FlxG.openURL("https://shatterdisk.bandcamp.com/album/characteristic-disparity-original-soundtrack");
 
         if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_UP")) {
@@ -403,7 +419,7 @@ class MusicPlayer extends MusicBeatState
             playSong();
         }
 
-        if(Controls.justPressed("BOTPLAY")) {
+        if(Controls.justPressed("X_SPECIAL")) {
             vocalsMuted = !vocalsMuted;
             if(vocals != null && vocalsMuted)
                 vocals.volume = 0;
@@ -466,8 +482,11 @@ class MusicPlayer extends MusicBeatState
         }
     }
 
-    function playSong() {
-        playing = !playing;
+    function playSong(?force:Bool) {
+        if(force != null)
+            playing = force;
+        else
+            playing = !playing;
         if(playing)
             pause.animation.play('play');
         else

@@ -258,7 +258,7 @@ class LoadSongState extends MusicBeatState
 					Paths.preloadGraphic("notes/taiko/play");
 					/*Paths.preloadGraphic("notes/taiko/notes");
 					Paths.preloadGraphic("notes/base/splashes"); //...?!*/
-					Paths.preloadGraphic("menu/story/Taiko-tutorial");
+					Paths.preloadGraphic("menu/story/Taiko-" + SaveData.data.get("Taiko Style").toLowerCase());
 
 					var taikoData = data.SongData.loadFromJson("sin", "taiko");
 					var taikoList:Array<Note> = ChartLoader.getChart(taikoData);

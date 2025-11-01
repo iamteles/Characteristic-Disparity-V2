@@ -32,14 +32,17 @@ class Kissing extends MusicBeatState
 
     var warning:FlxSprite;
     var scoreTxt:FlxText;
+    var retry:FlxText;
 
     var score:Int = 0;
+    var highscore:Int = 0;
 
     var begun:Bool = false;
     var tweening:Bool = false;
     override function create()
     {
         super.create();
+        highscore = SaveData.saveFile.data.kissScore;
 
         CoolUtil.playMusic("kiss");
         Main.setMouse(false);
@@ -101,7 +104,7 @@ class Kissing extends MusicBeatState
         warning.alpha = 0;
 		add(warning);
 
-        scoreTxt = new FlxText(0,0,0,'Score: 0');
+        scoreTxt = new FlxText(0,0,0,'Score: 0 | Highscore: $highscore');
 		scoreTxt.setFormat(Main.dsFont, 40, 0xFFFFFFFF, CENTER);
 		scoreTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         scoreTxt.y = FlxG.height - scoreTxt.height;
@@ -115,6 +118,15 @@ class Kissing extends MusicBeatState
         //title.alpha = 0;
 		add(title);
 
+        retry = new FlxText(0,0,0,'You died!\nPress ACCEPT to restart.');
+		retry.setFormat(Main.dsFont, 50, 0xFFFFFFFF, CENTER);
+		retry.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.4);
+        retry.screenCenter(X);
+        retry.y = FlxG.height - retry.height - 65;
+        retry.antialiasing = false;
+        retry.alpha = 0;
+		add(retry);
+
         var hypercam = new FlxSprite().loadGraphic(Paths.image('minigame/hypercam'));
 		hypercam.updateHitbox();
 		hypercam.screenCenter();
@@ -123,6 +135,27 @@ class Kissing extends MusicBeatState
         //loop();
     }
 
+    function activateTimers(apple:Bool = true)
+	{
+		FlxTimer.globalManager.forEach(function(tmr:FlxTimer)
+		{
+			if(!tmr.finished)
+				tmr.active = apple;
+		});
+
+		FlxTween.globalManager.forEach(function(twn:FlxTween)
+		{
+			if(!twn.finished)
+				twn.active = apple;
+		});
+	}
+
+    override function closeSubState()
+	{
+		activateTimers(true);
+		super.closeSubState();
+	}
+
     var isKissing:Bool = false;
     var breeWaiting:Bool = true;
     var kissTimer:FlxTimer;
@@ -130,10 +163,18 @@ class Kissing extends MusicBeatState
     {
         super.update(elapsed);
 
-        if(Controls.justPressed("BACK")) {
+        if(Controls.justPressed("BACK") && !begun && !tweening) {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
         }
+        
+        if(Controls.justPressed("PAUSE") && !dead && begun) {
+            activateTimers(false);
+            openSubState(new subStates.SubgamePause());
+        }
+
+        if(Controls.justPressed("ACCEPT") && finishDie)
+            Main.switchState();
 
 		if(Controls.justPressed("ACCEPT") && !dead)
 		{
@@ -149,7 +190,7 @@ class Kissing extends MusicBeatState
                     tweening = true;
                 }
             }
-            else {
+            else if (!Controls.pressed("PAUSE")) {
                 if(!breeWaiting) {
                     triggerDeath();
                 }
@@ -174,7 +215,7 @@ class Kissing extends MusicBeatState
         
                     score++;
         
-                    scoreTxt.text = "Score: " + score;
+                    scoreTxt.text = "Score: " + score + " | " + "Highscore: " + highscore;
                     scoreTxt.screenCenter(X);
                 }
             }
@@ -224,10 +265,18 @@ class Kissing extends MusicBeatState
     }
     
     var dead:Bool = false;
+    var finishDie:Bool = false;
 
     function triggerDeath()
     {
         dead = true;
+
+        if(score > highscore) {
+            highscore = score;
+            SaveData.saveFile.data.kissScore = score;
+            SaveData.save();
+        }
+
         if(kissTimer != null)
             if(kissTimer.active)
                 kissTimer.cancel();
@@ -252,6 +301,8 @@ class Kissing extends MusicBeatState
         bxbKissing.alpha = 0;
         bxbOops.alpha = 1;
 
+        warning.alpha = 0;
+
         new FlxTimer().start(0.7, function(tmr:FlxTimer)
         {
             bxbOops.alpha = 0;
@@ -264,10 +315,8 @@ class Kissing extends MusicBeatState
                 bxbDie.alpha = 0;
                 bxbDust.alpha = 1;
 
-                new FlxTimer().start(2, function(tmr:FlxTimer)
-                {
-                    Main.switchState(new Kissing());
-                });
+                finishDie = true;
+                FlxTween.tween(retry, {alpha: 1}, 0.5);
             });
         });
     }

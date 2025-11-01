@@ -16,7 +16,9 @@ import flixel.input.keyboard.FlxKey;
 
 class MainMenu extends MusicBeatState
 {
-	var list:Array<String> = ["story mode", "freeplay", "shop", "music", "gallery", "bio", "kiss", "credits", "options"];
+    public static var inSub:Bool = false;
+
+	var list:Array<String> = ["story mode", "freeplay", "shop", "music", "gallery", "bio", "games", "credits", "options"];
     var hints:Array<String> = [
         "Play the main storyline!", 
         "Replay story songs or play some bonus ones!", 
@@ -24,7 +26,7 @@ class MainMenu extends MusicBeatState
         "Listen to our OST!", 
         "Lots of bonus art!", 
         "Learn more about the protagonists of the mod!",
-        "Special Subgame!",
+        "Special Subgames!",
         "The awesome people who made the mod!", 
         "Tinker the mod to your liking!"
     ];
@@ -47,6 +49,7 @@ class MainMenu extends MusicBeatState
 	override function create()
 	{
         super.create();
+        inSub = false;
 
         DiscordIO.changePresence("In the Menus...", null);
         CoolUtil.playMusic("MENU");
@@ -95,7 +98,7 @@ class MainMenu extends MusicBeatState
             text.screenCenter(X);
             text.y = 47;
 
-            if(name == "kiss")
+            if(name == "games")
                 text.offset.set(0,50);
 
             if(i == curSelected) {
@@ -137,7 +140,7 @@ class MainMenu extends MusicBeatState
 		info.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		info.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         info.y = FlxG.height - info.height - 5;
-        info.antialiasing = false;
+        //info.antialiasing = false;
 
         bar = new FlxSprite().makeGraphic(FlxG.width, Std.int(info.height) + 10, 0xFF000000);
 		bar.y = FlxG.height - bar.height;
@@ -154,9 +157,9 @@ class MainMenu extends MusicBeatState
 
         changeSelection();
 
-        if(SaveData.progression.get("intimidated") && !SaveData.progression.get("beller")) {
-            unlocks.push("Song: UM.");
-            SaveData.progression.set("beller", true);
+        if(SaveData.progression.get("intimidated") && !SaveData.progression.get("story")) {
+            unlocks.push("A special Subgame!");
+            SaveData.progression.set("story", true);
             SaveData.save();
         }
 
@@ -235,49 +238,61 @@ class MainMenu extends MusicBeatState
         if(Controls.justPressed("ACCEPT") && !selected && focused)
         {
             if(returnMenu(curSelected)) {
-                selected = true;
-                FlxTween.tween(arrowL, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                FlxTween.tween(arrowR, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                FlxG.sound.play(Paths.sound("menu/select"));
-                for(item in buttons.members)
-                {
-                    if(item.ID != curSelected)
-                        FlxTween.tween(item, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                    else {
-                        FlxFlicker.flicker(item, 1, 0.06, true, false, function(_)
-                        {             
-                            switch(list[curSelected])
-                            {
-                                case "story mode":
-                                    Main.switchState(new states.cd.StoryMode());
-                                case "menu":
-                                    Main.switchState(new states.cd.MainMenu());
-                                case "freeplay":
-                                    Main.switchState(new states.cd.Freeplay());
-                                case "gallery":
-                                    states.cd.Gallery.curCat = "main";
-                                    Main.switchState(new states.cd.Gallery());
-                                case "bio":
-                                    Main.switchState(new states.cd.Bios());
-                                case "kiss":
-                                    Main.switchState(new states.cd.Kissing());
-                                case "shop":
-                                    Main.switchState(new states.ShopState.LoadShopState());
-                                case "music":
-                                    //if(SaveData.data.get("Preload Songs")) {
-                                        Main.switchState(new states.LoadSongState.LoadMusicPlayer());
-                                    //}
-                                    //else
-                                    //    Main.switchState(new states.cd.MusicPlayer());
-                                case "options":
-                                    //openSubState(new subStates.OptionsSubState());
-                                    Main.switchState(new states.menu.OptionsState());
-                                case "credits":
-                                    Main.switchState(new states.cd.Credits());
-                                default:
-                                    Main.switchState(new states.DebugState());
-                            }
-                        });
+                if(list[curSelected] == "games") {
+                    for(item in buttons.members.concat(texts.members)) {
+                        if(item.ID == curSelected)
+                            item.alpha = 0;
+                    }
+                    inSub = true;
+                    openSubState(new subStates.Game());
+                }
+                else {
+                    selected = true;
+                    FlxTween.tween(arrowL, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                    FlxTween.tween(arrowR, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                    FlxG.sound.play(Paths.sound("menu/select"));
+                    for(item in buttons.members)
+                    {
+                        if(item.ID != curSelected)
+                            FlxTween.tween(item, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                        else {
+                            FlxFlicker.flicker(item, 1, 0.06, true, false, function(_)
+                            {             
+                                switch(list[curSelected])
+                                {
+                                    case "story mode":
+                                        Main.switchState(new states.cd.StoryMode());
+                                    case "menu":
+                                        Main.switchState(new states.cd.MainMenu());
+                                    case "freeplay":
+                                        Main.switchState(new states.cd.Freeplay());
+                                    case "gallery":
+                                        states.cd.Gallery.curCat = "main";
+                                        Main.switchState(new states.cd.Gallery());
+                                    case "bio":
+                                        Main.switchState(new states.cd.Bios());
+                                    case "kiss":
+                                        Main.switchState(new states.cd.Kissing());
+                                    case "shop":
+                                        Main.switchState(new states.ShopState.LoadShopState());
+                                    case "games":
+                                        openSubState(new subStates.Game());
+                                    case "music":
+                                        //if(SaveData.data.get("Preload Songs")) {
+                                            Main.switchState(new states.LoadSongState.LoadMusicPlayer());
+                                        //}
+                                        //else
+                                        //    Main.switchState(new states.cd.MusicPlayer());
+                                    case "options":
+                                        //openSubState(new subStates.OptionsSubState());
+                                        Main.switchState(new states.menu.OptionsState());
+                                    case "credits":
+                                        Main.switchState(new states.cd.Credits());
+                                    default:
+                                        Main.switchState(new states.DebugState());
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -303,28 +318,30 @@ class MainMenu extends MusicBeatState
             unlocks = [];
         }
 
-        for(item in buttons.members)
-        {
-            if(!selected || item.ID == curSelected) item.x = FlxMath.lerp(item.x, ((FlxG.width/2) - (item.width/2)) + ((curSelected - item.ID)*-397.8), elapsed*6);
+        if(!inSub) {
+            for(item in buttons.members)
+            {
+                if(!selected || item.ID == curSelected) item.x = FlxMath.lerp(item.x, ((FlxG.width/2) - (item.width/2)) + ((curSelected - item.ID)*-397.8), elapsed*6);
 
-            if(item.ID == curSelected) {
-                if (shaking)
-                    item.offset.x = FlxG.random.float(-0.05 * item.width, 0.05 * item.width);
-                if (shaking)
-                    item.offset.y = FlxG.random.float(-0.05 * item.height, 0.05 * item.height);
-                item.alpha = FlxMath.lerp(item.alpha, 1, elapsed*12);
+                if(item.ID == curSelected) {
+                    if (shaking)
+                        item.offset.x = FlxG.random.float(-0.05 * item.width, 0.05 * item.width);
+                    if (shaking)
+                        item.offset.y = FlxG.random.float(-0.05 * item.height, 0.05 * item.height);
+                    item.alpha = FlxMath.lerp(item.alpha, 1, elapsed*12);
+                }
+                else
+                    if(!selected) item.alpha = FlxMath.lerp(item.alpha, 0.5, elapsed*12);
             }
-            else
-                if(!selected) item.alpha = FlxMath.lerp(item.alpha, 0.5, elapsed*12);
-        }
 
-        for(item in texts.members)
-        {
-            item.y = FlxMath.lerp(item.y, 47, elapsed*6);
-            if(item.ID == curSelected)
-                item.alpha = 1;
-            else
-                item.alpha = 0;
+            for(item in texts.members)
+            {
+                item.y = FlxMath.lerp(item.y, 47, elapsed*6);
+                if(item.ID == curSelected)
+                    item.alpha = 1;
+                else
+                    item.alpha = 0;
+            }
         }
 
         //YLYL EASTER EGG
@@ -379,8 +396,8 @@ class MainMenu extends MusicBeatState
             info.text = hints[curSelected];
         else {
             switch(list[curSelected]) {
-                case "kiss":
-                    info.text = "Unlock this by beating every song!";
+                case "games":
+                    info.text = "Unlock this by beating the Story Mode!";
                 default:
                     info.text = "Unlock this by buying something from Watts' Store!";
             }
@@ -406,8 +423,8 @@ class MainMenu extends MusicBeatState
             else
                 return SaveData.progression.get("week2");
         }
-        else if(list[num] == "kiss") {
-            return SaveData.cupidCheck();
+        else if(list[num] == "games") {
+            return SaveData.progression.get("intimidated");
         }
         else
             return true;

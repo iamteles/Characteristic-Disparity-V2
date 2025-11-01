@@ -649,7 +649,7 @@ class ShopTab extends FlxTypedGroup<ShopItem>
             ["crown", "Golden Crown", 100],
             ["ticket", "Rave Ticket", 50],
             ["shack", "Hair Dye", 75],
-            ["time", "Time Machine", 50],
+            ["time", "Weird Hourglass", 50],
         ],
         "skins" => [
             ["base", "Classic FNF", 15],

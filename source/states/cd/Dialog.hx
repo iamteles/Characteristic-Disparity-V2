@@ -229,17 +229,21 @@ class Dialog extends MusicBeatState
         //hud.x = FlxG.width - hud.width;
         hud.screenCenter(X);
         hud.alpha = 0;
-        FlxTween.tween(hud, {alpha: 0.75}, 1, {
-            ease: FlxEase.cubeOut,
-            startDelay: 0.8,
-            onComplete: function(twn:FlxTween)
-            {
-                FlxTween.tween(hud, {alpha: 0}, 1, {
-                    ease: FlxEase.cubeIn,
-                    startDelay: 2.8
-                });
-            }
-		});
+        if(!SaveData.saveFile.data.seenDialogHud) {
+            FlxTween.tween(hud, {alpha: 0.75}, 1, {
+                ease: FlxEase.cubeOut,
+                startDelay: 0.8,
+                onComplete: function(twn:FlxTween)
+                {
+                    FlxTween.tween(hud, {alpha: 0}, 1, {
+                        ease: FlxEase.cubeIn,
+                        startDelay: 2.8
+                    });
+                }
+            });
+            SaveData.saveFile.data.seenDialogHud = true;
+            SaveData.save();
+        }
 		add(hud);
 
         logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));

@@ -204,7 +204,7 @@ class SaveData
 		"oneofthem" => false,
 		"debug" => false,
 		"finished" => false,
-		"beller" => false
+		"story" => false
 	];
 	public static var songs:Map<String, Dynamic> = [
 		"euphoria" => false,
@@ -327,6 +327,18 @@ class SaveData
 	
 	public static function load()
 	{
+		if(saveFile.data.volume != null)
+			FlxG.sound.volume = saveFile.data.volume;
+		if(saveFile.data.muted != null)
+			FlxG.sound.muted  = saveFile.data.muted;
+
+		if(saveFile.data.lastTaiko == null)
+			saveFile.data.lastTaiko = "wat";
+
+		if(saveFile.data.swatScore == null)
+			saveFile.data.swatScore = 0;
+		if(saveFile.data.kissScore == null)
+			saveFile.data.kissScore = 0;
 		if(saveFile.data.settings == null)
 		{
 			for(key => values in displaySettings)

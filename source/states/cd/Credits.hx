@@ -29,17 +29,17 @@ class Credits extends MusicBeatState
 	static var curSelected:Int = 0;
     var list:Array<Array<String>> = [
         ["mochoco", "coco", "@mochocofrappe", "Artist\nComposer\nCharter", "Eat the brown part of this banana.", "https://twitter.com/mochocofrappe"],
-        ["teles", "starry", "@telesfnf", "Coder\nComposer", "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
+        ["teles", "nest", "@telesfnf", "Coder\nComposer", "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
         ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://twitter.com/CharaWhyy"],
-        ["DiamondDiglett", "diamond", "@DiamonDiglett42", "Charter", "Do you ever just sit back", "https://twitter.com/DiamonDiglett42"],
-        ["YaBoiJustin", "justin", "@YaBoiJustinGG", "Composer", "welcome back king of pop <3", "https://twitter.com/YaBoiJustinGG"],
+        ["Diamond", "diamond", "@It_Just_Diamond", "Charter", "Do you ever just sit back", "https://twitter.com/It_Just_Diamond"],
+        ["YaBoiJustin", "justin", "@YaBoiJustinGG", "Composer", "welcome back king of pop v2", "https://twitter.com/YaBoiJustinGG"],
         ["HighPoweredKeyz", "hpk", "@HighPoweredKeyz", "Composer", "Stay kind, stay creative, and stay powerful!", "https://www.youtube.com/@HighPoweredKeyz"],
         ["Jospi", "jospi", "@jospi_music", "Composer", "boo", "https://twitter.com/jospi_music"],
         ["Linguini", "linguini", "@linguini7294", "Animation Helper", "make baby daisy meta again mario kart eight", "https://www.youtube.com/@linguini7294"],
         ["PastelDalilah", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
         ["FiveKimz", "kim", "@FiveKimz", "Charter", "hej", "https://twitter.com/FiveKimz"],
-        ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
-        ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
+        ["Annie Stars", "annie", "@annieStarsMC", "Voice Acting", "Voices: Bree", "https://x.com/annieStarsMC"],
+        ["Sandy Can", "sandy-can", "@SandyCanVO", "Voice Acting", "Voices: Spicy", "https://twitter.com/SandyCanVO"],
         ["Special Thanks", "special", "Lots'a people!", "Special Thanks", "Press ACCEPT to read Special Thanks!", "SPECIALTHANKS"],
     ];
 
@@ -87,6 +87,8 @@ class Credits extends MusicBeatState
             var iconName = list[i][1];
             if(iconName == "diamond" && FlxG.random.bool(30))
                 iconName = "oh-dear-god";
+            else if(iconName == "nest" && FlxG.random.bool(10))
+                iconName = "starry";
 
             var icon = new FlxSprite().loadGraphic(Paths.image('menu/credits/icons/' + iconName));
             icon.scale.set(1.7,1.7);

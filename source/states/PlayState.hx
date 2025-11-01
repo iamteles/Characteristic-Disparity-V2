@@ -1037,14 +1037,22 @@ class PlayState extends MusicBeatState
 			switch(SONG.song)
 			{
 				case "sin":
-					var thing:String = "menu/story/Taiko-tutorial";
+					var thing:String = "menu/story/Taiko-" + SaveData.data.get("Taiko Style").toLowerCase();
 					taikoTutorial = new FlxSprite().loadGraphic(Paths.image(thing));
 					taikoTutorial.cameras = [camOther];
 					taikoTutorial.scrollFactor.set();
 					taikoTutorial.screenCenter();
 					add(taikoTutorial);
 
-					sinStarted = false;
+					if(SaveData.saveFile.data.lastTaiko == SaveData.data.get("Taiko Style")) {
+						taikoTutorial.alpha = 0;
+						startCountdown();
+
+						SaveData.saveFile.data.lastTaiko = SaveData.data.get("Taiko Style");
+						SaveData.save();
+					}
+					else
+						sinStarted = false;
 
 				default:
 					startCountdown();
