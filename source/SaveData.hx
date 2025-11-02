@@ -227,7 +227,7 @@ class SaveData
 		"euphoria-vip" => false,
 		"nefarious-vip" => false,
 		"divergence-vip" => false,
-		"cupid" => true
+		"cupid" => false
 	];
 	public static var money:Int = 0;
 	public static var shop:Map<String, Dynamic> = [];

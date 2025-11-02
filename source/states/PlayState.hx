@@ -1510,7 +1510,11 @@ class PlayState extends MusicBeatState
 		}
 
 		// handling stuff
-		health += 0.05 * judge;
+		if(rating == "miss" && strumline.isTaiko)
+			health += (0.05 * judge) / 2;
+		else
+			health += 0.05 * judge;
+		
 		Timings.score += Math.floor(100 * judge);
 		Timings.addAccuracy(judge);
 
@@ -1967,7 +1971,6 @@ class PlayState extends MusicBeatState
 								continue;
 
 							if(SaveData.data.get("Taiko Style") != "CD") {
-								trace("accurate, setting index 2");
 								if(noteIndex == 0)
 									noteIndex2 = 1;
 								else if(noteIndex == 3)

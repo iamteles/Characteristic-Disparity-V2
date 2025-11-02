@@ -14,11 +14,11 @@ class Countdown extends FlxSprite
 
         frames = Paths.getSparrowAtlas("hud/base/countdown");
         
-        animation.addByPrefix("idle", 'Go0008', 24, true);
-        animation.addByPrefix("3", '3', 24, true);
-        animation.addByPrefix("2", '2', 24, true);
-        animation.addByPrefix("1", '1', 24, true);
-        animation.addByPrefix("go", 'Go', 24, true);
+        animation.addByPrefix("idle", 'Go0008', 24, false);
+        animation.addByPrefix("3", '3', 24, false);
+        animation.addByPrefix("2", '2', 24, false);
+        animation.addByPrefix("1", '1', 24, false);
+        animation.addByPrefix("go", 'Go', 24, false);
 
         addOffset("idle");
         addOffset("go");
@@ -40,7 +40,7 @@ class Countdown extends FlxSprite
 
         var anim:String = ["3","2", "1", "go"][cur];
 
-        playAnim(anim);
+        playAnim(anim, false);
 
         if(cur == 0)
             alpha = 1;

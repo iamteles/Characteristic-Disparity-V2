@@ -243,7 +243,7 @@ class Freeplay extends MusicBeatState
             go2Song(songs[curSelected]);
 
         if(SaveData.shop.get("time") && Controls.justPressed("BOTPLAY"))
-            Main.switchState(new states.cd.Freeplay(true));
+            Main.switchState(new states.cd.Freeplay(!old));
         
         scores.text = "";
 
@@ -301,6 +301,7 @@ class Freeplay extends MusicBeatState
                     case "kaboom":
                         openSubState(new CharacterSelect());
                     case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "euphoria-old" | "nefarious-old" | "divergence-old" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
+                        trace(SaveData.songs.get(song[0]));
                         if(SaveData.data.get("Dialogue in Freeplay") == "ON" || (SaveData.data.get("Dialogue in Freeplay") == "UNSEEN" && !SaveData.songs.get(song[0]))) {
                             states.cd.Dialog.dialog = song[0];
                             Main.switchState(new states.cd.Dialog(false));
