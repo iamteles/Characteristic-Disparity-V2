@@ -1,5 +1,6 @@
 {
     "ident": "wattssel",
+    "saveIdent": "wattsD",
     "lines": [
         [
             "I’ve only step foot out of Jersey a couple times...",
@@ -35,7 +36,8 @@
             "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
             "neutral",
             0.05,
-            true
+            "q","b",
+            ["wattsA", "wattsB", "wattsC", "wattsD"]
         ]
     ]
 }

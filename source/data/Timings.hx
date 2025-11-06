@@ -73,28 +73,38 @@ class Timings
 		accuracy = FlxMath.bound(accuracy, 0, 100);
 	}
 
-	public static function getRank():String
+	public static function getRank(?accuracy:Float, ?misses:Int, inGame:Bool = true, hasPlus:Bool = true):String
 	{
-		var result:String = "F";
+		if(misses == null)
+			misses = Timings.misses;
 
-		function calc(daRank:String, maxAcc:Float, minAcc:Float):String
+		if(accuracy == null)
+			accuracy = Timings.accuracy;
+
+		var result:String = "F";
+		function calc(daRank:String, maxAcc:Float, minAcc:Float)
 		{
-			var daR:String = result;
 			if(accuracy > minAcc && accuracy <= maxAcc)
-			{
-				daR = daRank;
-			}
-			return daR;
+				result = daRank;
 		}
 
-		result = calc("S", 100, 95);
-		result = calc("A", 95, 	80);
-		result = calc("B", 80, 	75);
-		result = calc("C", 75, 	65);
-		result = calc("D", 65, 	60);
+		// main ranks
+		calc("D", 65, 60);
+		calc("C", 75, 65);
+		calc("B", 80, 75);
+		calc("A", 95, 80);
+		calc("S", 100,95);
+
+		// pluses for your rank
+		if(misses == 0) {
+			if(hasPlus)
+				result += "+";
+			if(accuracy == 100.0)
+				result = "P";
+		}
 		
 		// you cant give a result without notes :/
-		if(notesHit == 0)
+		if(inGame ? (notesHit <= 0) : (accuracy == 0 && misses == 0))
 			result = "N/A";
 
 		return result;

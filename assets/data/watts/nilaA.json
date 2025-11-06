@@ -1,0 +1,55 @@
+{
+    "ident": "nilasel",
+    "saveIdent": "nilaA",
+    "lines": [
+        [
+            "I do science! I really like science!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Like a really unhealthy amount!",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "When I get home from school I do science!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "When I'm with Mom 2 I do science!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "When I get even an OUNCE of free time.. I do science! Quantum Physics y'know!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I love my life!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "Science rules!",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "* What do you do?\n* What do you think of Watts?\n* What do you wanna be when you grow up?\n* Do you like to travel?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","b",
+            ["nilaA", "nilaB", "nilaC", "nilaD"]
+        ]
+    ]
+}

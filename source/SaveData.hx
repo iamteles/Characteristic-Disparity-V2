@@ -229,20 +229,23 @@ class SaveData
 		"divergence-vip" => false,
 		"cupid" => false
 	];
+	public static var wattsLines:Map<String, Dynamic> = []; //maybe fill it in overtime lol?
 	public static var money:Int = 0;
 	public static var shop:Map<String, Dynamic> = [];
 	public static var displayShop:Map<String, Dynamic> = [
 		"crown" => [
 			false,
-			"People say it transports you to a far away place. Probably junk."
+			"People say it transports you to a far away place. Probably junk.",
+			"blah blah blah my name is nila and i am le silly"
 		],
 		"mic" => [
 			false,
-			"Some old thing. I have no use for it myself."
+			"Some old thing. I have no use for it myself.",
+			"blah blah blah ima microphone"
 		],
 		"ticket" => [
 			false,
-			"A ticket to a flavorfull festival. Didn't feel like going myself, schedule too busy."
+			"A ticket to a flavorful festival. Didn't feel like going myself, schedule too busy."
 		],
 		"time" => [
 			false,
@@ -275,6 +278,47 @@ class SaveData
 		"bio" => [
 			false,
 			"Don't ask me how I got these. Special price since i need to get rid of these ASAP."
+		],
+		"biop" => [
+			false,
+			"Nila's personal research using the previous stash. Just take it and go.",
+			"Mom 2 shouldn't be selling these, I dont think.. good thing I'm 11, maybe theyll buy that in court."
+			//
+		],
+		"musicp" => [
+			false,
+			"Nila's own little mixtape... but on disc! Likely downloaded from the internet.",
+			"What is this.. some kind of extra disk? ...ha, just kidding, I'd know, I made that!"
+		],
+		"galleryp" => [
+			false,
+			"From Nila's short lived papparazi phase. Watch out around her, maybe.",
+			"Now it can hold more photos! Improvements by yours truly!"
+		],
+		"egg" => [
+			false,
+			"In the mood for an out-of-season easter egg?",
+			"'Ya sure 'ya want that now? I'd try some... 'discount codes' if I were you."
+		],
+		"egg1" => [
+			false,
+			"Let's set a world record together and get the most liked post on Slowpost.",
+			"Please ignore the bite, I got a little hungry..."
+		],
+		"egg2" => [
+			false,
+			"All I'm good for is my yo-yo and my half-bitten egg...",
+			"Dishcount codes really comin' in handy, hm? *chew*"
+		],
+		"crumbs" => [
+			false,
+			"Someone wanted me to tell you that AZURE is the code.",
+			"*burp* whoops."
+		],
+		"camera" => [
+			false,
+			"Someone wanted me to tell you that AZURE is the code.",
+			"It's a hand me down from my dad. Now it's yours, if you pay, of course."
 		],
 		"fitdon" => [
 			false,
@@ -399,8 +443,14 @@ class SaveData
 			progressionFile.data.songs = songs;
 		}
 
+		if(progressionFile.data.wattsLines == null)
+		{
+			progressionFile.data.wattsLines = wattsLines;
+		}
+
 		initialTicks = progressionFile.data.ticks;
 		songs = progressionFile.data.songs;
+		wattsLines = progressionFile.data.wattsLines;
 		money = progressionFile.data.money;
 		shop = progressionFile.data.shop;
 		progression = progressionFile.data.progression;
@@ -484,6 +534,7 @@ class SaveData
 		progressionFile.data.shop = shop;
 		progressionFile.data.progression = progression;
 		progressionFile.data.songs = songs;
+		progressionFile.data.wattsLines = wattsLines;
 		progressionFile.flush();
 		update();
 	}
@@ -577,6 +628,7 @@ class SaveData
 					"divergence-vip" => false,
 					"cupid" => false
 				];
+				wattsLines = [];
 				money = 0;
 				//trace ("Wiping progress " + progressionSave.data.progression + ' ' + progressionSave.data.clowns);
 			case 'HIGHSCORE':

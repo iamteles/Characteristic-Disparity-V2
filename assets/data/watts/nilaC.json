@@ -1,0 +1,55 @@
+{
+    "ident": "nilasel",
+    "saveIdent": "nilaC",
+    "lines": [
+        [
+            "Um... I haven't really thought about that...",
+            "confused",
+            0.05,
+            "n"
+        ],
+        [
+            "OH, I wanna be the pioneer of time travel!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "Wouldn't that be cool, going back to see things or people again...",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Like, if I could, I'd go see my uncle Tom!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Loved Uncle Tom...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Too bad they got him.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I liked him too, good guy.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "* What do you do?\n* What do you think of Watts?\n* What do you wanna be when you grow up?\n* Do you like to travel?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","b",
+            ["nilaA", "nilaB", "nilaC", "nilaD"]
+        ]
+    ]
+}

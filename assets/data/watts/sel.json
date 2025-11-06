@@ -4,13 +4,32 @@
         [
             "Sure, what do you want to know.",
             "neutral",
-            0.05
+            0.05,
+            "w",
+            "w"
+        ],
+        [
+            "Ask away!",
+            "neutral",
+            0.05,
+            "n",
+            "n"
         ],
         [
             "* Tell me about Bella.\n* Tell me about Bex.\n* Tell me about Bree.\n* Tell me about yourself.\n* Go Back.",
             "neutral",
             0.05,
-            true
+            "q",
+            "w",
+            ["bellaW", "bexW", "breeA", "wattsW"]
+        ],
+        [
+            "* Tell me about Bella.\n* Tell me about Bex.\n* Tell me about Bree.\n* Tell me about yourself.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q",
+            "n",
+            ["bellaN", "bexN", "breeN", "wattsN"]
         ]
     ]
 }

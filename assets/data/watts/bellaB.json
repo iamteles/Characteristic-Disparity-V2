@@ -1,5 +1,6 @@
 {
     "ident": "bellasel",
+    "saveIdent": "bellaB",
     "lines": [
         [
             "We used to be like peanut butter and jelly!",
@@ -7,17 +8,17 @@
             0.05
         ],
         [
-            "I feel really bad for her though…",
+            "I feel really bad for her though...",
             "sad",
             0.05
         ],
         [
-            "…I’m not sure I’m even meant to tell you this..",
+            "...I’m not sure I’m even meant to tell you this, but...",
             "sad",
             0.05
         ],
         [
-            "but her parents died in a car crash drunk driving about a decade ago..",
+            "Her parents died in a car crash drunk driving about a decade ago..",
             "sad",
             0.05
         ],
@@ -27,7 +28,7 @@
             0.05
         ],
         [
-            "Her life started going uphill after that though, specially after she met Bex!",
+            "Her life started going uphill after that though, especially after she met Bex!",
             "neutral",
             0.05
         ],
@@ -42,10 +43,18 @@
             0.05
         ],
         [
-            "* How do you know her?\n* How close are you two?\n* Go Back.",
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
             "neutral",
             0.05,
-            true
+            "q","n",
+            ["bellaA", "bellaB", "bellaC", "bellaD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n*What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bellaA", "bellaB", "bellaC"]
         ]
     ]
 }

@@ -24,7 +24,7 @@ class HealthIcon extends FlxSprite
 			switch(song.toLowerCase()) { //i don't remember!
 				case 'panic-attack' | 'convergence' | 'desertion':
 					centeric = 'bolt';
-				case 'irritation' | 'conservation':
+				case 'irritation' | 'conservation' | 'commotion':
 					centeric = 'cent';
 				case 'ripple' | 'customer-service':
 					centeric = 'disk';
@@ -40,8 +40,11 @@ class HealthIcon extends FlxSprite
 		if(curIcon == "watts" && isPlayer)
 			return setIcon("bex", isPlayer);
 
-		if(curIcon == "watts-alt" && isPlayer)
+		if((curIcon == "watts-alt" || curIcon == "nila") && isPlayer)
 			return setIcon("bella", isPlayer);
+
+		if(song == "commotion" && !isPlayer)
+			return setIcon("duoshop", isPlayer);
 
 		//trace("attempt icon " + curIcon);
 		if(!Paths.fileExists('images/icons/icon-${curIcon}.png'))
@@ -101,6 +104,7 @@ class HealthIcon extends FlxSprite
 		var colorMap:Map<String, FlxColor> = [
 			"face" 		=> 0xFFA1A1A1,
 			"watts" 		=> 0xFFe5e07f,
+			"duoshop" 		=> 0xFFe5e07f,
 			"bree" 		=> 0xFF7f7387,
 			"angry-bree" 		=> 0xFF7f7387,
 			"bella"		=> 0xffFFD6D6,

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="nila icons.png">
+	<!-- Created with Adobe Animate version 24.0.0.305 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="nila text angry0000" x="4" y="4" width="240" height="208"/>
+	<SubTexture name="nila text confused0000" x="254" y="4" width="240" height="208"/>
+	<SubTexture name="nila text happy0000" x="4" y="222" width="240" height="208"/>
+	<SubTexture name="nila text neutral0000" x="254" y="222" width="240" height="208"/>
+	<SubTexture name="nila text sad0000" x="4" y="440" width="240" height="208"/>
+</TextureAtlas>

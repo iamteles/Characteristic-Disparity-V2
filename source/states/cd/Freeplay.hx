@@ -16,6 +16,7 @@ import flixel.effects.FlxFlicker;
 import flixel.addons.display.FlxBackdrop;
 import states.*;
 import flixel.util.FlxTimer;
+import data.Timings;
 
 class Freeplay extends MusicBeatState
 {
@@ -85,6 +86,7 @@ class Freeplay extends MusicBeatState
                 
                 songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
                 songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+                songs.push(["commotion", "nila", 0xFF66CC99, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
 
                 songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
                 songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
@@ -139,7 +141,7 @@ class Freeplay extends MusicBeatState
 
             if(charN == "cute" || charN == "evil" || charN == "duo" || charN == "bellavip" || charN == "duovip")
                 char.offset.set(50,0);
-            else if(charN == "cutenevil")
+            else if(charN == "cutenevil" || charN == "duo-shop")
                 char.offset.set(100,0);
             else if(charN == "bex" || charN == "bex-scared")
                 char.offset.set(-50,0);
@@ -147,6 +149,8 @@ class Freeplay extends MusicBeatState
                 char.offset.set(100,100);
             else if(charN == "empitri")
                 char.offset.set(50,50);
+            else if(charN == "nila")
+                char.offset.set(0,-50);
                 
             var text = new FlxSprite().loadGraphic(Paths.image('menu/freeplay/names/${song}'));
             text.ID = i;
@@ -200,6 +204,7 @@ class Freeplay extends MusicBeatState
         changeSelection();
     }
 
+    var rank:String = "N/A";
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -249,13 +254,20 @@ class Freeplay extends MusicBeatState
 
         if(songs[curSelected][4]) {
             scores.text +=   "SCORE: " + Math.floor(lerpValues.score);
-            scores.text += "\nACCURACY:  " +(Math.floor(lerpValues.accuracy * 100) / 100) + "%";
-            scores.text += "\nBREAKS:    " + Math.floor(lerpValues.misses);
+            scores.text += "\nRANK: " +(Math.floor(lerpValues.accuracy * 100) / 100) + "%" + ' [$rank]';
+            scores.text += "\nBREAKS: " + Math.floor(lerpValues.misses);
         }
 
 		lerpValues.score 	= FlxMath.lerp(lerpValues.score, 	realValues.score, 	 elapsed * 8);
 		lerpValues.accuracy = FlxMath.lerp(lerpValues.accuracy, realValues.accuracy, elapsed * 8);
 		lerpValues.misses 	= FlxMath.lerp(lerpValues.misses, 	realValues.misses, 	 elapsed * 8);
+
+        rank = Timings.getRank(
+			lerpValues.accuracy,
+			Math.floor(lerpValues.misses),
+			false,
+			lerpValues.accuracy == realValues.accuracy
+		);
 
 		if(Math.abs(lerpValues.score - realValues.score) <= 10)
 			lerpValues.score = realValues.score;

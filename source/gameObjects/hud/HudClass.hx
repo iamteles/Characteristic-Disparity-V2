@@ -81,13 +81,13 @@ class HudClass extends FlxGroup
 		smoothBar = true;
 
 		iconDad = new HealthIcon();
-		iconDad.setIcon(PlayState.SONG.player2, false);
+		iconDad.setIcon(PlayState.SONG.player2, false, PlayState.daSong);
 		iconDad.visible = !simpleInfo;
 		iconDad.ID = 0;
 		add(iconDad);
 
 		iconBf = new HealthIcon();
-		iconBf.setIcon(PlayState.SONG.player1, true);
+		iconBf.setIcon(PlayState.SONG.player1, true, PlayState.daSong);
 		iconBf.ID = 1;
 		iconBf.visible = !simpleInfo;
 		add(iconBf);

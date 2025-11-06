@@ -1,0 +1,44 @@
+{
+    "ident": "breesel",
+    "saveIdent": "breeB",
+    "lines": [
+        [
+            "Sorry.. dont know 'er.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Mom 2 knows her though, I think.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Every time I ask her about it, she says it's 'adult business'.",
+            "confused",
+            0.05,
+            "n"
+        ],
+        [
+            "I wanna know the tea too!!!",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "I'm a big girl! I won't tell... promise!",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "* Ask Watts about her.\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q",
+            "b",
+            ["breeA", "breeB"]
+        ]
+    ]
+}

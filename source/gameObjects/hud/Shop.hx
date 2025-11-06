@@ -19,13 +19,16 @@ import data.SongData;
 typedef WattsDialog =
 {
     var ident:String;
+    var saveIdent:Null<String>;
     var lines:Array<Dynamic>;
 }
 
 class ShopTalk extends FlxGroup
 {
     var dialogBig:FlxSprite;
-    var icon:FlxSprite;
+    var iconW:FlxSprite;
+    var iconN:FlxSprite;
+    var iconB:FlxSprite;
     var tex:FlxTypeText;
     var hasScrolled:Bool = false;
     var activeg:Bool = true;
@@ -38,6 +41,13 @@ class ShopTalk extends FlxGroup
     var watts2:FlxSound;
     var watts3:FlxSound;
     var watts4:FlxSound;
+
+    var nila1:FlxSound;
+    var nila2:FlxSound;
+    var nila3:FlxSound;
+    var nila4:FlxSound;
+
+    var bella:FlxSound;
 
     var starting:String = 'post';
 
@@ -55,19 +65,40 @@ class ShopTalk extends FlxGroup
         dialogBig.y = FlxG.height - dialogBig.height - 30;
 		add(dialogBig);
 
-        icon = new FlxSprite(0, 0);
-        icon.frames = Paths.getSparrowAtlas("hud/shop/wattsicons");
-        icon.animation.addByPrefix("neutral", 'watts text neutral', 24, true);
-        icon.animation.addByPrefix("sad", 'watts text sad', 24, true);
-        icon.animation.addByPrefix("happy", 'watts text happy', 24, true);
-        icon.animation.addByPrefix("angry", 'watts text angry', 24, true);
-        icon.animation.addByPrefix("confused", 'watts text confused', 24, true);
-        icon.animation.play("neutral");
-        icon.scale.set(0.7, 0.7);
-        icon.updateHitbox();
-        icon.x = dialogBig.x + 70;
-        icon.y = dialogBig.y + 70;
-        add(icon);
+        iconW = new FlxSprite(0, 0);
+        iconW.frames = Paths.getSparrowAtlas("hud/shop/wattsicons");
+        iconW.animation.addByPrefix("neutral", 'watts text neutral', 24, true);
+        iconW.animation.addByPrefix("sad", 'watts text sad', 24, true);
+        iconW.animation.addByPrefix("happy", 'watts text happy', 24, true);
+        iconW.animation.addByPrefix("angry", 'watts text angry', 24, true);
+        iconW.animation.addByPrefix("confused", 'watts text confused', 24, true);
+        iconW.animation.play("neutral");
+        iconW.scale.set(0.7, 0.7);
+        iconW.updateHitbox();
+        iconW.x = dialogBig.x + 85;
+        iconW.y = dialogBig.y + 70;
+        add(iconW);
+
+        iconN = new FlxSprite(0, 0);
+        iconN.frames = Paths.getSparrowAtlas("hud/shop/nilaicons");
+        iconN.animation.addByPrefix("neutral", 'nila text neutral', 24, true);
+        iconN.animation.addByPrefix("sad", 'nila text sad', 24, true);
+        iconN.animation.addByPrefix("happy", 'nila text happy', 24, true);
+        iconN.animation.addByPrefix("angry", 'nila text angry', 24, true);
+        iconN.animation.addByPrefix("confused", 'nila text confused', 24, true);
+        iconN.animation.play("neutral");
+        iconN.scale.set(0.7, 0.7);
+        iconN.updateHitbox();
+        iconN.x = dialogBig.x + 120;
+        iconN.y = dialogBig.y + 75;
+        add(iconN);
+
+        iconB = new FlxSprite(0, 0).loadGraphic(Paths.image('hud/shop/bella'));
+        iconB.scale.set(0.7, 0.7);
+        iconB.updateHitbox();
+        iconB.x = dialogBig.x + 100;
+        iconB.y = dialogBig.y + 75;
+        add(iconB);
 
         watts1 = new FlxSound();
         watts1.loadEmbedded(Paths.sound("dialog/watts/watts1"), false, false);
@@ -89,7 +120,32 @@ class ShopTalk extends FlxGroup
         watts4.volume = 0.7;
         FlxG.sound.list.add(watts4);
 
-        tex = new FlxTypeText(icon.x + icon.width + 25, icon.y, Std.int(dialogBig.width - (icon.x + icon.width + 25) - 50), '', true);
+        nila1 = new FlxSound();
+        nila1.loadEmbedded(Paths.sound("dialog/watts/nila1"), false, false);
+        nila1.volume = 0.7;
+        FlxG.sound.list.add(nila1);
+
+        nila2 = new FlxSound();
+        nila2.loadEmbedded(Paths.sound("dialog/watts/nila2"), false, false);
+        nila2.volume = 0.7;
+        FlxG.sound.list.add(nila2);
+
+        nila3 = new FlxSound();
+        nila3.loadEmbedded(Paths.sound("dialog/watts/nila3"), false, false);
+        nila3.volume = 0.7;
+        FlxG.sound.list.add(nila3);
+
+        nila4 = new FlxSound();
+        nila4.loadEmbedded(Paths.sound("dialog/watts/nila4"), false, false);
+        nila4.volume = 0.7;
+        FlxG.sound.list.add(nila4);
+
+        bella = new FlxSound();
+        bella.loadEmbedded(Paths.sound("dialog/bella"), false, false);
+        bella.volume = 0.7;
+        FlxG.sound.list.add(bella);
+
+        tex = new FlxTypeText(iconW.x + iconW.width + 25, iconW.y, Std.int(dialogBig.width - (iconW.x + iconW.width + 25) - 50), '', true);
 		tex.alpha = 1;
 		tex.setFormat(Paths.font("sylfaen.ttf"), 30, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		tex.borderSize = 1.4;
@@ -113,7 +169,7 @@ class ShopTalk extends FlxGroup
 
         var hahaHeight:Float = 0;
         for (i in 0...5) {
-            var choice = new FlxText(icon.x + icon.width + 25, icon.y + (i*(hahaHeight)), Std.int(dialogBig.width - (icon.x + icon.width + 25) - 50), 'a', true);
+            var choice = new FlxText(iconW.x + iconW.width + 25, iconW.y + (i*(hahaHeight)), Std.int(dialogBig.width - (iconW.x + iconW.width + 25) - 50), 'a', true);
             choice.alpha = 0;
             choice.setFormat(Paths.font("sylfaen.ttf"), 30, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
             choice.borderSize = 1.4;
@@ -135,59 +191,154 @@ class ShopTalk extends FlxGroup
         scrollText(dialogData.lines[curLine], dialogData.ident);
     }
 
+    function getSaved(ident:String):Bool {
+        if(ident == "bellaW")
+            return (getSaved("bellaA") && getSaved("bellaB") && getSaved("bellaC"));
+        else if(ident == "bellaN")
+            return (getSaved("bellaA") && getSaved("bellaB") && getSaved("bellaC") && getSaved("bellaD"));
+        else if(ident == "bexW")
+            return (getSaved("bexA") && getSaved("bexB") && getSaved("bexC"));
+        else if(ident == "bexN")
+            return (getSaved("bexA") && getSaved("bexB") && getSaved("bexC") && getSaved("bexD"));
+        else if(ident == "breeN")
+            return (getSaved("breeA") && getSaved("breeB"));
+        else if(ident == "wattsW")
+            return (getSaved("wattsA") && getSaved("wattsB") && getSaved("wattsC") && getSaved("wattsD"));
+        else if(ident == "wattsN")
+            return (getSaved("wattsW") && getSaved("nilaN"));
+        else if(ident == "nilaN")
+            return (getSaved("nilaA") && getSaved("nilaB") && getSaved("nilaC") && getSaved("nilaD"));
+
+        return !SaveData.wattsLines.get(ident);
+    }
+
     var curSelecting:Bool = false;
     var choiceCount:Int = 0;
+    var sounder:String = "watts";
+    var lastSounder:String = "watts";
     function scrollText(info:Array<Dynamic>, ident:String = 'doesntmatter') {
-        if(ident == 'wattsphoto' && curLine == 1) {
-            FlxTween.tween(ShopState.watts, {alpha: 0}, 0.5, {ease: FlxEase.sineInOut});
-            ShopState.zoom = 1;
-            ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y - 100);
+        if(info[4] != null) {
+            if((info[4] == "w" && ShopState.nilaMode) || (info[4] == "n" && !ShopState.nilaMode)) {
+                curLine++;
+                scrollText(dialogData.lines[curLine], dialogData.ident);
+                return;
+            }
         }
-        if(ident == 'wattsphoto' && curLine == 6) {
-            FlxTween.tween(ShopState.watts, {alpha: 1}, 0.5, {ease: FlxEase.sineInOut});
-            ShopState.zoom = 0.6;
-            ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y + 80);
+
+        if(!ShopState.nilaMode) {
+            if(ident == 'wattsphoto' && curLine == 1) {
+                FlxTween.tween(ShopState.watts, {alpha: 0}, 0.5, {ease: FlxEase.sineInOut});
+                ShopState.zoom = 1;
+                ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y - 100);
+            }
+            if(ident == 'wattsphoto' && curLine == 7) { //IMPORTANT! TEST LATER
+                FlxTween.tween(ShopState.watts, {alpha: 1}, 0.5, {ease: FlxEase.sineInOut});
+                ShopState.zoom = 0.6;
+                ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y + 80);
+            }
         }
+
+        if(curLine == 0 && dialogData.saveIdent != null) {
+            SaveData.wattsLines.set(dialogData.saveIdent, true);
+            SaveData.save();
+        }
+
+        var char:FlxSprite = ShopState.watts;
+        var icon:FlxSprite = iconW;
+        var iconHide:FlxSprite = iconN;
+        var iconHide2:FlxSprite = iconB;
+        var dontAnim:Bool = false;
+        sounder = "watts";
 
         if(info[3] != null) {
-            curChoice = 0;
-            tex.resetText(' ');
-            curLine++;
-            tex.start(false, function()
-            {
-                new FlxTimer().start(0.1, function(tmr:FlxTimer)
+            if(info[3] == "q") {
+                curChoice = 0;
+                tex.resetText(' ');
+                curLine++;
+                tex.start(false, function()
                 {
-                    hasScrolled = true;
+                    new FlxTimer().start(0.1, function(tmr:FlxTimer)
+                    {
+                        hasScrolled = true;
+                    });
                 });
-            });
 
-            var choices:Array<String> = info[0].split("\n");
-            choiceCount = choices.length;
-            for (i in 0...choices.length) {
-                for(ch in choiceGrp.members) {
-                    if(i == ch.ID) {
-                        ch.text = choices[i];
+                var saves:Array<String> = [];
+                if(info[5] != null)
+                    saves = info[5];
+
+                var choices:Array<String> = info[0].split("\n");
+                choiceCount = choices.length;
+                for (i in 0...choices.length) {
+                    for(ch in choiceGrp.members) {
+                        if(i == ch.ID) {
+                            if(saves[i] != null) {
+                                if(getSaved(saves[i]))
+                                    ch.color = FlxColor.YELLOW;
+                                else
+                                    ch.color = FlxColor.WHITE;
+                            }
+                            else
+                                ch.color = FlxColor.WHITE;
+                            ch.text = choices[i];
+                        }
                     }
                 }
-            }
 
-            curSelecting = true;
+                ShopState.watts.animation.play("neutralidle");
+                iconW.animation.play("neutral");
+
+                if(ShopState.nilaMode) {
+                    ShopState.nila.animation.play("neutralidle");
+                    iconN.animation.play("neutral");
+                }
+
+                curSelecting = true;
+                return;
+            }
+            else if(info[3] == "n") {
+                char = ShopState.nila;
+                icon = iconN;
+                iconHide = iconW;
+                sounder = "nila";
+            }
+            else if(info[3] == "b") {
+                dontAnim = true;
+                sounder = "bella";
+                iconHide = iconW;
+                iconHide2 = iconN;
+                icon = iconB;
+            }
         }
-        else {
-            curSelecting = false;
-            ShopState.watts.animation.play(info[1]);
-            icon.animation.play(info[1]);
-            tex.resetText('* ' + info[0]);
-            curLine++;
-            tex.start(false, function()
+        curSelecting = false;
+        if(!dontAnim)
+            char.animation.play(info[1]);
+        icon.animation.play(info[1]);
+        icon.alpha = 1;
+        iconHide.alpha = 0;
+        iconHide2.alpha = 0;
+        tex.resetText('* ' + info[0]);
+
+        if(sounder != lastSounder) {
+            if(sounder == "nila")
+                tex.sounds = [nila1, nila2, nila3, nila4];
+            else if(sounder == "bella")
+                tex.sounds = [bella];
+            else
+                tex.sounds = [watts1, watts2, watts3, watts4];
+        }
+        lastSounder = sounder;
+        curLine++;
+
+        tex.start(false, function()
+        {
+            new FlxTimer().start(0.1, function(tmr:FlxTimer)
             {
-                new FlxTimer().start(0.1, function(tmr:FlxTimer)
-                {
-                    ShopState.watts.animation.play(info[1] + "idle");
-                    hasScrolled = true;
-                });
+                if(!dontAnim)
+                    char.animation.play(info[1] + "idle");
+                hasScrolled = true;
             });
-        }
+        });
     }
 
 
@@ -197,7 +348,8 @@ class ShopTalk extends FlxGroup
         if(alpha == 0)
             activeg = false;
         FlxTween.tween(dialogBig, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
-        FlxTween.tween(icon, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        FlxTween.tween(iconW, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
     }
 
@@ -238,16 +390,25 @@ class ShopTalk extends FlxGroup
 
         if(activeg) {
             if(hasScrolled) {
-                if(curLine >= dialogData.lines.length) {
+                if(curLine >= dialogData.lines.length || curSelecting) {
                     switch(dialogData.ident) {
                         case "sel":
                             if(Controls.justPressed("ACCEPT")) {
                                 switch(curChoice) {
                                     case 0: resetDial("bellasel");
                                     case 1: resetDial("bexsel");
-                                    case 2: resetDial("bree");
-                                    case 3: resetDial("wattssel");
-                                    case 4: resetDial("postS");
+                                    case 2: 
+                                        if(ShopState.nilaMode)
+                                            resetDial("breesel");
+                                        else
+                                            resetDial("bree");
+                                    case 3: 
+                                        if(ShopState.nilaMode)
+                                            resetDial("duosel");
+                                        else
+                                            resetDial("wattssel");
+                                    case 4: 
+                                        resetDial("postS");
                                 }
                             }
 
@@ -292,7 +453,14 @@ class ShopTalk extends FlxGroup
                                 switch(curChoice) {
                                     case 0: resetDial("bellaA");
                                     case 1: resetDial("bellaB");
-                                    case 2: resetDial("sel");
+                                    case 2: resetDial("bellaC");
+                                    case 3:
+                                        if(ShopState.nilaMode)
+                                            resetDial("bellaD");
+                                        else
+                                            resetDial("sel");
+                                    case 4:
+                                        resetDial("sel");
                                 }
                             }
 
@@ -304,13 +472,49 @@ class ShopTalk extends FlxGroup
                                 switch(curChoice) {
                                     case 0: resetDial("bexA");
                                     case 1: resetDial("bexB");
-                                    case 2: resetDial("sel");
+                                    case 2: resetDial("bexC");
+                                    case 3:
+                                        if(ShopState.nilaMode)
+                                            resetDial("bexD");
+                                        else
+                                            resetDial("sel");
+                                    case 4:
+                                        resetDial("sel");
                                 }
                             }
 
                             if(Controls.justPressed("BACK")) {
                                 resetDial("sel");
                             }
+
+                        case "breesel":
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("breeA");
+                                    case 1: resetDial("breeB");
+                                    case 2:
+                                        resetDial("sel");
+                                }
+                            }
+
+                            if(Controls.justPressed("BACK")) {
+                                resetDial("sel");
+                            }
+
+                        case "duosel":
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("wattssel");
+                                    case 1: resetDial("nilasel");
+                                    case 2:
+                                        resetDial("sel");
+                                }
+                            }
+
+                            if(Controls.justPressed("BACK")) {
+                                resetDial("sel");
+                            }
+
                         case "wattssel":
                             if(Controls.justPressed("ACCEPT")) {
                                 switch(curChoice) {
@@ -318,14 +522,28 @@ class ShopTalk extends FlxGroup
                                     case 1: resetDial("wattsB");
                                     case 2: resetDial("wattsC");
                                     case 3: resetDial("wattsD");
-                                    case 4: resetDial("sel");
+                                    case 4: resetDial("duosel");
                                 }
                             }
 
                             if(Controls.justPressed("BACK")) {
-                                resetDial("sel");
+                                resetDial("duosel");
                             }
-                        case "wattsphoto":
+                        case "nilasel":
+                            if(Controls.justPressed("ACCEPT")) {
+                                switch(curChoice) {
+                                    case 0: resetDial("nilaA");
+                                    case 1: resetDial("nilaB");
+                                    case 2: resetDial("nilaC");
+                                    case 3: resetDial("nilaD");
+                                    case 4: resetDial("duosel");
+                                }
+                            }
+
+                            if(Controls.justPressed("BACK")) {
+                                resetDial("duosel");
+                            }
+                        case "wattsphoto": // note to self unfuckup later
                             if(Controls.justPressed("ACCEPT")) {
                                 switch(curChoice) {
                                     case 0: resetDial("wattsA");
@@ -400,6 +618,8 @@ class ShopBuy extends FlxGroup
     public static var itemDesc = "What are you looking for?";
 
     public static var activeg:Bool = false;
+
+    public static var char:Int = 0;
 
     public function new()
     {
@@ -500,14 +720,20 @@ class ShopBuy extends FlxGroup
         if(text == itemDesc)
             return;
         
-        ShopState.watts.animation.play("neutral");
+        if(char == 1 && ShopState.nilaMode)
+            ShopState.nila.animation.play("neutral");
+        else
+            ShopState.watts.animation.play("neutral");
         itemDesc = text;
         tex.resetText('* ' + text);
         tex.start(false, function()
         {
             new FlxTimer().start(0.1, function(tmr:FlxTimer)
             {
-                ShopState.watts.animation.play("idle");
+                if(char == 1 && ShopState.nilaMode)
+                    ShopState.nila.animation.play("idle");
+                else
+                    ShopState.watts.animation.play("idle");
             });
         });
     }
@@ -526,6 +752,9 @@ class ShopBuy extends FlxGroup
         for(i in tabs) {
             FlxTween.tween(i, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         }
+
+        if(activeg && ShopState.nilaMode)
+            char = FlxG.random.int(0,1);
 
         alphaTab(alpha, time);
     }
@@ -755,7 +984,10 @@ class ShopItem extends FlxGroup
         if(overlapinTest) {
             tempalpha = 1;
             if(alpha != 0) {
-                ShopBuy.scrollText(SaveData.displayShop.get(info[0])[1]);
+                var text:String = "...err, what is this, again?";
+                if(SaveData.displayShop.get(info[0])[ShopBuy.char + 1] != null)
+                    text = SaveData.displayShop.get(info[0])[ShopBuy.char + 1];
+                ShopBuy.scrollText(text);
 
                 if((FlxG.mouse.justPressed && ShopState.hudBuy.usingMouse) || (Controls.justPressed("ACCEPT") && !ShopState.hudBuy.usingMouse)) {
                     trace('PRESSED' + info[0]);

@@ -581,7 +581,7 @@ class PlayState extends MusicBeatState
 			add(playArea);
 		}
 		
-		middlescroll = (daSong == 'conservation' || daSong == 'irritation');
+		middlescroll = (daSong == 'conservation' || daSong == 'irritation' || daSong == "commotion");
 		if(middlescroll)
 		{
 			dadStrumline.x += strumPos[1]; // goes offscreen //IF I ever want to make something else, set to - for going offscreen
@@ -1080,10 +1080,9 @@ class PlayState extends MusicBeatState
 					if(!strumline.isTaiko) {
 						for(strum in strumline.strumGroup)
 						{
-							var strumData:Int = (strumline.isPlayer ? strum.strumData : 3 - strum.strumData);
-							FlxTween.tween(strum, {y: strum.initialPos.y}, Conductor.crochet / 1000, {
-								ease: FlxEase.cubeOut,
-								startDelay: Conductor.crochet / 2 / 1000 * strumData,
+							FlxTween.tween(strum, {y: strum.initialPos.y}, 1, {
+								ease: FlxEase.circOut,
+								startDelay: 0.2 + (0.15 * strum.strumData),
 							});
 						}
 					}
@@ -1114,10 +1113,9 @@ class PlayState extends MusicBeatState
 						if(!strumline.isTaiko) {
 							for(strum in strumline.strumGroup)
 							{
-								var strumData:Int = (strumline.isPlayer ? strum.strumData : 3 - strum.strumData);
-								FlxTween.tween(strum, {y: strum.initialPos.y}, Conductor.crochet / 1000, {
-									ease: FlxEase.cubeOut,
-									startDelay: Conductor.crochet / 2 / 1000 * strumData,
+								FlxTween.tween(strum, {y: strum.initialPos.y}, 1, {
+									ease: FlxEase.circOut,
+									startDelay: 0.2 + (0.15 * strum.strumData),
 								});
 							}
 						}
@@ -1306,6 +1304,12 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		if(strumline.isPlayer && !note.isHold && !note.isHoldEnd) {
+			if(SaveData.data.get("Hitsounds") != "OFF")
+				FlxG.sound.play(Paths.sound('hitsounds/' + SaveData.data.get("Hitsounds")), 1);
+		}
+
+		if(daSong == "commotion" && strumline.isPlayer) return;
 		if(thisChar != null && !note.isHold)
 		{
 			if(note.noteType != "no animation" && !singLogged)
@@ -1322,11 +1326,19 @@ class PlayState extends MusicBeatState
 
 						FlxG.sound.play(Paths.sound("thunder"));
 					case 'bella':
-						if(third != null) {
-							third.playAnim(third.singAnims[note.noteData], true);
-							third.holdTimer = 0;
-							if(daSong != "customer-service") bellasings = true;
+						if(daSong == "commotion") {
+							boyfriend.playAnim(boyfriend.singAnims[note.noteData], true);
+							boyfriend.holdTimer = 0;
+							bellasings = true;
 						}
+						else {
+							if(third != null) {
+								third.playAnim(third.singAnims[note.noteData], true);
+								third.holdTimer = 0;
+								if(daSong != "customer-service") bellasings = true;
+							}
+						}
+
 					case 'alt':
 						thisChar.playAnim(thisChar.singAnims[note.noteData] + "alt", true);
 						thisChar.holdTimer = 0;
@@ -1371,10 +1383,6 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-		if(strumline.isPlayer && !note.isHold && !note.isHoldEnd) {
-			if(SaveData.data.get("Hitsounds") != "OFF")
-				FlxG.sound.play(Paths.sound('hitsounds/' + SaveData.data.get("Hitsounds")), 1);
-		}
 	}
 	function onNoteMiss(note:Note, strumline:Strumline)
 	{
@@ -1407,6 +1415,13 @@ class PlayState extends MusicBeatState
 			else
 				FlxG.sound.play(Paths.sound('punch/punch_' + FlxG.random.int(1, 4)), 0.55);
 
+			// when the player misses notes
+			if(strumline.isPlayer)
+			{
+				popUpRating(note, strumline, true);
+			}
+
+			if(daSong == "commotion" && strumline.isPlayer) return;
 			if(thisChar != null && note.noteType != "no animation" && !singLogged)
 			{
 				if(strumline.isTaiko) {
@@ -1439,12 +1454,6 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
-
-			// when the player misses notes
-			if(strumline.isPlayer)
-			{
-				popUpRating(note, strumline, true);
-			}
 		}
 	}
 	function onNoteHold(note:Note, strumline:Strumline)
@@ -1466,7 +1475,7 @@ class PlayState extends MusicBeatState
 			health -= 0.005;
 
 		if(note.gotHit) return;
-
+		if(daSong == "commotion" && strumline.isPlayer) return;
 		if(note.noteType != "no animation"  && !singLogged)
 		{
 			switch (note.noteType) {
@@ -1482,10 +1491,17 @@ class PlayState extends MusicBeatState
 					thisChar.playAnim(thisChar.singAnims[note.noteData] + "alt", true);
 					thisChar.holdTimer = 0;
 				case 'bella':
-					if(third != null) {
-						third.playAnim(third.singAnims[note.noteData], true);
-						third.holdTimer = 0;
-						if(daSong != "customer-service") bellasings = true;
+					if(daSong == "commotion") {
+						boyfriend.playAnim(boyfriend.singAnims[note.noteData], true);
+						boyfriend.holdTimer = 0;
+						bellasings = true;
+					}
+					else {
+						if(third != null) {
+							third.playAnim(third.singAnims[note.noteData], true);
+							third.holdTimer = 0;
+							if(daSong != "customer-service") bellasings = true;
+						}
 					}
 				default:
 					thisChar.playAnim(thisChar.singAnims[note.noteData], true);
@@ -2146,7 +2162,7 @@ class PlayState extends MusicBeatState
 
 				}
 				else {
-					if(bfStrumline.character.animation.curAnim != null && daSong != "conservation" || daSong != "irritation") {
+					if(bfStrumline.character.animation.curAnim != null && (daSong != "conservation" && daSong != "irritation" && daSong != "commotion")) {
 						switch (bfStrumline.character.animation.curAnim.name)
 						{
 							case 'singLEFT':
@@ -2203,6 +2219,28 @@ class PlayState extends MusicBeatState
 						}
 					}
 				}
+				else if(bellasings && daSong == "commotion") {
+					if(bfStrumline.character.animation.curAnim != null) {
+						switch (bfStrumline.character.animation.curAnim.name)
+						{
+							case 'singLEFT':
+								camDisplaceX = - cameraMoveItensity;
+								camDisplaceY = 0;
+							case 'singRIGHT':
+								camDisplaceX = cameraMoveItensity;
+								camDisplaceY = 0;
+							case 'singUP':
+								camDisplaceX = 0;
+								camDisplaceY = -cameraMoveItensity;
+							case 'singDOWN':
+								camDisplaceX = 0;
+								camDisplaceY = cameraMoveItensity;
+							default:
+								camDisplaceX = 0;
+								camDisplaceY = 0;
+						}
+					}
+				}
 				else {
 					if(dadStrumline.character.animation.curAnim != null) {
 						switch (dadStrumline.character.animation.curAnim.name)
@@ -2237,8 +2275,8 @@ class PlayState extends MusicBeatState
 			camFollow.setPosition(stageBuild.camMiddle.x, stageBuild.camMiddle.y);
 		}
 		else {
-			if(char != null && (daSong == "irritation" || daSong == "conservation")) {
-				camFollow.setPosition(dad.getMidpoint().x, dad.getMidpoint().y + bleh);
+			if(char != null && (daSong == "irritation" || daSong == "conservation" || daSong == "commotion")) {
+				camFollow.setPosition(dad.getMidpoint().x + stageBuild.dadCam.x, dad.getMidpoint().y + bleh + stageBuild.dadCam.y);
 			}
 			else if(char != null)
 			{
@@ -3194,52 +3232,99 @@ class PlayState extends MusicBeatState
 					switch (curStep) {
 						case 2:
 							defaultCamZoom = 0.65;
+						case 32:
+							defaultCamZoom = 0.75;
+						case 64:
+							defaultCamZoom = 0.65;
+						case 96:
+							defaultCamZoom = 0.75;
 						case 128:
+							defaultCamZoom = 0.65;
+						case 160:
+							defaultCamZoom = 0.75;
+						case 192:
 							beatSpeed = 1;
+							defaultCamZoom = 0.65;
 						case 224:
 							beatSpeed = 4;
-							defaultCamZoom = 0.7;
+							defaultCamZoom = 0.75;
 						case 256:
 							CoolUtil.flash(camOther);
 							defaultCamZoom = 0.6;
 							beatSpeed = 1;
 							beatZoom = 0.01;
+						case 448:
+							defaultCamZoom = 0.7;
+							beatSpeed = 4;
+						case 480:
+							defaultCamZoom = 0.6;
+							beatSpeed = 1;							
 						case 512:
 							defaultCamZoom = 0.7;
+							beatSpeed = 4;
 						case 640:
 							defaultCamZoom = 0.76;
-							beatSpeed = 4;
 						case 656:
 							CoolUtil.flash(camOther);
 							defaultCamZoom = 0.6;
 							beatSpeed = 1;
 						case 784:
 							defaultCamZoom = 0.65;
+							beatSpeed = 2;
+						case 816:
+							defaultCamZoom = 0.75;
+						case 848:
+							defaultCamZoom = 0.65;
+						case 880:
+							defaultCamZoom = 0.75;
 						case 912: //fade vignette? -912
-							FlxTween.tween(vgblack, {alpha: 0.3}, 0.7, {ease: FlxEase.sineInOut});
-							defaultCamZoom = 0.76;
+							FlxTween.tween(vgblack, {alpha: 0.24}, 0.7, {ease: FlxEase.sineInOut});
+							defaultCamZoom = 0.66;
 							beatSpeed = 4;
+						case 976:
+							defaultCamZoom = 0.75;
+						case 1008:
+							defaultCamZoom = 0.8;
 						case 1040:
 							beatSpeed = 2;
+							defaultCamZoom = 0.66;
+						case 1104:
+							defaultCamZoom = 0.75;
+						case 1136:
+							defaultCamZoom = 0.8;
 						case 1168:
 							beatSpeed = 4;
-							defaultCamZoom = 0.8;
+							defaultCamZoom = 0.7;
 						case 1184:
-							defaultCamZoom = 0.85;
+							defaultCamZoom = 0.8;
 						case 1200:
 							FlxTween.tween(vgblack, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
 							CoolUtil.flash(camOther);
 							defaultCamZoom = 0.6;
 							beatSpeed = 1;
+						case 1248:
+							defaultCamZoom = 0.7;
+						case 1264:
+							defaultCamZoom = 0.6;
+						case 1312:
+							defaultCamZoom = 0.7;
+						case 1328:
+							defaultCamZoom = 0.6;
+						case 1360:
+							defaultCamZoom = 0.7;
+						case 1392:
+							defaultCamZoom = 0.6;
+						case 1424:
+							defaultCamZoom = 0.7;
 						case 1456:
-							defaultCamZoom = 0.67;
+							focusMiddle = true;
+							defaultCamZoom = 0.6;
 						case 1464:
-							defaultCamZoom = 0.73;
+							defaultCamZoom = 0.7;
 						case 1472:
 							CoolUtil.flash(camOther);
 							defaultCamZoom = 0.6;
 							beatSpeed = 4;
-							focusMiddle = true;
 	
 					}
 				case 'desertion':

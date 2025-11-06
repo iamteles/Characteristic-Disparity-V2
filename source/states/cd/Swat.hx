@@ -21,6 +21,7 @@ using StringTools;
 
 class Swat extends MusicBeatState
 {
+    public static var stremMode:Bool = false; // :sob:
     public static var hitboxTest:Bool = false;
     public static var testSize:Int = 3;
     public static var testType:Int = 1;
@@ -39,13 +40,14 @@ class Swat extends MusicBeatState
     public static var retry:FlxText;    
     var title:FlxSprite;
     var info:FlxText;
+    public static var scare:FlxSprite;
 
     var begun:Bool = false;
     var tweening:Bool = false;
 
     override function create() {
         super.create();
-        CoolUtil.playMusic("kiss");
+        CoolUtil.playMusic();
 
         highscore = SaveData.saveFile.data.swatScore;
 
@@ -67,7 +69,7 @@ class Swat extends MusicBeatState
 		FlxG.camera.focusOn(camFollow.getPosition());
         FlxG.camera.setScrollBoundsRect(0, 0, FlxG.width, FlxG.height, true);
 
-        playerHealth = 5;
+        playerHealth = 1;
         swatted = 0;
 
         var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));
@@ -108,6 +110,15 @@ class Swat extends MusicBeatState
         title.cameras = [camHUD];
         //title.alpha = 0;
 		add(title);
+
+        scare = new FlxSprite();
+        scare.frames = Paths.getSparrowAtlas('minigame/swat/texture');
+        scare.animation.addByPrefix('ah',  'AH', 24, true);
+        scare.animation.play('ah');
+        scare.alpha = 0;
+        scare.cameras = [camHUD];
+        add(scare);
+
 
         Main.setMouse(true);
     }
@@ -150,6 +161,7 @@ class Swat extends MusicBeatState
             if(!begun && !tweening) {
                 FlxTween.tween(title, {alpha: 0}, 1, {ease: FlxEase.circInOut, onComplete: function(twn:FlxTween)
                 {
+                    CoolUtil.playMusic("fly");
                     begun = true;
                     startFly();
                 }});
@@ -239,7 +251,13 @@ class Swat extends MusicBeatState
 
         retry.alpha = 1;
 
-        FlxG.sound.play(Paths.sound('minigame/swat/death'));
+        if(stremMode) {
+            CoolUtil.playMusic();
+            FlxG.sound.play(Paths.sound('minigame/swat/jesus'));
+            scare.alpha = 1;
+        }
+        else
+            FlxG.sound.play(Paths.sound('minigame/swat/death'));
 
         if(swatted > highscore) {
             highscore = swatted;

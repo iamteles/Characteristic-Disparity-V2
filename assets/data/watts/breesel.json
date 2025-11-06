@@ -1,0 +1,13 @@
+{
+    "ident": "breesel",
+    "lines": [
+        [
+            "* Ask Watts about her.\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q",
+            "b",
+            ["breeA", "breeB"]
+        ]
+    ]
+}

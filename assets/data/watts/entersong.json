@@ -30,7 +30,7 @@
             "* Plead\n* Taunt",
             "confused",
             0.05,
-            true
+            "q"
         ]
     ]
 }

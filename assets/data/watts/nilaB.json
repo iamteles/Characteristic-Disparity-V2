@@ -1,0 +1,55 @@
+{
+    "ident": "nilasel",
+    "saveIdent": "nilaB",
+    "lines": [
+        [
+            "I LOVE MOM 2!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "She's over so often because my parents are so busy...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Sometimes I wish she would just live with us but Mom 1 says shes 'only a babysitter'.",
+            "confused",
+            0.05,
+            "n"
+        ],
+        [
+            "Like EXCUSEEEEE YOU?",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "At least she has the time for me like...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Ugh... adults are the worst...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Except for the cool ones of course.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "* What do you do?\n* What do you think of Watts?\n* What do you wanna be when you grow up?\n* Do you like to travel?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","b",
+            ["nilaA", "nilaB", "nilaC", "nilaD"]
+        ]
+    ]
+}

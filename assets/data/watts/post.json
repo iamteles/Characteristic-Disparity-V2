@@ -2,15 +2,24 @@
     "ident": "buy",
     "lines": [
         [
+            "Hello!",
+            "neutral",
+            0.05,
+            "n",
+            "n"
+        ],
+        [
             "Welcome back!",
             "neutral",
-            0.05
+            0.05,
+            "w",
+            "w"
         ],
         [
             "* Buy\n* Talk\n* Leave",
             "neutral",
             0.05,
-            true
+            "q"
         ]
     ]
 }

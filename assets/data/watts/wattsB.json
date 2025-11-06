@@ -1,41 +1,48 @@
 {
     "ident": "wattsphoto",
+    "saveIdent": "wattsB",
     "lines": [
+        [
+            "That's me, silly...",
+            "confused",
+            0.05,"n","n"
+        ],
         [
             "Oh yes that photo!",
             "neutral",
-            0.05
+            0.05,"w","w"
         ],
         [
             "Another job I took up was babysitting.",
             "neutral",
-            0.05
+            0.05,"w","w"
         ],
         [
             "That girl right there next to me is Nila.",
             "neutral",
-            0.05
+            0.05,"w","w"
         ],
         [
             "Her parents are always pretty busy so I take care of her really often.",
             "neutral",
-            0.05
+            0.05,"w","w"
         ],
         [
             "I love that child to death! She’s like a daughter to me.",
             "happy",
-            0.05
+            0.05,"w","w"
         ],
         [
             "As someone who aspires to be a mom, she’s been a really good test run.",
             "happy",
-            0.05
+            0.05,"w","w"
         ],
         [
             "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
             "neutral",
             0.05,
-            true
+            "q","b",
+            ["wattsA", "wattsB", "wattsC", "wattsD"]
         ]
     ]
 }

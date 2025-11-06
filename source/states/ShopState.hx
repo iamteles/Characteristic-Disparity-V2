@@ -33,6 +33,7 @@ using StringTools;
 
 class ShopState extends MusicBeatState
 {
+    public static var nilaMode:Bool = true;
     public static var camGame:FlxCamera;
     public static var camHUD:FlxCamera;
 
@@ -43,9 +44,12 @@ class ShopState extends MusicBeatState
     public static var hudBuy:ShopBuy;
     var bg:FlxSprite;
     public static var watts:FlxSprite;
+    public static var nila:FlxSprite; //wat!
     var desk:FlxSprite;
 
     var wattsSpeakin:Bool = false;
+
+    public static var wattsOffset:Float = 0;
 
     public static var zoom:Float = 0.6;
     override function create()
@@ -72,7 +76,7 @@ class ShopState extends MusicBeatState
 		bg = new FlxSprite(-121, -126.95).loadGraphic(Paths.image('hud/shop/back'));
 		add(bg);
 
-        watts = new FlxSprite(628.6, 17.3);
+        watts = new FlxSprite(628.6, 0);
         watts.frames = Paths.getSparrowAtlas("hud/shop/watts");
         watts.animation.addByPrefix("idle", 'stand', 24, true);
         watts.animation.addByPrefix("neutral", 'neutral', 24, true);
@@ -85,18 +89,40 @@ class ShopState extends MusicBeatState
         watts.animation.addByPrefix("happyidle", 'happy0000', 24, true);
         watts.animation.addByPrefix("angryidle", 'angry0000', 24, true);
         watts.animation.addByPrefix("confusedidle", 'confused0000', 24, true);
-        watts.animation.addByPrefix("neutralidle", 'stand0000', 24, true);
         watts.animation.addByPrefix("pull", 'pull out0', 24, true);
         watts.animation.addByPrefix("pullalt", 'pull out-alt', 24, true);
         watts.animation.play("idle");
         watts.updateHitbox();
         add(watts);
 
+        if(nilaMode) {
+            wattsOffset = 280;
+            nila = new FlxSprite(968.6, 167.3);
+            nila.frames = Paths.getSparrowAtlas("hud/shop/nila");
+            nila.animation.addByPrefix("idle", 'Stand', 24, true);
+            nila.animation.addByPrefix("neutral", 'Normal', 24, true);
+            nila.animation.addByPrefix("sad", 'Sad', 24, true);
+            nila.animation.addByPrefix("happy", 'Excited', 24, true);
+            nila.animation.addByPrefix("angry", 'Angry', 24, true);
+            nila.animation.addByPrefix("confused", 'Confused', 24, true);
+            nila.animation.addByPrefix("neutralidle", 'Normal0000', 24, true);
+            nila.animation.addByPrefix("sadidle", 'Sad0009', 24, true);
+            nila.animation.addByPrefix("happyidle", 'Excited0000', 24, true);
+            nila.animation.addByPrefix("angryidle", 'Angry0000', 24, true);
+            nila.animation.addByPrefix("confusedidle", 'Confused0000', 24, true);
+            nila.animation.addByPrefix("pull", 'Pull Out0', 24, true);
+            nila.animation.play("idle");
+            nila.updateHitbox();
+            add(nila);
+        }
+
+        watts.x -= wattsOffset;
+
         desk = new FlxSprite(-74.4, 673.35).loadGraphic(Paths.image('hud/shop/desk'));
         desk.scale.set(1.1, 1.1);
 		add(desk);
 
-        camFollow.setPosition(watts.getMidpoint().x, watts.getMidpoint().y + 80);
+        camFollow.setPosition(watts.getMidpoint().x + wattsOffset, watts.getMidpoint().y + 80);
 		FlxG.camera.follow(camFollow, LOCKON, 1);
 		FlxG.camera.focusOn(camFollow.getPosition());
 
@@ -120,6 +146,29 @@ class ShopState extends MusicBeatState
         camGame.followLerp = elapsed * 3;
         camGame.zoom = FlxMath.lerp(camGame.zoom, zoom, elapsed * 6);
 
+        // yo im so lazy dawg
+        // ill fix this in an update or something
+        if(nilaMode) {
+            switch(nila.animation.name) {
+                case "happy" | "happyidle":
+                    nila.offset.set(-1,71);
+                case "confused" | "confusedidle":
+                    nila.offset.set(13,31);
+                case "angry" | "angryidle":
+                    nila.offset.set(4,4);
+                case "sad" | "sadidle":
+                    nila.offset.set(-8,5);
+                default:
+                    nila.offset.set(0,0);
+            //OFFSETS
+            //happy -1 71
+            //confused 13 31
+            //angry -4 4
+            //sad -8 5
+            //neutral -6 7 //hmm
+            }
+        }
+
         //if(Controls.justPressed("BACK"))
 		//	Main.switchState(new MenuState());
     }
@@ -130,7 +179,7 @@ class ShopState extends MusicBeatState
 
         var countTimer = new FlxTimer().start(1, function(tmr:FlxTimer)
         {
-            camFollow.setPosition(watts.getMidpoint().x + 400, watts.getMidpoint().y + 80);
+            camFollow.setPosition(watts.getMidpoint().x + 480 + wattsOffset, watts.getMidpoint().y + 80);
             var countTimer = new FlxTimer().start(0.7, function(tmr:FlxTimer)
             {
                 hudBuy.tweenAlpha(1,0.7);
@@ -146,7 +195,7 @@ class ShopState extends MusicBeatState
 
         var countTimer = new FlxTimer().start(1, function(tmr:FlxTimer)
         {
-            camFollow.setPosition(watts.getMidpoint().x, watts.getMidpoint().y + 80);
+            camFollow.setPosition(watts.getMidpoint().x + wattsOffset, watts.getMidpoint().y + 80);
             var countTimer = new FlxTimer().start(0.7, function(tmr:FlxTimer)
             {
                 hudTalk.tweenAlpha(1, 1);

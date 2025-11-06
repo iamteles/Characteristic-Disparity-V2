@@ -1,0 +1,56 @@
+{
+    "ident": "bellasel",
+    "saveIdent": "bellaD",
+    "lines": [
+        [
+            "Auntie Bella is AWESOME!!!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "My parents really like her, and I really like her too!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "And she's a god and she has powers and... and...",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "Ehe... sorry! She's just so cool!",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I'm so happy she's friends with Mom 2...",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I've gotta hang out with her MORE!!!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","n",
+            ["bellaA", "bellaB", "bellaC", "bellaD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n*What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bellaA", "bellaB", "bellaC"]
+        ]
+    ]
+}

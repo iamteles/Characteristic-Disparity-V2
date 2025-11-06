@@ -30,7 +30,7 @@
             "* Plead\n* Taunt",
             "sad",
             0.05,
-            true
+            "q"
         ]
     ]
 }

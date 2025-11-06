@@ -1,0 +1,13 @@
+{
+    "ident": "duosel",
+    "lines": [
+        [
+            "* Ask Watts about herself.\n* Ask Nila about herself.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q",
+            "b",
+            ["wattsW", "nilaN"]
+        ]
+    ]
+}

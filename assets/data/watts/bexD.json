@@ -1,0 +1,62 @@
+{
+    "ident": "bexsel",
+    "saveIdent": "bexD",
+    "lines": [
+        [
+            "Eh? Ms. Bex?",
+            "confused",
+            0.05,
+            "n"
+        ],
+        [
+            "She's pretty cool... I dont think she likes me very much, though.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I'm pretty sure I give her headaches whenever Auntie Bella brings her over...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Which is fair... I guess...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Hmph. It's not my fault I'm hyper and young. Deal with it.",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "I can't be mean to her around Bella though, she'd be sad and tell me to watch my manners...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "And I can't show poor manners! I worked hard on those!",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","n",
+            ["bexA", "bexB", "bexC", "bexD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n*What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bexA", "bexB", "bexC"]
+        ]
+    ]
+}

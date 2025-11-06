@@ -62,6 +62,7 @@ class MusicPlayer extends MusicBeatState
         ["Ripple VIP (Extra)", "CharaWhy", "music/extra/ripple-vip"],
         ["sin. (Remastered)", "teles ft. mochoco", "songs/sin/Inst", "songs/sin/Voices"],
         ["Resmooched Romance", "YaBoiJustin", "music/kiss"],
+        ["fly in da soup", "teles", "music/fly"],
         ["Over the Clouds (New)", "YaBoiJustin", "music/overTheHorizonHelica"],
         ["Euphoria (New Dialogue)", "mochoco", "music/dialogue/11"],
         ["Nefarious (New Dialogue)", "mochoco", "music/dialogue/12"],
