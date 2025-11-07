@@ -69,7 +69,7 @@ class Swat extends MusicBeatState
 		FlxG.camera.focusOn(camFollow.getPosition());
         FlxG.camera.setScrollBoundsRect(0, 0, FlxG.width, FlxG.height, true);
 
-        playerHealth = 1;
+        playerHealth = 5;
         swatted = 0;
 
         var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));

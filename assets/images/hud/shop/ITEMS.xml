@@ -2,16 +2,22 @@
 <!--
 Created with Funkin Packer v0.1.3 https://neeeoo.github.io/funkin-packer/
 -->
-<TextureAtlas imagePath="texture.png" width="821" height="955">
+<TextureAtlas imagePath="texture.png" width="1095" height="1194">
 	<SubTexture name="base0000" x="1" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
 	<SubTexture name="bio0000" x="1" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="crown0000" x="275" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="gallery0000" x="275" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="mic0000" x="1" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="mlc0000" x="275" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="music0000" x="549" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="shack0000" x="549" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="tails0000" x="549" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="ticket0000" x="1" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
-	<SubTexture name="time0000" x="275" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="crown0000" x="275" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="gallery0000" x="549" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="mic0000" x="1" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="mlc0000" x="275" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="music0000" x="549" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="shack0000" x="823" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="tails0000" x="823" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="ticket0000" x="823" y="718" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="time0000" x="1" y="957" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="camera0000" x="275" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="egg0000" x="1" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="egg1000" x="275" y="479" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="egg2000" x="549" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="egg3000" x="549" y="240" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
+	<SubTexture name="musicp0000" x="823" y="1" width="271" height="236" frameX="-0" frameY="-0" frameWidth="271" frameHeight="236"/>
 </TextureAtlas>

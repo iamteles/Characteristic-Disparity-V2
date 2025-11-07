@@ -878,7 +878,7 @@ class ShopTab extends FlxTypedGroup<ShopItem>
             ["crown", "Golden Crown", 100],
             ["ticket", "Rave Ticket", 50],
             ["shack", "Hair Dye", 75],
-            ["time", "Weird Hourglass", 50],
+            //["time", "Weird Hourglass", 50],
         ],
         "skins" => [
             ["base", "Classic FNF", 15],
@@ -897,6 +897,30 @@ class ShopTab extends FlxTypedGroup<ShopItem>
     public function new(name:String, x:Float, y:Float)
     {
         super();
+
+        if(ShopState.nilaMode) {
+            itemList = [
+                "songs" => [
+                    ["mic", "Used Microphone", 50],
+                    ["crown", "Golden Crown", 100],
+                    ["ticket", "Rave Ticket", 50],
+                    ["shack", "Hair Dye", 75],
+                    ["time", "Weird Hourglass", 50],
+                ],
+                "skins" => [
+                    ["base", "Classic FNF", 15],
+                    ["tails", "Tails.EXE", 15],
+                    ["mlc", "Mirror Life Crisis", 15],
+                    ["egg" + SaveData.eggCount(), "Egg", 500]
+                ],
+                "extras" => [
+                    ["biop", "Bios+", (SaveData.shop.get("bio") ? 10 : 35)],
+                    ["musicp", "Sounds+", (SaveData.shop.get("music") ? 10 : 35)],
+                    ["galleryp", "Gallery+", (SaveData.shop.get("gallery") ? 10 : 35)],
+                    ["camera", "Camera", 25],
+                ]
+            ];
+        }
         
         tab = name;
 
@@ -923,23 +947,40 @@ class ShopItem extends FlxGroup
     public var ident:Int;
     public var display:FlxSprite;
     public var icon:FlxSprite;
+    public var plus:FlxSprite;
     public var name:FlxText;
     public var price:FlxText;
 
     public var info:Array<Dynamic>;
 
     public var overAlpha:Bool = true;
+    var isPlus:Bool = false;
     public function new(info:Array<Dynamic>, x:Float, y:Float)
     {
         super();
         this.info = info;
 
+        var displayThingo:String = info[0];
+        if(displayThingo.endsWith("p")) {
+            if(displayThingo != "musicp")
+                displayThingo = info[0].substring(0, info[0].length-1);
+            isPlus = true;
+        }
+
         display = new FlxSprite(x, y);
         display.frames = Paths.getSparrowAtlas("hud/shop/ITEMS");
-        display.animation.addByPrefix("idle", info[0], 24, true);
+        display.animation.addByPrefix("idle", displayThingo, 24, true);
         display.animation.play("idle");
         display.scale.set(0.6, 0.6);
         display.updateHitbox();
+
+        if(isPlus) {
+            plus = new FlxSprite().loadGraphic(Paths.image("hud/shop/plus"));
+            plus.scale.set(0.25, 0.25);
+            plus.updateHitbox();
+            plus.x = display.x+display.width-plus.width;
+            plus.y = display.y+display.height-plus.height;
+        }
 
         name = new FlxText(x, y+140, 0, info[1]);
 		name.setFormat(Main.gFont, 22, 0xFFFFFFFF, LEFT);
@@ -958,6 +999,8 @@ class ShopItem extends FlxGroup
         price.y = name.y+name.height;
 
         add(display);
+        if(isPlus)
+            add(plus);
 		add(name);
         add(icon);
         add(price);
@@ -972,6 +1015,8 @@ class ShopItem extends FlxGroup
         super.update(elapsed);
 
         display.alpha = alpha * alphaSold;
+        if(isPlus)
+            plus.alpha = display.alpha;
         name.alpha = alpha;
         icon.alpha = alpha;
         price.alpha = alpha;
@@ -986,7 +1031,7 @@ class ShopItem extends FlxGroup
             if(alpha != 0) {
                 var text:String = "...err, what is this, again?";
                 if(SaveData.displayShop.get(info[0])[ShopBuy.char + 1] != null)
-                    text = SaveData.displayShop.get(info[0])[ShopBuy.char + 1];
+                    text = SaveData.displayShop.get(info[0])[ShopBuy.char - 1];
                 ShopBuy.scrollText(text);
 
                 if((FlxG.mouse.justPressed && ShopState.hudBuy.usingMouse) || (Controls.justPressed("ACCEPT") && !ShopState.hudBuy.usingMouse)) {
@@ -996,6 +1041,10 @@ class ShopItem extends FlxGroup
                         FlxG.sound.play(Paths.sound("csin"));
                         SaveData.buyItem(info[0]);
                         SaveData.transaction(-Std.int(info[2]));
+
+                        if(info[0].endsWith("p") && !SaveData.shop.get(info[0].substring(0, info[0].length-1))) {
+                            SaveData.buyItem(info[0].substring(0, info[0].length-1));
+                        }
 
                         if(info[0] == 'crown') {
                             states.cd.MainMenu.unlocks.push("Week 1: VIP!");
@@ -1010,6 +1059,10 @@ class ShopItem extends FlxGroup
                         if(info[0] == 'ticket') {
                             states.cd.MainMenu.unlocks.push("Song: Kaboom! (FREEPLAY)");
                             //Main.switchState(new states.cd.MainMenu());
+                        }
+
+                        if(info[0] == 'camera') {
+                            states.cd.MainMenu.unlocks.push("Photo Mode!");
                         }
 
                     }

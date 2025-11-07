@@ -295,7 +295,7 @@ class SaveData
 			"From Nila's short lived papparazi phase. Watch out around her, maybe.",
 			"Now it can hold more photos! Improvements by yours truly!"
 		],
-		"egg" => [
+		"egg0" => [
 			false,
 			"In the mood for an out-of-season easter egg?",
 			"'Ya sure 'ya want that now? I'd try some... 'discount codes' if I were you."
@@ -310,14 +310,14 @@ class SaveData
 			"All I'm good for is my yo-yo and my half-bitten egg...",
 			"Dishcount codes really comin' in handy, hm? *chew*"
 		],
-		"crumbs" => [
+		"egg3" => [
 			false,
 			"Someone wanted me to tell you that AZURE is the code.",
 			"*burp* whoops."
 		],
 		"camera" => [
 			false,
-			"Someone wanted me to tell you that AZURE is the code.",
+			"text for watts cam",
 			"It's a hand me down from my dad. Now it's yours, if you pay, of course."
 		],
 		"fitdon" => [
@@ -733,6 +733,21 @@ class SaveData
 		}
 
 		return count == songList.length;
+	}
+
+	public static function eggCount() {
+		var count:Int = 0;
+		var songList:Array<String> = [
+			"fnfdon",
+			"fitdon",
+			"ylyl",
+		];
+
+		for (song in songList) {
+			if (shop.get(song))  count++;
+		}
+
+		return count;
 	}
 
 	public static function updateWindowSize()
