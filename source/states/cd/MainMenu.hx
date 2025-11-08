@@ -278,11 +278,7 @@ class MainMenu extends MusicBeatState
                                     case "games":
                                         openSubState(new subStates.Game());
                                     case "music":
-                                        //if(SaveData.data.get("Preload Songs")) {
-                                            Main.switchState(new states.LoadSongState.LoadMusicPlayer());
-                                        //}
-                                        //else
-                                        //    Main.switchState(new states.cd.MusicPlayer());
+                                        Main.switchState(new states.cd.MusicPlayer());
                                     case "options":
                                         //openSubState(new subStates.OptionsSubState());
                                         Main.switchState(new states.menu.OptionsState());
@@ -410,7 +406,7 @@ class MainMenu extends MusicBeatState
     function returnMenu(num:Int):Bool
     {
         if(unlockables.contains(list[num]))
-            return SaveData.shop.get(list[num]);
+            return (SaveData.shop.get(list[num]) || SaveData.shop.get(list[num] + 'p'));
         else if(list[num] == "freeplay") {
             if(SaveData.progression.get("week1") == null)
                 return false;

@@ -356,7 +356,7 @@ class MusicPlayer extends MusicBeatState
         camGame.followLerp = elapsed * 6;
         cloudsL.alpha = FlxMath.lerp(cloudsL.alpha, vol, elapsed*6);
         
-        if(Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) {
+        if((Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) && SaveData.shop.get("musicp")) {
             if(vol == 0)
                 vol = 1;
             else

@@ -34,6 +34,7 @@ class PauseSubState extends MusicBeatSubState
 	var left:FlxSprite;
 	var right:FlxSprite;
 	var bpButton:FlxSprite;
+	var pmButton:FlxSprite;
 	var skull:FlxSprite;
 	var deaths:FlxText;
 	public function new()
@@ -80,7 +81,6 @@ class PauseSubState extends MusicBeatSubState
 			button.scale.set(0.65,0.65);
 			button.updateHitbox();
 
-
 			switch(index) {
 				case 0:
 					button.screenCenter(X);
@@ -126,6 +126,17 @@ class PauseSubState extends MusicBeatSubState
 		bpButton.y = FlxG.height - bpButton.height - 20;
 		add(bpButton);
 
+		pmButton = new FlxSprite().loadGraphic(Paths.image("hud/pause/photo"));
+		pmButton.scale.set(0.7,0.7);
+		pmButton.updateHitbox();
+		pmButton.x = bpButton.x + (bpButton.width/2) - (pmButton.width/2);
+		pmButton.screenCenter(Y);
+		if(SaveData.shop.get("camera"))
+			pmButton.alpha = 1;
+		else
+			pmButton.alpha = 0;
+		add(pmButton);
+
 		skull = new FlxSprite().loadGraphic(Paths.image("icons/icon-face"));
 		skull.updateHitbox();
 		skull.x = 1004 + 138 - (skull.width/2);
@@ -140,11 +151,22 @@ class PauseSubState extends MusicBeatSubState
 		add(deaths);
 
 		var botText = new FlxText(0, 0, 0, Std.string(["X"]));
-		botText.setFormat(Main.gFont, 46, 0xFFFFFFFF, CENTER);
+		botText.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
 		botText.setBorderStyle(OUTLINE, 0xFF000000, 2);
 		botText.x = bpButton.x + (bpButton.width/2) - (botText.width/2);
 		botText.y = bpButton.y - botText.height - 5;
 		add(botText);
+
+		var photoText = new FlxText(0, 0, 0, Std.string(["Y"]));
+		photoText.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
+		photoText.setBorderStyle(OUTLINE, 0xFF000000, 2);
+		photoText.x = bpButton.x + (bpButton.width/2) - (photoText.width/2);
+		photoText.y = pmButton.y + pmButton.height - 5;
+		if(SaveData.shop.get("camera"))
+			photoText.alpha = 1;
+		else
+			photoText.alpha = 0;
+		add(photoText);
 
 		var grphic:FlxSprite;
 		grphic = new FlxSprite().loadGraphic(Paths.image("hud/pause/pause"));
@@ -204,13 +226,17 @@ class PauseSubState extends MusicBeatSubState
 			}
 		}
 
+		if(CoolUtil.mouseOverlap(pmButton, lastCam)) {
+			if(FlxG.mouse.justPressed && focused) {
+				photo();
+			}
+		}
+
 		if(Controls.justPressed("BOTPLAY"))
 			botplay();
 
-		if(Controls.justPressed("LOOP")) {
-			persistentDraw = false;
-			this.openSubState(new PhotoSubState());
-		}
+		if(Controls.justPressed("LOOP"))
+			photo();
 
 		if(PlayState.botplay)
 			bpButton.animation.play('on');
@@ -298,5 +324,14 @@ class PauseSubState extends MusicBeatSubState
 
 		var thing:String = (PlayState.botplay ? "On" : "Off");
 		FlxG.sound.play(Paths.sound("botplay" + thing));
+	}
+
+	function photo() {
+		if(!SaveData.shop.get("camera"))
+			return;
+		
+		persistentDraw = false;
+		FlxG.sound.play(Paths.sound("camera"));
+		this.openSubState(new PhotoSubState());
 	}
 }

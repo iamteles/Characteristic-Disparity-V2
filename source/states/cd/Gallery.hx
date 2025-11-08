@@ -49,7 +49,7 @@ class Gallery extends MusicBeatState
 		"main" => [
 			["menu/gallery/main/" + "fanart", "fanart", ""],
 			["menu/gallery/main/" + "concepts", "concepts", ""],
-			["menu/gallery/main/" + "videos", "videos", ""],
+			//["menu/gallery/main/" + "videos", "videos", ""],
 			//["menu/gallery/main/" + "fanart", "fanart", ""],
 		],
 		"fanart" => [

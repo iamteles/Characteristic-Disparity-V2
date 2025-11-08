@@ -59,10 +59,13 @@ class TitleScreen extends MusicBeatState
         tiles.alpha = tileAlpha;
         add(tiles);
 
-        var logoName:String = "";
+        var logoName:String = "-plus";
         if(Main.curTitle[0] == "retro")
             logoName = "-retro";
         logo = new FlxSprite(204.05, 46.7).loadGraphic(Paths.image('menu/title/logo' + logoName));
+        if(logoName == "-plus")
+            logo.scale.set(0.7,0.7);
+        logo.updateHitbox();
         logo.screenCenter(X);
         var storeY:Float = logo.y;
 		logo.y -= 20;

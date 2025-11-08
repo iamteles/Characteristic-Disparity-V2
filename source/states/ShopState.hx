@@ -33,7 +33,7 @@ using StringTools;
 
 class ShopState extends MusicBeatState
 {
-    public static var nilaMode:Bool = true;
+    public static var nilaMode:Bool = false;
     public static var camGame:FlxCamera;
     public static var camHUD:FlxCamera;
 

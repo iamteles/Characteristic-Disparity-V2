@@ -186,7 +186,7 @@ class SaveData
 			"RANDOMIZE",
 			SELECTOR,
 			"What tile + music combo the menu uses. Defaults to HORIZON if you choose a locked style.",
-			["RANDOMIZE","HORIZON","THUNDER", "COUNTER", "CLOUDS", "CLOUDS-OLD", "V1"]
+			["RANDOMIZE","HORIZON","THUNDER", "COUNTER", "CLOUDS", "BEAKER", "CLOUDS-OLD", "V1"]
 		],
 		"Miss on Ghost Tap" => [
 			false,
@@ -197,6 +197,7 @@ class SaveData
 
 	public static var progression:Map<String, Dynamic> = [
 		"shopentrance" => false,
+		"nilaentrance" => false,
 		"firstboot" => false,
 		"intimidated" => false,
 		"week2" => false,
@@ -205,7 +206,8 @@ class SaveData
 		"oneofthem" => false,
 		"debug" => false,
 		"finished" => false,
-		"story" => false
+		"story" => false,
+		"nila" => false
 	];
 	public static var songs:Map<String, Dynamic> = [
 		"euphoria" => false,
@@ -231,6 +233,7 @@ class SaveData
 	];
 	public static var wattsLines:Map<String, Dynamic> = []; //maybe fill it in overtime lol?
 	public static var money:Int = 0;
+	public static var wattsNum:Int = -1;
 	public static var shop:Map<String, Dynamic> = [];
 	public static var displayShop:Map<String, Dynamic> = [
 		"crown" => [
@@ -342,8 +345,6 @@ class SaveData
 		]
 	];
 
-	public static var initialTicks:Int = 0;
-
 	public static var saveFile:FlxSave;
 	public static var progressionFile:FlxSave;
 
@@ -352,12 +353,12 @@ class SaveData
 	public static function init()
 	{
 		saveFile = new FlxSave();
-		saveFile.bind("settings",	"teles/CD"); // use these for settings
+		saveFile.bind("settings",	"teles/CDplus"); // use these for settings
 
 		progressionFile = new FlxSave();
-		progressionFile.bind("progression",	"teles/CD");
+		progressionFile.bind("progression",	"teles/CDplus");
 
-		FlxG.save.bind("save-data", "teles/CD"); // these are for other stuff
+		FlxG.save.bind("save-data", "teles/CDplus"); // these are for other stuff
 
 		load();
 
@@ -407,13 +408,8 @@ class SaveData
 			saveFile.data.settings = data;
 		}
 
-		if(saveFile.data.menuBg == null)
-		{
+		if(saveFile.data.menuBg == null) {
 			saveFile.data.menuBg = menuBg;
-		}
-
-		if(progressionFile.data.ticks == null) {
-			progressionFile.data.ticks = 0;
 		}
 
 		if(progressionFile.data.money == null) {
@@ -443,14 +439,19 @@ class SaveData
 			progressionFile.data.songs = songs;
 		}
 
+		if(progressionFile.data.wattsNum == null)
+		{
+			progressionFile.data.wattsNum = wattsNum;
+		}
+
 		if(progressionFile.data.wattsLines == null)
 		{
 			progressionFile.data.wattsLines = wattsLines;
 		}
 
-		initialTicks = progressionFile.data.ticks;
 		songs = progressionFile.data.songs;
 		wattsLines = progressionFile.data.wattsLines;
+		wattsNum = progressionFile.data.wattsNum;
 		money = progressionFile.data.money;
 		shop = progressionFile.data.shop;
 		progression = progressionFile.data.progression;
@@ -529,12 +530,12 @@ class SaveData
 		saveFile.data.menuBg = menuBg;
 		saveFile.flush();
 
-		progressionFile.data.ticks = curTime();
 		progressionFile.data.money = money;
 		progressionFile.data.shop = shop;
 		progressionFile.data.progression = progression;
 		progressionFile.data.songs = songs;
 		progressionFile.data.wattsLines = wattsLines;
+		progressionFile.data.wattsNum = wattsNum;
 		progressionFile.flush();
 		update();
 	}
@@ -585,10 +586,6 @@ class SaveData
 		}
 
 		return skinArray;
-	}
-
-	public static function curTime():Int {
-		return initialTicks + FlxG.game.ticks;
 	}
 
 	public static function wipe(?which:String = 'ALL'){
@@ -747,7 +744,33 @@ class SaveData
 			if (shop.get(song))  count++;
 		}
 
+		for(checker in 0...3) {
+			if(shop.get("egg"+checker)) {
+				count = checker;
+				break;
+			}
+		}
+
 		return count;
+	}
+
+	public static function eggData():Array<Dynamic> {
+		var name:String = "Egg";
+		var price:Int = 500;
+
+		switch(eggCount()) {
+			case 1:
+				name = "Munched Egg";
+				price = 300;
+			case 2:
+				name = "Crunched Egg";
+				price = 150;
+			case 3:
+				name = "Egg?";
+				price = 1;
+		}
+		
+		return [name, price];
 	}
 
 	public static function updateWindowSize()

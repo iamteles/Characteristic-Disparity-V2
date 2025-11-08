@@ -16,7 +16,7 @@
             "w"
         ],
         [
-            "* Buy\n* Talk\n* Leave",
+            "* Buy\n* Talk\n* Completion\n* Leave",
             "neutral",
             0.05,
             "q"

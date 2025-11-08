@@ -155,7 +155,7 @@ class OptionsState extends MusicBeatState
 		infoTxt.antialiasing = false;
 		add(infoTxt);
 
-		verTxt = new FlxText(0,0,0,'Characteristic Disparity v2.5.0           Running Doido Engine           Completion Rate: ${SaveData.percentage()}%           Press X to reset your save data.');
+		verTxt = new FlxText(0,0,0,'Press X to reset your save data.');
 		verTxt.setFormat(Main.dsFont, 28, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;

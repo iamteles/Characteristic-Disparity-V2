@@ -89,6 +89,7 @@ class Main extends Sprite
 		"THUNDER" => ["bree", "overTheHorizonBree", "week2"],
 		"COUNTER" => ["watts", "shopkeeper", "shopentrance"],
 		"CLOUDS" => ["helica", "overTheHorizonHelica", "sin"],
+		"BEAKER" => ["nila", "overTheHorizonNila", "free"],
 		"CLOUDS-OLD" => ["helica", "overTheHorizonHelica-old", "sin"],
 		"V1" => ["retro", "speaker", "free"],
 	];

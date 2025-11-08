@@ -208,6 +208,8 @@ class ShopTalk extends FlxGroup
             return (getSaved("wattsW") && getSaved("nilaN"));
         else if(ident == "nilaN")
             return (getSaved("nilaA") && getSaved("nilaB") && getSaved("nilaC") && getSaved("nilaD"));
+        else if(ident == "wattsB")
+            return SaveData.progression.get("nila");
 
         return !SaveData.wattsLines.get(ident);
     }
@@ -353,8 +355,124 @@ class ShopTalk extends FlxGroup
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
     }
 
+    public function createProgress():WattsDialog {
+        return {
+            ident: "buy",
+            saveIdent: null,
+            lines: [
+                [
+                    'progress is ${SaveData.percentage()}%, as previously shown in the options menu. new text tba.',
+                    "confused",
+                    0.05
+                ],
+                [
+                    "* Buy\n* Talk\n* Progress\n* Leave",
+                    "neutral",
+                    0.05,
+                    "q"
+                ]
+            ]
+        }
+    }
+
+    public function createB():WattsDialog {
+        if(ShopState.nilaMode) {
+            return {
+                ident: "wattsB",
+                saveIdent: null,
+                lines: [
+                        "That's me, silly...",
+                        "confused",
+                        0.05,"n","n"
+                ],
+            };
+        }
+        
+        SaveData.wattsNum++;
+        SaveData.save();
+        return switch(SaveData.wattsNum) {
+            case 0: {
+                ident: "wattsphoto",
+                saveIdent: null,
+                lines: [
+                    [
+                        "Oh yes, that photo!",
+                        "neutral",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "Another job I took up was babysitting.",
+                        "neutral",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "That girl right there is Nila.",
+                        "neutral",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "Her parents are always pretty busy so I take care of her really often.",
+                        "neutral",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "I love that child to death! She’s like a daughter to me.",
+                        "happy",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "As someone who aspires to be a mom, she’s been a really good test run.",
+                        "happy",
+                        0.05,"w","w"
+                    ],
+                    [
+                        "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
+                        "neutral",
+                        0.05,
+                        "q","b",
+                        ["wattsA", "wattsB", "wattsC", "wattsD"]
+                    ]
+                ]
+            }
+            case 1: {
+                ident: "wattsphoto",
+                saveIdent: null,
+                lines: [
+                    [
+                        "Uhh... You already asked about that...",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "That's Nila.. remember? Sweetest kid in the world, love her like shes my own!",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "Wonder how shes doing right now...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
+                        "neutral",
+                        0.05,
+                        "q","b",
+                        ["wattsA", "wattsB", "wattsC", "wattsD"]
+                    ]
+                ]
+            }
+            default: null;
+        }
+    }
+
     public function resetDial(newd:String) {
-        dialogData = haxe.Json.parse(Paths.getContent('data/watts/$newd.json').trim());
+        if(newd == "progress")
+            dialogData = createProgress();
+        else if(newd == "wattsB")
+            dialogData = createB();
+        else
+            dialogData = haxe.Json.parse(Paths.getContent('data/watts/$newd.json').trim());
         curLine = 0;
         hasScrolled = false;
         scrollText(dialogData.lines[curLine], dialogData.ident);
@@ -522,12 +640,19 @@ class ShopTalk extends FlxGroup
                                     case 1: resetDial("wattsB");
                                     case 2: resetDial("wattsC");
                                     case 3: resetDial("wattsD");
-                                    case 4: resetDial("duosel");
+                                    case 4: 
+                                        if(ShopState.nilaMode)
+                                            resetDial("duosel");
+                                        else
+                                            resetDial("sel");
                                 }
                             }
 
                             if(Controls.justPressed("BACK")) {
-                                resetDial("duosel");
+                                if(ShopState.nilaMode)
+                                    resetDial("duosel");
+                                else
+                                    resetDial("sel");
                             }
                         case "nilasel":
                             if(Controls.justPressed("ACCEPT")) {
@@ -564,7 +689,8 @@ class ShopTalk extends FlxGroup
                                         curSelecting = false;
                                         ShopState.enterShop();
                                     case 1: resetDial("sel");
-                                    case 2: Main.switchState(new states.cd.MainMenu());
+                                    case 2: resetDial("progress");
+                                    case 3: Main.switchState(new states.cd.MainMenu());
                                 }
                             }
 
@@ -577,7 +703,7 @@ class ShopTalk extends FlxGroup
                 }
                 else {
                     if(Controls.justPressed("ACCEPT")) {
-                        FlxG.sound.play(Paths.sound('click'));
+                        FlxG.sound.play(Paths.sound('dialog/skip'));
     
                         hasScrolled = false;
         
@@ -911,7 +1037,7 @@ class ShopTab extends FlxTypedGroup<ShopItem>
                     ["base", "Classic FNF", 15],
                     ["tails", "Tails.EXE", 15],
                     ["mlc", "Mirror Life Crisis", 15],
-                    ["egg" + SaveData.eggCount(), "Egg", 500]
+                    ["egg" + SaveData.eggCount(), SaveData.eggData()[0], SaveData.eggData()[1]]
                 ],
                 "extras" => [
                     ["biop", "Bios+", (SaveData.shop.get("bio") ? 10 : 35)],
@@ -1031,46 +1157,53 @@ class ShopItem extends FlxGroup
             if(alpha != 0) {
                 var text:String = "...err, what is this, again?";
                 if(SaveData.displayShop.get(info[0])[ShopBuy.char + 1] != null)
-                    text = SaveData.displayShop.get(info[0])[ShopBuy.char - 1];
+                    text = SaveData.displayShop.get(info[0])[ShopBuy.char + 1];
                 ShopBuy.scrollText(text);
 
                 if((FlxG.mouse.justPressed && ShopState.hudBuy.usingMouse) || (Controls.justPressed("ACCEPT") && !ShopState.hudBuy.usingMouse)) {
-                    trace('PRESSED' + info[0]);
+                    var item:String = (cast info[0]);
 
-                    if(!SaveData.shop.get(info[0]) && SaveData.money >= info[2]) {
+                    if(!SaveData.shop.get(item) && SaveData.money >= info[2]) {
                         FlxG.sound.play(Paths.sound("csin"));
-                        SaveData.buyItem(info[0]);
+                        SaveData.buyItem(item);
                         SaveData.transaction(-Std.int(info[2]));
 
-                        if(info[0].endsWith("p") && !SaveData.shop.get(info[0].substring(0, info[0].length-1))) {
-                            SaveData.buyItem(info[0].substring(0, info[0].length-1));
+                        if(item.endsWith("p")) {
+                            if(!SaveData.shop.get(item.substring(0, item.length-1)))
+                                SaveData.buyItem(info[0].substring(0, item.length-1));
                         }
 
-                        if(info[0] == 'crown') {
+                        if(item.startsWith("egg")) {
+                            SaveData.buyItem("fnfdon");
+                            SaveData.buyItem("fitdon");
+                            SaveData.buyItem("ylyl");
+                        }
+
+                        if(item == 'crown') {
                             states.cd.MainMenu.unlocks.push("Week 1: VIP!");
                             //Main.switchState(new states.cd.MainMenu());
                         }
 
-                        if(info[0] == 'shack') {
+                        if(item == 'shack') {
                             states.cd.MainMenu.unlocks.push("Song: Ripple! (FREEPLAY)\nSong: Customer Service! (FREEPLAY)");
                            // Main.switchState(new states.cd.MainMenu());
                         }
 
-                        if(info[0] == 'ticket') {
+                        if(item == 'ticket') {
                             states.cd.MainMenu.unlocks.push("Song: Kaboom! (FREEPLAY)");
                             //Main.switchState(new states.cd.MainMenu());
                         }
 
-                        if(info[0] == 'camera') {
+                        if(item == 'camera') {
                             states.cd.MainMenu.unlocks.push("Photo Mode!");
                         }
 
                     }
-                    else if (info[0] != 'mic'){
+                    else if (item != 'mic'){
                         FlxG.sound.play(Paths.sound("menu/locked"));
                     }
 
-                    if(info[0] == 'mic' && (SaveData.money >= info[2] || SaveData.shop.get(info[0]))) {
+                    if(item == 'mic' && (SaveData.money >= info[2] || SaveData.shop.get(item))) {
                         ShopState.exitShop(true);
                     }
                 }

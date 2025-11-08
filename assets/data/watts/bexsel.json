@@ -9,7 +9,7 @@
             ["bexA", "bexB", "bexC", "bexD"]
         ],
         [
-            "* How do you know her?\n* How close are you two?\n*What's your favorite memory with her?\n* Go Back.",
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Go Back.",
             "neutral",
             0.05,
             "q","w",
