@@ -209,7 +209,7 @@ class ShopTalk extends FlxGroup
         else if(ident == "nilaN")
             return (getSaved("nilaA") && getSaved("nilaB") && getSaved("nilaC") && getSaved("nilaD"));
         else if(ident == "wattsB")
-            return SaveData.progression.get("nila");
+            return !SaveData.progression.get("nila");
 
         return !SaveData.wattsLines.get(ident);
     }
@@ -233,7 +233,7 @@ class ShopTalk extends FlxGroup
                 ShopState.zoom = 1;
                 ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y - 100);
             }
-            if(ident == 'wattsphoto' && curLine == 7) { //IMPORTANT! TEST LATER
+            if(ident == 'wattsphoto' && curLine == 6) { //IMPORTANT! TEST LATER
                 FlxTween.tween(ShopState.watts, {alpha: 1}, 0.5, {ease: FlxEase.sineInOut});
                 ShopState.zoom = 0.6;
                 ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y + 80);
@@ -375,7 +375,10 @@ class ShopTalk extends FlxGroup
         }
     }
 
-    public function createB():WattsDialog {
+    public function createB(force:Bool = false):WattsDialog {
+        if(force)
+            SaveData.wattsNum = -1;
+
         if(ShopState.nilaMode) {
             return {
                 ident: "wattsB",
@@ -435,7 +438,7 @@ class ShopTalk extends FlxGroup
                 ]
             }
             case 1: {
-                ident: "wattsphoto",
+                ident: "wattsb",
                 saveIdent: null,
                 lines: [
                     [
@@ -462,7 +465,73 @@ class ShopTalk extends FlxGroup
                     ]
                 ]
             }
-            default: null;
+            case 2: {
+                ident: "wattsb",
+                saveIdent: null,
+                lines: [
+                    [
+                        "...sometimes, I wish babysitting her was my main job.",
+                        "sad",
+                        0.05,"w"
+                    ],
+                    [
+                        "Don't get me wrong, I love this shop. I'ts good for me and my fam but...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "Once you get a taste of being a mom sometimes you just... hm...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "...a-am I saying too much..? I apologize...",
+                        "sad",
+                        0.05,"w"
+                    ],
+                    [
+                        "*sniffle*",
+                        "sad",
+                        0.05,"w"
+                    ],
+                    [
+                        "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
+                        "neutral",
+                        0.05,
+                        "q","b",
+                        ["wattsA", "wattsB", "wattsC", "wattsD"]
+                    ]
+                ]
+            }
+            case 3: {
+                ident: "wattsb",
+                saveIdent: null,
+                lines: [
+                    [
+                        "GGAH I HATE SEPERATION ANXIETY!",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "Why can't she just...",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "I",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
+                        "neutral",
+                        0.05,
+                        "q","b",
+                        ["wattsA", "wattsB", "wattsC", "wattsD"]
+                    ]
+                ]
+            }
+            default: createB(true);
         }
     }
 
