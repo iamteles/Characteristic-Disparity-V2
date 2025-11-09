@@ -274,7 +274,7 @@ class MainMenu extends MusicBeatState
                                     case "kiss":
                                         Main.switchState(new states.cd.Kissing());
                                     case "shop":
-                                        Main.switchState(new states.ShopState.LoadShopState());
+                                        Main.switchState(new states.ShopState());
                                     case "games":
                                         openSubState(new subStates.Game());
                                     case "music":

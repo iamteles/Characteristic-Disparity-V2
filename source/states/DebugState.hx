@@ -17,7 +17,7 @@ using StringTools;
 
 class DebugState extends MusicBeatState
 {
-	var optionShit:Array<String> = ["menu", "video", "ending", "swat", "kiss"];
+	var optionShit:Array<String> = ["menu", "video", "ending", "shop reset"];
 	static var curSelected:Int = 0;
 
 	var optionGroup:FlxTypedGroup<Alphabet>;
@@ -88,6 +88,10 @@ class DebugState extends MusicBeatState
 			{
 				case "test":
 					Main.switchState(new states.PlayState());
+				case "shop reset":
+					SaveData.progression.set("nila", false);
+					SaveData.progression.set("nilaentrance", false);
+					SaveData.save();
 				case "menu":
 					Main.switchState(new states.cd.MainMenu());
 				case "dialog":
@@ -104,7 +108,7 @@ class DebugState extends MusicBeatState
 					states.VideoState.name = "divergence";
 					Main.switchState(new states.VideoState());
 				case "shop":
-					Main.switchState(new states.ShopState.LoadShopState());
+					Main.switchState(new states.ShopState());
 				case "transition":
 					openSubState(new GameTransition(false));
 				case "options":

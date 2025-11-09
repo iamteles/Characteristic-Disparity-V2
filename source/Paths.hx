@@ -219,6 +219,7 @@ class Paths
 			"hud/pause/buttons",
 			"hud/pause/pause",
 			"hud/pause/selector",
+			"hud/pause/photo",
 			'menu/title/tiles/main',
 			"icons/icon-face",
 

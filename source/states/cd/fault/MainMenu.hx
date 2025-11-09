@@ -182,7 +182,7 @@ class MainMenu extends MusicBeatState
                                 case "gallery":
                                     Main.switchState(new states.cd.Gallery());
                                 case "shop":
-                                    Main.switchState(new states.ShopState.LoadShopState());
+                                    Main.switchState(new states.ShopState());
                                 case "music":
                                     Main.switchState(new states.cd.MusicPlayer());
                                 case "options":

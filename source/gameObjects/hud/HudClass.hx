@@ -336,7 +336,7 @@ class HudClass extends FlxGroup
 		for(icon in [iconDad, iconBf])
 		{
 			if(icon.ID == iconID)
-				icon.setIcon(newIcon, icon.isPlayer);
+				icon.setIcon(newIcon, icon.isPlayer, PlayState.daSong);
 		}
 		updateIconPos();
 

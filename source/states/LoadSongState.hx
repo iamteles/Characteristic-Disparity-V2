@@ -181,7 +181,7 @@ class LoadSongState extends MusicBeatState
 			//trace('preloaded $i');
 
 			var icon = new HealthIcon();
-			icon.setIcon(i, false);
+			icon.setIcon(i, (i == SONG.player1), SONG.song);
 			addBehind(icon, bhnd);
 			loadPercent += (0.6 - 0.2) / charList.length;
 
@@ -233,6 +233,11 @@ class LoadSongState extends MusicBeatState
 
 		Paths.preloadGraphic("hud/base/gameover/heart");
 		Paths.preloadGraphic("hud/base/gameover/retry");
+
+		var isit:String = "";
+		if(!SaveData.data.get("Downscroll"))
+			isit = "-upscroll";
+		Paths.preloadGraphic("hud/base/you" + isit);
 		
 		// add custom preloads here!!
 		if(!SaveData.data.get("Low Quality")) {

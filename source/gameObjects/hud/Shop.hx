@@ -15,6 +15,9 @@ import states.ShopState;
 import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
 import data.SongData;
+import sys.thread.Mutex;
+import sys.thread.Thread;
+import states.*;
 
 typedef WattsDialog =
 {
@@ -25,10 +28,14 @@ typedef WattsDialog =
 
 class ShopTalk extends FlxGroup
 {
+    var threadActive:Bool = false;
+    var dialogueActive:Bool = true;
+    var mutex:Mutex;
     var dialogBig:FlxSprite;
     var iconW:FlxSprite;
     var iconN:FlxSprite;
     var iconB:FlxSprite;
+    var logo:FlxSprite;
     var tex:FlxTypeText;
     var hasScrolled:Bool = false;
     var activeg:Bool = true;
@@ -54,9 +61,12 @@ class ShopTalk extends FlxGroup
     var curChoice:Int = 0;
     var choiceGrp:FlxTypedGroup<FlxText>;
 
+    public var nilaIntro:Bool = false;
+
     public function new()
     {
         super();
+        mutex = new Mutex();
 
         dialogBig = new FlxSprite(0, 0).loadGraphic(Paths.image('hud/shop/box'));
         dialogBig.scale.set(0.7, 0.7);
@@ -178,6 +188,13 @@ class ShopTalk extends FlxGroup
             choiceGrp.add(choice);
         }
 
+        logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
+		logo.scale.set(0.3,0.3);
+		logo.updateHitbox();
+		logo.x = FlxG.width - logo.width - 15;
+		logo.y = FlxG.height;
+		add(logo);
+
         if(!SaveData.progression.get("shopentrance")) {
             trace(SaveData.progression.get("shopentrance"));
             starting = "intro";
@@ -185,7 +202,11 @@ class ShopTalk extends FlxGroup
             trace(SaveData.progression.get("shopentrance"));
             SaveData.save();
         }
-
+        else if(SaveData.progression.get("nila") && !SaveData.progression.get("nilaentrance")) {
+            starting = "introNila";
+            SaveData.progression.set("nilaentrance", true);
+            SaveData.save();
+        }
 
         dialogData = haxe.Json.parse(Paths.getContent('data/watts/$starting.json').trim());
         scrollText(dialogData.lines[curLine], dialogData.ident);
@@ -209,9 +230,13 @@ class ShopTalk extends FlxGroup
         else if(ident == "nilaN")
             return (getSaved("nilaA") && getSaved("nilaB") && getSaved("nilaC") && getSaved("nilaD"));
         else if(ident == "wattsB")
-            return !SaveData.progression.get("nila");
+            return SaveData.progression.get("nila");
+        else if(ident == "talk") // theoretically broken for pre-nila but you cant read everything without unlocking her
+            return (getSaved("bellaN") && getSaved("bexN") && getSaved("breeN") && getSaved("wattsN"));
+        else if(ident == "buy" || ident == "comp")
+            return true; // temp
 
-        return !SaveData.wattsLines.get(ident);
+        return SaveData.wattsLines.get(ident);
     }
 
     var curSelecting:Bool = false;
@@ -245,6 +270,11 @@ class ShopTalk extends FlxGroup
             SaveData.save();
         }
 
+        if(info[5] != null) {
+            if(info[5])
+                FlxG.sound.play(Paths.sound("shop_enter"));
+        }
+
         var char:FlxSprite = ShopState.watts;
         var icon:FlxSprite = iconW;
         var iconHide:FlxSprite = iconN;
@@ -275,7 +305,7 @@ class ShopTalk extends FlxGroup
                     for(ch in choiceGrp.members) {
                         if(i == ch.ID) {
                             if(saves[i] != null) {
-                                if(getSaved(saves[i]))
+                                if(!getSaved(saves[i]))
                                     ch.color = FlxColor.YELLOW;
                                 else
                                     ch.color = FlxColor.WHITE;
@@ -290,7 +320,7 @@ class ShopTalk extends FlxGroup
                 ShopState.watts.animation.play("neutralidle");
                 iconW.animation.play("neutral");
 
-                if(ShopState.nilaMode) {
+                if(ShopState.nilaMode || ident.startsWith("commotion")) {
                     ShopState.nila.animation.play("neutralidle");
                     iconN.animation.play("neutral");
                 }
@@ -369,29 +399,40 @@ class ShopTalk extends FlxGroup
                     "* Buy\n* Talk\n* Progress\n* Leave",
                     "neutral",
                     0.05,
-                    "q"
+                    "q","b",
+                    ["buy", "talk", "comp"]
                 ]
             ]
         }
     }
 
-    public function createB(force:Bool = false):WattsDialog {
-        if(force)
-            SaveData.wattsNum = -1;
-
+    public function createB(force:Bool = false, loop:Bool = false):WattsDialog {
         if(ShopState.nilaMode) {
             return {
-                ident: "wattsB",
+                ident: "wattssel",
                 saveIdent: null,
                 lines: [
+                    [
                         "That's me, silly...",
                         "confused",
                         0.05,"n","n"
-                ],
+                    ],
+                    [
+                        "* What do you do?\n* What's that framed photo behind you?\n* Are you single?\n* Do you like to travel?\n* Go Back.",
+                        "neutral",
+                        0.05,
+                        "q","b",
+                        ["wattsA", "wattsB", "wattsC", "wattsD"]
+                    ]
+                ]
             };
         }
         
         SaveData.wattsNum++;
+        if(loop || SaveData.wattsNum > 4)
+            SaveData.wattsNum = 4;
+        if(force)
+            SaveData.wattsNum = 5;
         SaveData.save();
         return switch(SaveData.wattsNum) {
             case 0: {
@@ -438,7 +479,7 @@ class ShopTalk extends FlxGroup
                 ]
             }
             case 1: {
-                ident: "wattsb",
+                ident: "wattssel",
                 saveIdent: null,
                 lines: [
                     [
@@ -466,7 +507,7 @@ class ShopTalk extends FlxGroup
                 ]
             }
             case 2: {
-                ident: "wattsb",
+                ident: "wattssel",
                 saveIdent: null,
                 lines: [
                     [
@@ -504,12 +545,12 @@ class ShopTalk extends FlxGroup
                 ]
             }
             case 3: {
-                ident: "wattsb",
+                ident: "wattssel",
                 saveIdent: null,
                 lines: [
                     [
-                        "GGAH I HATE SEPERATION ANXIETY!",
-                        "confused",
+                        "GAH I HATE SEPERATION ANXIETY!",
+                        "angry",
                         0.05,"w"
                     ],
                     [
@@ -518,7 +559,22 @@ class ShopTalk extends FlxGroup
                         0.05,"w"
                     ],
                     [
-                        "I",
+                        "...!",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "Hold on...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "Why dont I just...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "Hm...",
                         "neutral",
                         0.05,"w"
                     ],
@@ -531,15 +587,163 @@ class ShopTalk extends FlxGroup
                     ]
                 ]
             }
-            default: createB(true);
+            case 4: {
+                ident: "commotion1",
+                saveIdent: null,
+                lines: [
+                    [
+                        "You know what... I'm gonna make some calls!",
+                        "happy",
+                        0.05,"w"
+                    ]
+                ]
+            }
+            case 5: {
+                ident: "commotion2",
+                saveIdent: null,
+                lines: [
+                    [
+                        "NILA!!!",
+                        "happy",
+                        0.05,"w"
+                    ],
+                    [
+                        "MOM 2!!!!!!!!",
+                        "happy",
+                        0.05,"n"
+                    ],
+                    [
+                        "Oh, sweetie how've you beeeeenn...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "Good... No, Great... No, AMAZING!!!",
+                        "neutral",
+                        0.05,"n"
+                    ],
+                    [
+                        "Mom 1 and Dad don’t do the fun stuff you do, they're always too busy or whatever, but they let me come here today so YIPPIEEEEEEE!!!!",
+                        "sad",
+                        0.05,"n"
+                    ],
+                    [
+                        "Dawwwww honey I know, I know, they're hard workers! They can't spend everyday building robots and junk...",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                    [
+                        "I knowwwwwwww but...",
+                        "sad",
+                        0.05,"n"
+                    ],
+                    [
+                        "!!!",
+                        "neutral",
+                        0.05,"n","b",true
+                    ],
+                    [
+                        "AUNTIE BELLA!!!!!!!",
+                        "happy",
+                        0.05,"n"
+                    ],
+                    [
+                        "Hihi Nila sweetie! :3",
+                        "",
+                        0.05,"b"
+                    ],
+                    [
+                        "Watts said you were coming over so I had to come make it a three person playdate! :D",
+                        "",
+                        0.05,"b"
+                    ],
+                    [
+                        "Where's Ms. Bex..? ain't she normally with you...",
+                        "confused",
+                        0.05,"n"
+                    ],
+                    [
+                        "She got hired to play guitar somewhere, so she's occupied today ehe :>",
+                        "",
+                        0.05,"b"
+                    ],
+                    [
+                        "Oh ok. Can we play now?",
+                        "neutral",
+                        0.05,"n"
+                    ],
+                    [
+                        "Honey... Bella just got here... at least let her settle in first... and we’re still the clo-",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "Nuh uh, 30 minute break, now, because I said so.",
+                        "angry",
+                        0.05,"n"
+                    ],
+                    [
+                        "I second that! X>",
+                        "",
+                        0.05,"b"
+                    ],
+                    [
+                        "...Fine, grab your mic, I keep it conveniently tucked away under the counter...",
+                        "confused",
+                        0.05,"w"
+                    ],
+                    [
+                        "Aww you miss me so much you keep my mic on you!!!",
+                        "neutral",
+                        0.05,"n"
+                    ],
+                    [
+                        "Haha!",
+                        "happy",
+                        0.05,"w"
+                    ],
+                    [
+                        "yes.",
+                        "neutral",
+                        0.05,"w"
+                    ],
+                ]
+            }
+            default: createB(false, true);
+        }
+    }
+
+    public function loadSong(song:String = "conservation") {
+        PlayState.SONG = SongData.loadFromJson(song);
+        PlayState.isStoryMode = false;
+        if(SaveData.data.get("Preload in Dialogue")) {
+            trace("song fine");
+            threadActive = true;
+            var preloadThread = Thread.create(function()
+            {
+                mutex.acquire();
+                trace("mutex fine");
+                LoadSongState.load(ShopState.behind);
+                trace("load fine");
+                threadActive = false;
+                mutex.release();
+            });
         }
     }
 
     public function resetDial(newd:String) {
+        if(newd == "irritation" || newd == "conservation") {
+            loadSong(newd);
+        }
+
         if(newd == "progress")
             dialogData = createProgress();
         else if(newd == "wattsB")
             dialogData = createB();
+        else if(newd == "forcewattsB") {
+            loadSong("commotion");
+            dialogData = createB(true);
+        }
         else
             dialogData = haxe.Json.parse(Paths.getContent('data/watts/$newd.json').trim());
         curLine = 0;
@@ -555,6 +759,7 @@ class ShopTalk extends FlxGroup
             FlxG.sound.play(Paths.sound("menu/scroll"));
     }
 
+    var dontdoanythin:Bool = false;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -576,6 +781,18 @@ class ShopTalk extends FlxGroup
         }
 
         if(activeg) {
+            if(!threadActive && !dialogueActive) {
+                CoolUtil.playMusic();
+                Main.skipTrans = true;
+                Main.skipClearMemory = true;
+                Main.switchState(new PlayState());
+            }
+            else if(threadActive && !dialogueActive) {
+                logo.y = FlxMath.lerp(logo.y, FlxG.height - logo.height - 15, elapsed * 8);
+            }
+        }
+
+        if(activeg && !dontdoanythin) {
             if(hasScrolled) {
                 if(curLine >= dialogData.lines.length || curSelecting) {
                     switch(dialogData.ident) {
@@ -611,28 +828,48 @@ class ShopTalk extends FlxGroup
                             }
                         case "conservation":
                             if(Controls.justPressed("ACCEPT")) {
+                                dontdoanythin = true;
                                 ShopState.watts.animation.play("pull");
-                                new FlxTimer().start(0.6, function(tmr:FlxTimer)
-                                {
-                                    CoolUtil.playMusic();
-                                    PlayState.SONG = SongData.loadFromJson("conservation");
-                                    Main.skipTrans = true;
-                                    Main.skipClearMemory = true;
-                                    PlayState.isStoryMode = false;
-                                    Main.switchState(new PlayState());
+                                new FlxTimer().start(0.6, function(tmr:FlxTimer) {
+                                    dialogueActive = false;
                                 });
                             }
                         case "irritation":
                             if(Controls.justPressed("ACCEPT")) {
+                                dontdoanythin = true;
                                 ShopState.watts.animation.play("pullalt");
-                                new FlxTimer().start(0.6, function(tmr:FlxTimer)
+                                new FlxTimer().start(0.6, function(tmr:FlxTimer) {
+                                    dialogueActive = false;
+                                });
+                            }
+                        case "commotion1":
+                            if(Controls.justPressed("ACCEPT")) {
+                                dontdoanythin = true;
+                                ShopState.camHUD.fade(0xFF000000, 0.5, false);
+                                CoolUtil.playMusic();
+                                new FlxTimer().start(5, function(tmr:FlxTimer)
                                 {
-                                    CoolUtil.playMusic();
-                                    PlayState.SONG = SongData.loadFromJson("irritation");
-                                    Main.skipTrans = true;
-                                    Main.skipClearMemory = true;
-                                    PlayState.isStoryMode = false;
-                                    Main.switchState(new PlayState());
+                                    ShopState.nila.visible = true;
+                                    FlxTween.tween(ShopState.watts, {x: 628.6 - 280}, 1.2, {ease: FlxEase.expoOut});
+                                    FlxTween.tween(ShopState.nila, {x: 968.6}, 1.2, {ease: FlxEase.expoOut});
+                                    ShopState.wattsOffset = 280;
+                                    ShopState.camHUD.fade(0xFF000000, 0.5, true);
+                                    nilaIntro = true;
+                                    dontdoanythin = false;
+                                    resetDial("forcewattsB");
+                                    FlxG.sound.play(Paths.sound('nilaIntro'), 0.7, false, null, true, function()
+                                    {
+                                        CoolUtil.playMusic("WhatchaBuyinNila", 0.7);
+                                    });
+                                });
+                            }
+                        case "commotion2":
+                            if(Controls.justPressed("ACCEPT")) {
+                                dontdoanythin = true;
+                                ShopState.watts.animation.play("pull");
+                                ShopState.nila.animation.play("pull");
+                                new FlxTimer().start(1.2, function(tmr:FlxTimer) {
+                                    dialogueActive = false;
                                 });
                             }
                         case "bellasel":
@@ -702,7 +939,7 @@ class ShopTalk extends FlxGroup
                                 resetDial("sel");
                             }
 
-                        case "wattssel":
+                        case "wattssel" | "wattsphoto":
                             if(Controls.justPressed("ACCEPT")) {
                                 switch(curChoice) {
                                     case 0: resetDial("wattsA");
@@ -737,20 +974,6 @@ class ShopTalk extends FlxGroup
                             if(Controls.justPressed("BACK")) {
                                 resetDial("duosel");
                             }
-                        case "wattsphoto": // note to self unfuckup later
-                            if(Controls.justPressed("ACCEPT")) {
-                                switch(curChoice) {
-                                    case 0: resetDial("wattsA");
-                                    case 1: resetDial("wattsB");
-                                    case 2: resetDial("wattsC");
-                                    case 3: resetDial("wattsD");
-                                    case 4: resetDial("sel");
-                                }
-                            }
-
-                            if(Controls.justPressed("BACK")) {
-                                resetDial("sel");
-                            }
                         case "buy":
                             if(Controls.justPressed("ACCEPT")) {
                                 switch(curChoice) {
@@ -773,9 +996,7 @@ class ShopTalk extends FlxGroup
                 else {
                     if(Controls.justPressed("ACCEPT")) {
                         FlxG.sound.play(Paths.sound('dialog/skip'));
-    
                         hasScrolled = false;
-        
                         scrollText(dialogData.lines[curLine], dialogData.ident);
                     }
                 }

@@ -3962,6 +3962,11 @@ class PlayState extends MusicBeatState
 				states.cd.MainMenu.unlocks.push("Song: Conservation (FREEPLAY)\nSong: Irritation (FREEPLAY)");
 				Main.switchState(new states.cd.MainMenu());
 			}
+			else if(daSong == "commotion") {
+				SaveData.progression.set("nila", true);
+				SaveData.save();
+				Main.switchState(new states.ShopState());
+			}
 			else
 				Main.switchState(new states.cd.Freeplay((daSong.endsWith("old") || daSong == "desertion-sc")));
 		}

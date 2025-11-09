@@ -33,6 +33,7 @@ using StringTools;
 
 class ShopState extends MusicBeatState
 {
+    public static var behind:FlxGroup;
     public static var nilaMode:Bool = false;
     public static var camGame:FlxCamera;
     public static var camHUD:FlxCamera;
@@ -55,8 +56,15 @@ class ShopState extends MusicBeatState
     override function create()
     {
         super.create();
+        nilaMode = SaveData.progression.get("nila");
 
-        CoolUtil.playMusic("WhatchaBuyin", 0.8);
+        if(nilaMode)
+            CoolUtil.playMusic("WhatchaBuyinNila", 0.7);
+        else {
+            CoolUtil.playMusic("WhatchaBuyin", 0.8);
+            Paths.preloadSound('music/WhatchaBuyinNila');
+        }
+
         Conductor.setBPM(88);
 
         DiscordIO.changePresence("In Watts' Shop", null);
@@ -72,6 +80,9 @@ class ShopState extends MusicBeatState
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
         camGame.zoom = zoom;
+
+        behind = new FlxGroup();
+		add(behind);
 
 		bg = new FlxSprite(-121, -126.95).loadGraphic(Paths.image('hud/shop/back'));
 		add(bg);
@@ -89,32 +100,39 @@ class ShopState extends MusicBeatState
         watts.animation.addByPrefix("happyidle", 'happy0000', 24, true);
         watts.animation.addByPrefix("angryidle", 'angry0000', 24, true);
         watts.animation.addByPrefix("confusedidle", 'confused0000', 24, true);
-        watts.animation.addByPrefix("pull", 'pull out0', 24, true);
-        watts.animation.addByPrefix("pullalt", 'pull out-alt', 24, true);
+        watts.animation.addByPrefix("pull", 'pull out0', 24, false);
+        watts.animation.addByPrefix("pullalt", 'pull out-alt', 24, false);
         watts.animation.play("idle");
         watts.updateHitbox();
         add(watts);
 
+        nila = new FlxSprite(968.6, 167.3);
+        nila.frames = Paths.getSparrowAtlas("hud/shop/nila");
+        nila.animation.addByPrefix("idle", 'Stand', 24, true);
+        nila.animation.addByPrefix("neutral", 'Normal', 24, true);
+        nila.animation.addByPrefix("sad", 'Sad', 24, true);
+        nila.animation.addByPrefix("happy", 'Excited', 24, true);
+        nila.animation.addByPrefix("angry", 'Angry', 24, true);
+        nila.animation.addByPrefix("confused", 'Confused', 24, true);
+        nila.animation.addByPrefix("neutralidle", 'Normal0000', 24, true);
+        nila.animation.addByPrefix("sadidle", 'Sad0009', 24, true);
+        nila.animation.addByPrefix("happyidle", 'Excited0000', 24, true);
+        nila.animation.addByPrefix("angryidle", 'Angry0000', 24, true);
+        nila.animation.addByPrefix("confusedidle", 'Confused0000', 24, true);
+        nila.animation.addByPrefix("pull", 'Pull Out0', 24, false);
+        nila.animation.play("idle");
+        nila.updateHitbox();
+        nila.visible = false;
+        add(nila);
+
+        wattsOffset = 0;
+        
         if(nilaMode) {
             wattsOffset = 280;
-            nila = new FlxSprite(968.6, 167.3);
-            nila.frames = Paths.getSparrowAtlas("hud/shop/nila");
-            nila.animation.addByPrefix("idle", 'Stand', 24, true);
-            nila.animation.addByPrefix("neutral", 'Normal', 24, true);
-            nila.animation.addByPrefix("sad", 'Sad', 24, true);
-            nila.animation.addByPrefix("happy", 'Excited', 24, true);
-            nila.animation.addByPrefix("angry", 'Angry', 24, true);
-            nila.animation.addByPrefix("confused", 'Confused', 24, true);
-            nila.animation.addByPrefix("neutralidle", 'Normal0000', 24, true);
-            nila.animation.addByPrefix("sadidle", 'Sad0009', 24, true);
-            nila.animation.addByPrefix("happyidle", 'Excited0000', 24, true);
-            nila.animation.addByPrefix("angryidle", 'Angry0000', 24, true);
-            nila.animation.addByPrefix("confusedidle", 'Confused0000', 24, true);
-            nila.animation.addByPrefix("pull", 'Pull Out0', 24, true);
-            nila.animation.play("idle");
-            nila.updateHitbox();
-            add(nila);
+            nila.visible = true;
         }
+        else
+            nila.x -= 280;
 
         watts.x -= wattsOffset;
 
@@ -148,8 +166,10 @@ class ShopState extends MusicBeatState
 
         // yo im so lazy dawg
         // ill fix this in an update or something
-        if(nilaMode) {
+        if(nilaMode || hudTalk.nilaIntro) {
             switch(nila.animation.name) {
+                case "pull":
+                    nila.offset.set(8,118);
                 case "happy" | "happyidle":
                     nila.offset.set(-1,71);
                 case "confused" | "confusedidle":
@@ -157,7 +177,7 @@ class ShopState extends MusicBeatState
                 case "angry" | "angryidle":
                     nila.offset.set(4,4);
                 case "sad" | "sadidle":
-                    nila.offset.set(-8,5);
+                    nila.offset.set(0,5);
                 default:
                     nila.offset.set(0,0);
             //OFFSETS
@@ -205,208 +225,9 @@ class ShopState extends MusicBeatState
                     else
                         hudTalk.resetDial("replaysong");
                 }
-
                 else
                     hudTalk.resetDial("postS");
             });
         });
     }
-}
-
-class LoadShopState extends MusicBeatState
-{
-	var threadActive:Bool = true;
-
-    #if !html5
-	var mutex:Mutex;
-    #end
-	
-	//var behind:FlxGroup;
-	var bg:FlxSprite;
-    var logo:FlxSprite;
-
-	var loadBar:FlxSprite;
-	var loadPercent:Float = 0;
-	
-	override function create()
-	{
-		super.create();
-
-		DiscordIO.changePresence("Loading...", null);
-        
-        #if !html5
-		mutex = new Mutex();
-        #end
-		
-		//behind = new FlxGroup();
-		//add(behind);
-		
-		var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFF000000);
-		color.screenCenter();
-		add(color);
-
-        var tiles = new FlxBackdrop(Paths.image('all'), XY, 0, 0);
-        tiles.velocity.set(30, 30);
-        tiles.screenCenter();
-		tiles.alpha = 0.7;
-        add(tiles);
-
-		logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
-		logo.scale.set(0.3,0.3);
-		logo.updateHitbox();
-		logo.x = FlxG.width - logo.width - 10;
-		logo.y = FlxG.height - logo.height - 18;
-		add(logo);
-
-		loadBar = new FlxSprite().makeGraphic(FlxG.width, 20, 0xFFFFFFFF);
-		loadBar.y = FlxG.height - loadBar.height + 10;
-		loadBar.scale.x = 0;
-		//loadBar.alpha = 0;
-		add(loadBar);
-		
-		var oldAnti:Bool = FlxSprite.defaultAntialiasing;
-		FlxSprite.defaultAntialiasing = false;
-		
-		PlayState.resetStatics();
-		var assetModifier = PlayState.assetModifier;
-
-		var conservation = SongData.loadFromJson("conservation", "normal");
-        var irritation = SongData.loadFromJson("irritation", "normal");
-
-        var songs:Array<SwagSong> = [conservation, irritation];
-
-        #if !html5
-		var preloadThread = Thread.create(function()
-		{
-			mutex.acquire();
-            #end
-			Paths.preloadPlayStuff();
-			Rating.preload(assetModifier);
-			Paths.preloadGraphic('hud/base/healthBar');
-			Paths.preloadGraphic('hud/base/blackBar');
-			Paths.preloadGraphic('vignette');
-
-            Paths.preloadGraphic("hud/pause/botplay");
-			Paths.preloadGraphic("hud/pause/buttons");
-			Paths.preloadGraphic("hud/pause/pause");
-			Paths.preloadGraphic("hud/pause/selector");
-			
-			var stageBuild = new Stage();
-			stageBuild.reloadStageFromSong("irritation"); //just the one
-
-			trace('preloaded stage and hud');
-			
-			loadPercent = 0.2;
-
-			var charList:Array<String> = ["watts", "watts-alt"];
-
-			for(i in charList) {
-				var char = new Character();
-				char.isPlayer = false;
-				char.reloadChar(i);
-				//behind.add(char);
-				
-				//trace('preloaded $i');
-
-				loadPercent += (0.6 - 0.2) / charList.length;
-			}
-
-            for (i in ["bella", "bex", "watts"]) {
-                var icon = new HealthIcon();
-				icon.setIcon(i, false);
-            }
-			
-			trace('preloaded characters');
-			loadPercent = 0.6;
-			
-            for (i in songs) {
-                Paths.preloadSound('songs/${i.song}/Inst');
-                if(i.needsVoices)
-                    Paths.preloadSound('songs/${i.song}/Voices');
-            }
-
-			
-			trace('preloaded music');
-			loadPercent = 0.75;
-			
-			var thisStrumline = new Strumline(0, null, false, false, true, assetModifier);
-			thisStrumline.ID = 0;
-			//behind.add(thisStrumline);
-
-            for (i in songs) {
-                var noteList:Array<Note> = ChartLoader.getChart(i);
-                for(note in noteList)
-                {
-                    note.reloadNote(note.songTime, note.noteData, note.noteType, assetModifier);
-                    //behind.add(note);
-                    
-                    thisStrumline.addSplash(note);
-
-                    loadPercent += (0.9 - 0.75) / noteList.length;
-                }
-            }
-			
-			trace('preloaded notes');
-			loadPercent = 0.9;
-			
-			// shop preloads
-
-            var preGraphics:Array<String> = [
-                "hud/shop/watts",
-                "hud/shop/wattsicons",
-                'hud/shop/box',
-                'hud/shop/small',
-                'hud/shop/bix',
-                "hud/shop/tabs",
-                "hud/shop/ITEMS"
-            ];
-            var preSounds:Array<String> = [
-                "dialog/watts/watts1",
-                "dialog/watts/watts2",
-                "dialog/watts/watts3",
-                "dialog/watts/watts4"
-            ];
-
-            for(i in preGraphics)
-                Paths.preloadGraphic(i);
-    
-            for(i in preSounds)
-                Paths.preloadSound(i);
-
-            for (i in Paths.readDir("data/watts", ".json"))
-                Paths.json("data/watts/" + i);
-
-            //Paths.shader("shaders/bloom");
-			
-			loadPercent = 1.0;
-			trace('finished loading');
-			FlxSprite.defaultAntialiasing = oldAnti;
-
-            #if !html5
-            mutex.release();
-            threadActive = false;
-		});
-        #end
-	}
-	
-	var byeLol:Bool = false;
-	
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-
-        #if !html5
-		if(!threadActive && !byeLol && loadBar.scale.x >= 0.98)
-		{
-			byeLol = true;
-			loadBar.scale.x = 1.0;
-			loadBar.updateHitbox();
-			Main.skipClearMemory = true;
-			Main.switchState(new ShopState());
-		}
-
-		loadBar.scale.x = FlxMath.lerp(loadBar.scale.x, loadPercent, elapsed * 6);
-		loadBar.updateHitbox();
-        #end
-	}
 }

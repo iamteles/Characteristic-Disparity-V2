@@ -5,7 +5,8 @@
             "* Buy\n* Talk\n* Completion\n* Leave",
             "neutral",
             0.05,
-            "q"
+            "q","b",
+            ["buy", "talk", "comp"]
         ]
     ]
 }
