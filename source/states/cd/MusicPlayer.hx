@@ -11,9 +11,11 @@ import flixel.ui.FlxBar;
 import data.Discord.DiscordIO;
 import flixel.FlxObject;
 import flixel.FlxCamera;
+import sys.thread.Thread;
 
 class MusicPlayer extends MusicBeatState
 {
+    var threadActive:Bool = true;
     public static var songs:Array<Array<Array<Dynamic>>> = [[
         ["Characteristic Disparity", "CharaWhy", "music/intro"],
         ["Euphoria", "mochoco", "songs/euphoria/Inst", "songs/euphoria/Voices"],
@@ -80,6 +82,7 @@ class MusicPlayer extends MusicBeatState
     var playing:Bool = false;
     var looping:Bool = false;
     var vocalsMuted:Bool = false;
+    var reloaded:Bool = false;
 
     var clouds:FlxSprite;
     var cloudsL:FlxSprite;
@@ -95,6 +98,9 @@ class MusicPlayer extends MusicBeatState
 
     var vol1:FlxSprite;
     var vol2:FlxSprite;
+    var volguide:FlxSprite;
+    var volguideL:FlxSprite;
+    var logo:FlxSprite;
 
     var timeBar:FlxBar;
     var icon:FlxSprite;
@@ -116,8 +122,11 @@ class MusicPlayer extends MusicBeatState
 
     public static var camFollow:FlxObject = new FlxObject();
     public static var camGame:FlxCamera;
+    public static var camHUD:FlxCamera;
     var vol:Int = 0;
 
+    var leaving:Bool = false;
+    var left:Bool = false;
     public override function create()
     {
         super.create();
@@ -130,6 +139,10 @@ class MusicPlayer extends MusicBeatState
         camGame = new FlxCamera();
         FlxG.cameras.reset(camGame);
         FlxG.cameras.setDefaultDrawTarget(camGame, true);
+
+        camHUD = new FlxCamera();
+		camHUD.bgColor.alphaFloat = 0;
+        FlxG.cameras.add(camHUD, false);
 
         var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFFFFFFF);
 		color.screenCenter();
@@ -278,6 +291,16 @@ class MusicPlayer extends MusicBeatState
         vol2.x = clouds.width / 2 - vol2.width / 2 - 10; 
 		add(vol2);
 
+        volguide = new FlxSprite().loadGraphic(Paths.image('menu/music/volguide'));
+        volguide.visible = SaveData.shop.get("musicp");
+		add(volguide);
+
+        volguideL = new FlxSprite().loadGraphic(Paths.image('menu/music/volguide-pink'));
+        volguideL.visible = SaveData.shop.get("musicp");
+        volguideL.x = frame.x - volguide.width;
+        volguideL.alpha = 0;
+		add(volguideL);
+
         timeBar = new FlxBar(
 			115.3, 539.5 + 8,
 			LEFT_TO_RIGHT,
@@ -315,17 +338,26 @@ class MusicPlayer extends MusicBeatState
         songComposer.y = songName.y + songName.height + 2 + 5;
         add(songComposer);
 
-        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nL/R or Q/E: Change Album\nRESET: View in Web");
+        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nSELECT: View in Web");
         hints.setFormat(Main.gFont, 20, 0xFF000000, LEFT);
         hints.x = frame.x + 70;
         hints.y = 6;
         add(hints);
 
-        hintsL = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nL/R or Q/E: Change Album\nRESET: View in Web");
+        hintsL = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nSELECT: View in Web");
         hintsL.setFormat(Main.gFont, 20, 0xFF000000, RIGHT);
         hintsL.x = -70-hintsL.width;
         hintsL.y = 6;
         add(hintsL);
+
+        logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
+		logo.scale.set(0.3,0.3);
+		logo.updateHitbox();
+		logo.x = FlxG.width - logo.width - 15;
+		logo.y = FlxG.height;
+        logo.alpha = 0;
+        logo.cameras = [camHUD];
+		add(logo);
 
         camFollow.setPosition(FlxG.width / 2, FlxG.height / 2);
 		FlxG.camera.follow(camFollow, LOCKON, 1);
@@ -334,6 +366,60 @@ class MusicPlayer extends MusicBeatState
         changeSelection();
         lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
         lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+
+        // does this suck? be honest
+        var load = Thread.create(function()
+        {
+            for(i in 0...songs[0].length) {
+                if(leaving) break;
+                if(!songs[0][i][4]) {
+                    Paths.preloadMusicPlayer(songs[0][i][2]);
+                    if(songs[0][i][3] != null)
+                        Paths.preloadMusicPlayer(songs[0][i][3]);
+
+                    trace("loaded " + songs[0][i][0]);
+                    songs[0][i][4] = true;
+                }
+
+                if(reloaded == false) {
+                    if(!songs[vol][curSelected][4]) {
+                        Paths.preloadMusicPlayer(songs[vol][curSelected][2]);
+                        if(songs[vol][curSelected][3] != null)
+                            Paths.preloadMusicPlayer(songs[vol][curSelected][3]);
+
+                        trace("loaded " + songs[vol][curSelected][0]);
+                        songs[vol][curSelected][4] = true;
+                    }
+                }
+            }
+
+            if(SaveData.shop.get("musicp")) { // no need to load songs you haven't unlocked yet
+                for(i in 0...songs[1].length) {
+                    if(leaving) break;
+                    if(!songs[1][i][4]) {
+                        Paths.preloadMusicPlayer(songs[1][i][2]);
+                        if(songs[1][i][3] != null)
+                            Paths.preloadMusicPlayer(songs[1][i][3]);
+
+                        trace("loaded " + songs[1][i][0]);
+                        songs[1][i][4] = true;
+                    }
+
+                    if(reloaded == false) {
+                        if(!songs[vol][curSelected][4]) {
+                            Paths.preloadMusicPlayer(songs[vol][curSelected][2]);
+                            if(songs[vol][curSelected][3] != null)
+                                Paths.preloadMusicPlayer(songs[vol][curSelected][3]);
+
+                            trace("loaded " + songs[vol][curSelected][0]);
+                            songs[vol][curSelected][4] = true;
+                        }
+                    }
+                }
+            }
+
+            threadActive = false;
+        });
     }
 
     public function updateTimeTxt()
@@ -355,6 +441,10 @@ class MusicPlayer extends MusicBeatState
 
         camGame.followLerp = elapsed * 6;
         cloudsL.alpha = FlxMath.lerp(cloudsL.alpha, vol, elapsed*6);
+
+        if(threadActive) {
+            logo.y = FlxMath.lerp(logo.y, FlxG.height - logo.height - 15, elapsed * 8);
+        }
         
         if((Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) && SaveData.shop.get("musicp")) {
             if(vol == 0)
@@ -364,6 +454,9 @@ class MusicPlayer extends MusicBeatState
 
             vol1.alpha = 1-vol;
             vol2.alpha = vol;
+
+            volguide.alpha = 1-vol;
+            volguideL.alpha = vol;
 
             playSong(false);
 
@@ -384,7 +477,7 @@ class MusicPlayer extends MusicBeatState
             changeSelection(0);
         }
 
-        if(Controls.justPressed("RESET")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
+        if(Controls.justPressed("RESET_SPECIAL")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
             FlxG.openURL("https://shatterdisk.bandcamp.com/album/characteristic-disparity-original-soundtrack");
 
         if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_UP")) {
@@ -401,7 +494,12 @@ class MusicPlayer extends MusicBeatState
 
         if(Controls.justPressed("BACK"))
         {
+            leaving = true;
             FlxG.sound.play(Paths.sound('menu/back'));
+        }
+        
+        if(leaving && !threadActive && !left) {
+            left = true;
             Main.switchState(new states.cd.MainMenu());
         }
 
@@ -422,17 +520,22 @@ class MusicPlayer extends MusicBeatState
         timeBar.percent = formatTime*100;
         updateTimeTxt();
 
-        if(Conductor.songPos >= songLength)
+        if(playing) {
+            if(!reloaded && songs[vol][curSelected][4])
+                reloadAudio();
+        }
+
+        if(Conductor.songPos >= songLength && reloaded)
         {
             if(looping)
-                reloadAudio();
+                reloaded = false;
             else
                 changeSelection(1);
         }
 
         for(song in musicList)
         {
-            if(playing && Conductor.songPos >= 0)
+            if(playing && reloaded && Conductor.songPos >= 0)
             {
                 if(!song.playing)
                     song.play(Conductor.songPos);
@@ -443,7 +546,7 @@ class MusicPlayer extends MusicBeatState
                 song.stop();
         }
 
-        if(playing)
+        if(playing && reloaded)
         {
             Conductor.songPos += elapsed * 1000;
         }
@@ -528,6 +631,8 @@ class MusicPlayer extends MusicBeatState
 
 	function reloadAudio()
 	{
+        if(reloaded) return;
+        reloaded = true;
         Conductor.songPos = 0;
         for(song in musicList)
         {
@@ -570,6 +675,10 @@ class MusicPlayer extends MusicBeatState
 
     public function changeSelection(change:Int = 0)
     {
+        for(song in musicList)
+        {
+            song.stop();
+        }
         //if(selected) return; //do not
         curSelected += change;
         curSelected = FlxMath.wrap(curSelected, 0, songs[vol].length - 1);
@@ -585,6 +694,7 @@ class MusicPlayer extends MusicBeatState
         songComposer.x = timeBar.x + (timeBar.width/2) - (songComposer.width/2);
         songComposer.y = songName.y + songName.height + 2;
 
-        reloadAudio();
+        reloaded = false;
+        //reloadAudio();
     }
 }

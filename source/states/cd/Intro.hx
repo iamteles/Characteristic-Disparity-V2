@@ -91,7 +91,7 @@ class Warning extends MusicBeatState
 
 		var tex:String = "Warning!\n\nThis mod features flashing lights that may\nbe harmful to those with photosensitivity.\nYou can disable them in the Options menu.\n\nPress ENTER to continue!";
 		if(isPlaytester)
-			tex = "Hello playtester!\n\nThank you so much for helping us ensure\nthe mod has a bug-free experience.\nWe ask you that you NOT share anything in this\nbuild to anyone to keep the surprise!\nPlease report any bugs in the Google Forms\nthat was sent with the build.\n\nPress ENTER to continue!";
+			tex = "Hello playtester!\n\nThank you so much for helping us ensure\nthe mod has a bug-free experience.\nWe ask you that you NOT share anything in this\nbuild to anyone to keep the surprise!\nPlease report any bugs to whoever sent this :)\n\nPress ENTER to continue!";
 		var popUpTxt = new FlxText(0,0,0,tex);
 		popUpTxt.setFormat(Main.gFont, 43, 0xFFFFFFFF, CENTER);
 		popUpTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.5);

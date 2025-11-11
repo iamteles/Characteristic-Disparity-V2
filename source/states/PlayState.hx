@@ -2138,48 +2138,50 @@ class PlayState extends MusicBeatState
 
 				extraCamZoom = 0;
 
-				if(third != null && bellasings && daSong != "customer-service") {
-					if(third.animation.curAnim != null) {
-						switch (third.animation.curAnim.name)
-						{
-							case 'singLEFT':
-								camDisplaceX = - cameraMoveItensity;
-								camDisplaceY = 0;
-							case 'singRIGHT':
-								camDisplaceX = cameraMoveItensity;
-								 camDisplaceY = 0;
-							case 'singUP':
-								camDisplaceX = 0;
-								camDisplaceY = -cameraMoveItensity;
-							case 'singDOWN':
-								camDisplaceX = 0;
-								camDisplaceY = cameraMoveItensity;
-							default:
-								camDisplaceX = 0;
-								camDisplaceY = 0;
+				if(daSong != "commotion") {
+					if(third != null && bellasings && daSong != "customer-service") {
+						if(third.animation.curAnim != null) {
+							switch (third.animation.curAnim.name)
+							{
+								case 'singLEFT':
+									camDisplaceX = - cameraMoveItensity;
+									camDisplaceY = 0;
+								case 'singRIGHT':
+									camDisplaceX = cameraMoveItensity;
+									camDisplaceY = 0;
+								case 'singUP':
+									camDisplaceX = 0;
+									camDisplaceY = -cameraMoveItensity;
+								case 'singDOWN':
+									camDisplaceX = 0;
+									camDisplaceY = cameraMoveItensity;
+								default:
+									camDisplaceX = 0;
+									camDisplaceY = 0;
+							}
 						}
-					}
 
-				}
-				else {
-					if(bfStrumline.character.animation.curAnim != null && (daSong != "conservation" && daSong != "irritation" && daSong != "commotion")) {
-						switch (bfStrumline.character.animation.curAnim.name)
-						{
-							case 'singLEFT':
-								camDisplaceX = - cameraMoveItensity;
-								camDisplaceY = 0;
-							case 'singRIGHT':
-								camDisplaceX = cameraMoveItensity;
-								camDisplaceY = 0;
-							case 'singUP':
-								camDisplaceX = 0;
-								camDisplaceY = -cameraMoveItensity;
-							case 'singDOWN':
-								camDisplaceX = 0;
-								camDisplaceY = cameraMoveItensity;
-							default:
-								camDisplaceX = 0;
-								camDisplaceY = 0;
+					}
+					else {
+						if(bfStrumline.character.animation.curAnim != null && (daSong != "conservation" && daSong != "irritation" && daSong != "commotion")) {
+							switch (bfStrumline.character.animation.curAnim.name)
+							{
+								case 'singLEFT':
+									camDisplaceX = - cameraMoveItensity;
+									camDisplaceY = 0;
+								case 'singRIGHT':
+									camDisplaceX = cameraMoveItensity;
+									camDisplaceY = 0;
+								case 'singUP':
+									camDisplaceX = 0;
+									camDisplaceY = -cameraMoveItensity;
+								case 'singDOWN':
+									camDisplaceX = 0;
+									camDisplaceY = cameraMoveItensity;
+								default:
+									camDisplaceX = 0;
+									camDisplaceY = 0;
+							}
 						}
 					}
 				}

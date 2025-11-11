@@ -847,19 +847,22 @@ class ShopTalk extends FlxGroup
                                 dontdoanythin = true;
                                 ShopState.camHUD.fade(0xFF000000, 0.5, false);
                                 CoolUtil.playMusic();
-                                new FlxTimer().start(5, function(tmr:FlxTimer)
-                                {
-                                    ShopState.nila.visible = true;
-                                    FlxTween.tween(ShopState.watts, {x: 628.6 - 280}, 1.2, {ease: FlxEase.expoOut});
-                                    FlxTween.tween(ShopState.nila, {x: 968.6}, 1.2, {ease: FlxEase.expoOut});
-                                    ShopState.wattsOffset = 280;
-                                    ShopState.camHUD.fade(0xFF000000, 0.5, true);
-                                    nilaIntro = true;
-                                    dontdoanythin = false;
-                                    resetDial("forcewattsB");
-                                    FlxG.sound.play(Paths.sound('nilaIntro'), 0.7, false, null, true, function()
+
+                                new FlxTimer().start(0.6, function(tmr:FlxTimer) {
+                                    FlxG.sound.play(Paths.sound('nilaCar'), 1, false, null, true, function()
                                     {
-                                        CoolUtil.playMusic("WhatchaBuyinNila", 0.7);
+                                        ShopState.nila.visible = true;
+                                        FlxTween.tween(ShopState.watts, {x: 628.6 - 280}, 1.2, {ease: FlxEase.expoOut});
+                                        FlxTween.tween(ShopState.nila, {x: 968.6}, 1.2, {ease: FlxEase.expoOut});
+                                        ShopState.wattsOffset = 280;
+                                        ShopState.camHUD.fade(0xFF000000, 0.5, true);
+                                        nilaIntro = true;
+                                        dontdoanythin = false;
+                                        resetDial("forcewattsB");
+                                        FlxG.sound.play(Paths.sound('nilaIntro'), 0.7, false, null, true, function()
+                                        {
+                                            CoolUtil.playMusic("WhatchaBuyinNila", 0.7);
+                                        });
                                     });
                                 });
                             }
