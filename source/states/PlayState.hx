@@ -439,15 +439,21 @@ class PlayState extends MusicBeatState
 		}
 
 		underlay = new FlxSprite().loadGraphic(Paths.image('hud/base/underlay 2'));
+		underlay.scale.set(0.39,0.39);
+		underlay.updateHitbox();
 		underlay.screenCenter(Y);
 		underlay.x = -2000;
+		underlay.y -= 180;
 		underlay.cameras = [camOther];
 		underlay.visible = logoExists;
 		add(underlay);
 
 		songLogo = new FlxSprite().loadGraphic(Paths.image('hud/songnames/$daSong'));
+		songLogo.scale.set(0.35,0.35);
+		songLogo.updateHitbox();
 		songLogo.screenCenter(Y);
 		songLogo.x = -2000;
+		songLogo.y -= 180;
 		songLogo.cameras = [camOther];
 		songLogo.visible = logoExists;
 		add(songLogo);
@@ -1079,10 +1085,10 @@ class PlayState extends MusicBeatState
 				zoomOppVal = 0.97 - 0.8;
 			case 'desertion':
 				if(!SaveData.data.get("Low Quality")) {
-					vgblack.alpha = 0.6;
-					dad.alpha = 0;
-					camHUD.alpha = 0;
-					camVg.fade(0x00000000, 0.01, false);
+					vgblack.alpha = 0.5;
+					//dad.alpha = 0;
+					//camHUD.alpha = 0;
+					//camVg.fade(0x00000000, 0.01, false);
 				}
 
 				zoomInOpp = true;
@@ -1235,7 +1241,7 @@ class PlayState extends MusicBeatState
 				{
 					startSong();
 
-					if(daSong != "intimidate") {
+					if(daSong != "intimidate" && daSong != "sin") {
 						startLogo();
 					}
 				}
@@ -1270,25 +1276,25 @@ class PlayState extends MusicBeatState
 
 	function startLogo()
 	{
-		FlxTween.tween(songLogo, {x: (FlxG.width/2) - (songLogo.width/2)}, 1.3, {
+		FlxTween.tween(songLogo, {x: 5}, 1.6, {
 			ease: FlxEase.cubeOut,
 			startDelay: 0.2,
 			onComplete: function(twn:FlxTween)
 			{
-				FlxTween.tween(songLogo, {x: 2000}, 1.3, {
-					ease: FlxEase.cubeIn,
+				FlxTween.tween(songLogo, {x: -2000}, 1.5, {
+					ease: FlxEase.cubeInOut,
 					startDelay: 1.3
 				});
 			}
 		});
 
-		FlxTween.tween(underlay, {x: (FlxG.width/2) - (underlay.width/2)}, 1.3, {
+		FlxTween.tween(underlay, {x: 0 - underlay.width + songLogo.width}, 1.6, {
 			ease: FlxEase.cubeOut,
 			startDelay: 0.2,
 			onComplete: function(twn:FlxTween)
 			{
-				FlxTween.tween(underlay, {x: 2000}, 1.3, {
-					ease: FlxEase.cubeIn,
+				FlxTween.tween(underlay, {x: -2000}, 1.5, {
+					ease: FlxEase.cubeInOut,
 					startDelay: 1.3
 				});
 			}
@@ -3435,7 +3441,7 @@ class PlayState extends MusicBeatState
 							beatSpeed = 4;
 	
 					}
-				case 'desertion':
+				case 'desertion-sc':
 					switch(curStep) {
 						case 1:
 							camVg.fade(0x00000000, 1, true);
@@ -3958,6 +3964,7 @@ class PlayState extends MusicBeatState
 		if(isDead || !startedCountdown) return;
 		if(daSong == "heartpounder") return;
 		
+		FlxG.camera.setFilters([]);
 		isDead = true;
 		blueballed++;
 		activateTimers(false);
@@ -3968,8 +3975,6 @@ class PlayState extends MusicBeatState
 		switch(daSong) {
 			case 'customer-service' | 'ripple':
 				soundChar = "drown-what";
-			case "exotic":
-				soundChar = "bex-what";
 		}
 		openSubState(new GameOverSubState(soundChar));
 	}
@@ -4070,7 +4075,7 @@ class PlayState extends MusicBeatState
 				states.cd.MainMenu.unlocks.push("Song: Conservation (FREEPLAY)\nSong: Irritation (FREEPLAY)");
 				Main.switchState(new states.cd.MainMenu());
 			}
-			else if(daSong == "commotion") {
+			else if(daSong == "commotion" && !SaveData.progression.get("nila")) {
 				SaveData.progression.set("nila", true);
 				SaveData.save();
 				Main.switchState(new states.ShopState());
