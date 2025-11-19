@@ -17,7 +17,7 @@ using StringTools;
 
 class DebugState extends MusicBeatState
 {
-	var optionShit:Array<String> = ["menu", "video", "ending", "shop reset"];
+	var optionShit:Array<String> = ["menu", "video", "ending", "shop reset", "bios menu"];
 	static var curSelected:Int = 0;
 
 	var optionGroup:FlxTypedGroup<Alphabet>;
@@ -45,7 +45,7 @@ class DebugState extends MusicBeatState
 			item.align = CENTER;
 			item.text = optionShit[i].toUpperCase();
 			item.x = FlxG.width / 2;
-			item.y = 50 + ((item.height + 100) * i);
+			item.y = FlxMath.lerp(50, FlxG.height - item.height - 50, i / (optionShit.length - 1));
 			item.ID = i;
 			optionGroup.add(item);
 		}
@@ -86,6 +86,8 @@ class DebugState extends MusicBeatState
 		{
 			switch(optionShit[curSelected])
 			{
+				case "bios menu":
+					Main.switchState(new states.cd.BiosMenuState());
 				case "test":
 					Main.switchState(new states.PlayState());
 				case "shop reset":
