@@ -85,13 +85,13 @@ class BiosMenuState extends MusicBeatState
 			var name:FlxText;
     		var desc:FlxText;
 
-			name = new FlxText(0,0,0,"Bella Wright");
+			name = new FlxText(0,0,400,"Bella Wright");
 			name.setFormat(Main.dsFont, 82, 0xFFFFFFFF, CENTER);
 			name.setBorderStyle(OUTLINE, FlxColor.BLACK, 3);
 			name.antialiasing = false;
 			add(name);
 
-			desc = new FlxText(0,0,0,"Characteristic Disparity");
+			desc = new FlxText(0,0,400,"Characteristic Disparity");
 			desc.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 			desc.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 			desc.antialiasing = false;
