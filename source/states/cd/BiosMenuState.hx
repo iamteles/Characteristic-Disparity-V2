@@ -68,7 +68,7 @@ class BiosMenuState extends MusicBeatState
 		[0, FlxG.width], // first menu
 		[-350, 350], // second menu
 		[-380, -50], // reading (two chars)
-		[-320, FlxG.width], // reading (one char)
+		[-280, FlxG.width], // reading (one char)
 	];
 	public function setCharsPos(reading:Bool = false, ?onCreate:Bool = false)
 	{
