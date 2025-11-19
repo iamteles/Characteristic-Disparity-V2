@@ -47,7 +47,7 @@ class Kissing extends MusicBeatState
         CoolUtil.playMusic("kiss");
         Main.setMouse(false);
 
-        DiscordIO.changePresence("Playing: SUBGAME", null);
+        DiscordIO.changePresence("Playing: SUBGAME-2", null);
 
         var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));
 		bg.screenCenter();

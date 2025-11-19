@@ -66,8 +66,12 @@ class Intro extends MusicBeatState
 	private function finish():Void
 	{
 		Main.skipClearMemory = true;
-		states.VideoState.name = "intro";
-		Main.switchState(new states.VideoState());
+		//states.VideoState.name = "intro";
+		//Main.switchState(new states.VideoState());
+		Main.skipStuff();
+		Main.skipClearMemory = true;
+		//states.cd.TitleScreen.fromIntro = true;
+		Main.switchState(new states.cd.TitleScreen());
 	}
 	
 }
@@ -165,13 +169,13 @@ class IntroLoading extends MusicBeatState
 			Paths.preloadGraphic("menu/intros/flixel");
 			//Paths.preloadSound("intro/haxe");
 
-       		var video = new DoidoVideoSprite();
+       		/*var video = new DoidoVideoSprite();
 			video.load(Paths.video("intro"));
 			video.destroy();
 
 			var video2 = new DoidoVideoSprite();
 			video2.load(Paths.video("test"));
-			video2.destroy();
+			video2.destroy();*/
 
 			loadPercent = 1.0;
 			trace('finished loading');

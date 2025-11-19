@@ -9,6 +9,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxGradient;
 import data.GameData.MusicBeatState;
+import gameObjects.MenuChar;
 
 class BiosMenuState extends MusicBeatState
 {
@@ -36,24 +37,25 @@ class BiosMenuState extends MusicBeatState
 		"spicy-v2" => 0xFFa60910,
 	];
 	
-	public var curChars:Array<BioChar> = [];
+	public var curChars:Array<MenuChar> = [];
+	public var curNames:Array<Array<FlxText>> = [];
 	public var possibleChars:Array<String> = [
 		"none", "bella", "bex", "bree",
 		"watts", "nila", "helica", "drown",
 		"wave", "empitri", "spicy-v2",
 	];
-	public var ignoreChars:Map<String, Array<String>> = [
-		"none" => ["none"],
-		"bella" => ["bella", "drown", "wave", "spicy-v2"],
-		"bex" => ["bex", "empitri", "drown", "wave", "spicy-v2"],
-		"bree" => ["bree", "nila", "empitri", "drown", "wave"],
-		"watts" => ["watts", "empitri", "drown", "wave", "spicy-v2"],
-		"nila" => ["nila", "bree", "helica", "empitri", "drown", "wave", "spicy-v2"],
-		"helica" => ["helica", "nila", "empitri", "drown", "wave", "spicy-v2"],
-		"drown" => ["drown", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
-		"wave" => ["wave", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
-		"empitri" => ["empitri", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
-		"spicy-v2" => ["bella", "bex", "watts", "nila", "helica", "drown", "wave", "empitri", "spicy-v2"],
+	public var characterInfo:Map<String, Array<Dynamic>> = [
+		"none" => ["None", "Characteristic Disparity", ["none"]],
+		"bella" => ["Bella Wright", "Characteristic Disparity", ["bella", "drown", "wave", "spicy-v2"]],
+		"bex" => ["Bex Parker", "Characteristic Disparity", ["bex", "empitri", "drown", "wave", "spicy-v2"]],
+		"bree" => ["Bree", "Characteristic Disparity", ["bree", "nila", "empitri", "drown", "wave"]],
+		"watts" => ["Watts", "Characteristic Disparity", ["watts", "empitri", "drown", "wave", "spicy-v2"]],
+		"nila" => ["Nila Robinson", "Characteristic Disparity", ["nila", "bree", "helica", "empitri", "drown", "wave", "spicy-v2"]],
+		"helica" => ["Helica", "Characteristic Disparity", ["helica", "nila", "empitri", "drown", "wave", "spicy-v2"]],
+		"drown" => ["Drown", "The Funk Shack", ["drown", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"]],
+		"wave" => ["Wave", "The Funk Shack", ["wave", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"]],
+		"empitri" => ["Empitri Palmer", "The Funk Shack", ["empitri", "bex", "bree", "watts", "nila", "helica", "spicy-v2"]],
+		"spicy-v2" => ["Spicy", "Flavor Rave", ["bella", "bex", "watts", "nila", "helica", "drown", "wave", "empitri", "spicy-v2"]],
 	];
 
 	override function create()
@@ -73,12 +75,32 @@ class BiosMenuState extends MusicBeatState
 		
 		for(i in 0...2)
 		{
-			var char = new BioChar();
+			var char = new MenuChar();
 			//char.flipX = (i == 1);
 			char.reloadChar(["bella", "none"][i]);
 			curChars.push(char);
 			char.ID = i;
 			add(char);
+
+			var name:FlxText;
+    		var desc:FlxText;
+
+			name = new FlxText(0,0,0,"Bella Wright");
+			name.setFormat(Main.dsFont, 82, 0xFFFFFFFF, CENTER);
+			name.setBorderStyle(OUTLINE, FlxColor.BLACK, 3);
+			name.antialiasing = false;
+			add(name);
+
+			desc = new FlxText(0,0,0,"Characteristic Disparity");
+			desc.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
+			desc.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
+			desc.antialiasing = false;
+			add(desc);
+
+			name.y = FlxG.height - name.height - desc.height - 15;
+			desc.y = FlxG.height - desc.height - 15;
+
+			curNames.push([name, desc]);
 		}
 
 		leftArrow = new FlxSprite().loadGraphic(Paths.image("menu/gallery/arrow"));
@@ -175,7 +197,7 @@ class BiosMenuState extends MusicBeatState
 		
 		var index:Int = possibleChars.indexOf(char.name) + change;
 		index = loopAround(index);
-		while(ignoreChars.get(otherChar.name).contains(possibleChars[index]))
+		while(characterInfo.get(otherChar.name)[2].contains(possibleChars[index]))
 		{
 			index += change;
 			index = loopAround(index);
@@ -184,6 +206,11 @@ class BiosMenuState extends MusicBeatState
 		
 		char.reloadChar(possibleChars[index]);
 		char.y += 32;
+
+		for(i in 0...2) {
+			curNames[i][0].text = characterInfo.get(curChars[i].name)[0];
+			curNames[i][1].text = characterInfo.get(curChars[i].name)[1];
+		}
 		
 		updateColors();
 	}
@@ -213,6 +240,12 @@ class BiosMenuState extends MusicBeatState
 			rightArrow.x = FlxMath.lerp(rightArrow.x, FlxG.width+3, elapsed*8);
 		}
 		
+
+		for(i in 0...2) {
+			curNames[i][0].x = FlxMath.lerp(curNames[i][0].x, curChars[i].targetX + (curChars[i].width/2) - (curNames[i][0].width/2), elapsed*8);
+			curNames[i][1].x = FlxMath.lerp(curNames[i][1].x, curChars[i].targetX + (curChars[i].width/2) - (curNames[i][1].width/2), elapsed*8);
+		}
+		
 		if (Controls.justPressed("BACK"))
 			changeMenu(-1);
 	}
@@ -238,52 +271,6 @@ class BioBGColor extends FlxSprite
 		}
 		alpha = 0.5;
 		screenCenter();
-		return this;
-	}
-}
-class BioChar extends FlxSprite
-{
-	public var name:String = "";
-	public var targetX:Float = 0.0;
-
-	public var offsets:Map<String, Array<Float>> = [
-		"none" => [0,0],
-		"bella" => [0,0],
-		"bex" => [0,0],
-		"bree" => [0,0],
-		"watts" => [0,-30],
-		"nila" => [0,-60],
-		"helica" => [0,0],
-		"drown" => [0,0],
-		"wave" => [0,30],
-		"empitri" => [0,70],
-		"spicy-v2" => [0,0],
-	];
-	
-	public function new()
-	{
-		super();
-	}
-	
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-		x = FlxMath.lerp(x, targetX + offsets.get(name)[0], elapsed * 8);
-		y = FlxMath.lerp(y, FlxG.height+32 + offsets.get(name)[1], elapsed * 8);
-	}
-	
-	public function reloadChar(char:String):BioChar
-	{
-		targetX += (width / 2);
-		this.name = char;
-		loadGraphic(Paths.image("menu/freeplay/characters/" + char));
-		scale.set(0.9, 0.9);
-		updateHitbox();
-		
-		targetX -= (width / 2);
-		y = FlxG.height + 64 + offsets.get(name)[1];
-		offset.y = height;
-		x = targetX + offsets.get(name)[0];
 		return this;
 	}
 }

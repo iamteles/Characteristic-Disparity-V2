@@ -34,6 +34,8 @@ import openfl.filters.ShaderFilter;
 import gameObjects.BGChar.CharGroup;
 import data.Highscore.ScoreData;
 import gameObjects.android.*;
+import flixel.addons.display.FlxBackdrop;
+import flixel.util.FlxColor;
 
 #if sys
 import sys.FileSystem;
@@ -124,6 +126,12 @@ class PlayState extends MusicBeatState
 	var divTxt:FlxSprite;
 	var bellaPop:FlxSprite;
 	var bexPop:FlxSprite;
+	var deserTiles:FlxSprite;
+	var deserBg:FlxSprite;
+	var deserBar:FlxSprite;
+	var bellaScene:FlxSprite;
+	var bexScene:FlxSprite;
+	var memory:FlxSprite;
 	var vhs:FlxSprite;
 
 	var songLogo:FlxSprite;
@@ -143,6 +151,7 @@ class PlayState extends MusicBeatState
 	var songHasTaiko:Bool = false;
 	var taikoTutorial:FlxSprite;
 	var sinStarted:Null<Bool>;
+	var subtitle:FlxText;
 
 	public static var invertedCharacters:Bool = false;
 
@@ -336,27 +345,68 @@ class PlayState extends MusicBeatState
 				add(divTxt);
 			}
 			else if(daSong == 'desertion') {
+				deserBg = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/bg"));
+				deserBg.scale.set(0.7, 0.7);
+				deserBg.updateHitbox();
+				deserBg.screenCenter();
+				deserBg.cameras = [camVg];
+				deserBg.alpha = 0;
+				add(deserBg);
+
+				deserTiles = new FlxBackdrop(Paths.image('menu/title/tiles/main'), XY, 0, 0);
+				deserTiles.velocity.set(90, 0);
+				deserTiles.screenCenter();
+				deserTiles.cameras = [camVg];
+				deserTiles.alpha = 0;
+				add(deserTiles);
+
 				bexPop = new FlxSprite();
-				bexPop.frames = Paths.getSparrowAtlas("backgrounds/desertion/power up");
-				bexPop.animation.addByPrefix("idle", 'Bex Power Up0000', 24, true);
-				bexPop.animation.play('idle');
-				bexPop.scale.set(0.5, 0.5);
+				bexPop.loadGraphic(Paths.image("backgrounds/desertion/bex"));
+				bexPop.scale.set(0.9, 0.9);
 				bexPop.updateHitbox();
-				bexPop.x -= bexPop.width;
-				bexPop.y += 50;
-				bexPop.cameras = [camOther];
+				bexPop.x = -bexPop.width;
+				bexPop.y = FlxG.height - bexPop.height + 3;
+				bexPop.cameras = [camVg];
 				add(bexPop);
 	
 				bellaPop = new FlxSprite();
-				bellaPop.frames = Paths.getSparrowAtlas("backgrounds/desertion/power up");
-				bellaPop.animation.addByPrefix("idle", 'Bella Power Up0000', 24, true);
-				bellaPop.animation.play('idle');
-				bellaPop.scale.set(0.5, 0.5);
+				bellaPop.loadGraphic(Paths.image("backgrounds/desertion/bella"));
+				bellaPop.scale.set(0.9, 0.9);
 				bellaPop.updateHitbox();
 				bellaPop.x = FlxG.width;
-				bellaPop.y += 250;
-				bellaPop.cameras = [camOther];
+				bellaPop.y = FlxG.height - bellaPop.height + 3;
+				bellaPop.cameras = [camVg];
 				add(bellaPop);
+
+				deserBar = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/bar"));
+				deserBar.scale.set(0.8, 0.8);
+				deserBar.updateHitbox();
+				deserBar.screenCenter();
+				deserBar.x -= 10;
+				deserBar.cameras = [camVg];
+				deserBar.y = FlxG.height;
+				add(deserBar);
+
+				bellaScene = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/frame1"));
+				/*bellaScene.scale.set(1.2,1.2);
+				bellaScene.updateHitbox();
+				bellaScene.x -= 50;*/
+				bellaScene.screenCenter();
+				bellaScene.cameras = [camVg];
+				bellaScene.alpha = 0;
+				add(bellaScene);
+
+				bexScene = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/frame2"));
+				bexScene.screenCenter();
+				bexScene.cameras = [camVg];
+				bexScene.alpha = 0;
+				add(bexScene);
+
+				memory = new FlxSprite().loadGraphic(Paths.image("vignette-memory"));
+				memory.screenCenter();
+				memory.cameras = [camVg];
+				memory.alpha = 0;
+				add(memory);
 			}
 			else if(daSong == 'divergence' || daSong == 'divergence-old') {
 				divTxt = new FlxSprite().loadGraphic(Paths.image("hud/base/divergence"));
@@ -439,7 +489,7 @@ class PlayState extends MusicBeatState
 		}
 
 		underlay = new FlxSprite().loadGraphic(Paths.image('hud/base/underlay 2'));
-		underlay.scale.set(0.39,0.39);
+		underlay.scale.set(0.42,0.42);
 		underlay.updateHitbox();
 		underlay.screenCenter(Y);
 		underlay.x = -2000;
@@ -449,7 +499,7 @@ class PlayState extends MusicBeatState
 		add(underlay);
 
 		songLogo = new FlxSprite().loadGraphic(Paths.image('hud/songnames/$daSong'));
-		songLogo.scale.set(0.35,0.35);
+		songLogo.scale.set(0.39,0.39);
 		songLogo.updateHitbox();
 		songLogo.screenCenter(Y);
 		songLogo.x = -2000;
@@ -1086,9 +1136,9 @@ class PlayState extends MusicBeatState
 			case 'desertion':
 				if(!SaveData.data.get("Low Quality")) {
 					vgblack.alpha = 0.5;
-					//dad.alpha = 0;
-					//camHUD.alpha = 0;
-					//camVg.fade(0x00000000, 0.01, false);
+					dad.alpha = 0;
+					camHUD.alpha = 0;
+					camVg.fade(0x00000000, 0.01, false);
 				}
 
 				zoomInOpp = true;
@@ -1110,6 +1160,15 @@ class PlayState extends MusicBeatState
 				}
 
 				boyfriend.alpha = 0;
+				zoomInOpp = true;
+				zoomOppVal = 0.06;
+			case 'commotion':
+				if(!SaveData.data.get("Low Quality")) {
+					camHUD.alpha = 0;
+					camStrum.alpha = 0;
+					camVg.alpha = 0;
+				}
+
 				zoomInOpp = true;
 				zoomOppVal = 0.06;
 			case 'panic-attack':
@@ -1139,6 +1198,14 @@ class PlayState extends MusicBeatState
 					FlxG.camera.fade(0xFF000000, 0.01, false);
 				}
 		}
+
+		subtitle = new FlxText(0,0,0,"");
+		subtitle.setFormat(Main.gFont, 34, 0xFFFFFFFF, CENTER);
+		subtitle.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+		subtitle.screenCenter(X);
+		subtitle.y = FlxG.height - subtitle.height - 160;
+		subtitle.cameras = [camOther];
+		add(subtitle);
 
 		
 		if(hasCutscene())
@@ -1707,8 +1774,21 @@ class PlayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		if(daSong == "desertion" || daSong == "commotion") {
+			subtitle.scale.set(
+				FlxMath.lerp(subtitle.scale.x, 1, FlxG.elapsed * 6),
+				FlxMath.lerp(subtitle.scale.y, 1, FlxG.elapsed * 6)
+			);
+		}
+
 		if(doRain)
 			rain.shader.data.iTime.value = [haxe.Timer.stamp()];
+
+		if(moveThings) {
+			deserBar.y = FlxMath.lerp(deserBar.y, 0, elapsed * 6);
+			bexPop.x = FlxMath.lerp(bexPop.x, 0, elapsed * 6);
+			bellaPop.x = FlxMath.lerp(bellaPop.x, FlxG.width - bellaPop.width + 50, elapsed * 6);
+		}
 
 		var followLerp:Float = cameraSpeed * 5 * elapsed;
 		if(followLerp > 1) followLerp = 1;
@@ -2420,7 +2500,7 @@ class PlayState extends MusicBeatState
 	}
 
 	var banList:Array<String> = ['snap', 'panic', 'neck'];
-	var singList:Array<String> = ['neck'];
+	var singList:Array<String> = ['neck', 'ugh'];
 
 	override function beatHit()
 	{
@@ -2434,7 +2514,11 @@ class PlayState extends MusicBeatState
 
 		if(curBeat % beatSpeed == 0)
 		{
-			zoomCamera(0.05, 0.025);
+			zoomCamera(0.035, 0.02);
+			if(SaveData.data.get("Flashbang Mode")) {
+				FlxG.sound.play(Paths.sound('bang'));
+				CoolUtil.flash(camOther);
+			}	
 		}
 		for(char in characters)
 		{
@@ -3117,6 +3201,53 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(camStrum, {alpha: 1}, 1.6, {ease: FlxEase.expoOut});
 							FlxG.camera.fade(0x00000000, 1.6, false);
 					}
+				case 'commotion':
+					switch(curStep) {
+						case 64:
+							camHUD.alpha = 1;
+							camStrum.alpha = 1;
+							defaultCamZoom = 0.63;
+							CoolUtil.flash(camGame, 0.5);
+							beatSpeed = 1;
+						case 320:
+							defaultCamZoom = 0.6;
+							beatSpeed = 4;
+						case 338:
+							defaultCamZoom = 0.63;
+							bleh = 80;
+							beatSpeed = 1;
+						case 576:
+							defaultCamZoom = 0.7;
+							bleh = 60;
+							beatSpeed = 4;
+						case 704:
+							defaultCamZoom = 0.63;
+							beatSpeed = 1;
+							bleh = 80;
+						case 960:
+							defaultCamZoom = 0.7;
+							beatSpeed = 4;
+							bleh = 60;
+						case 1088:
+							defaultCamZoom = 0.63;
+							beatSpeed = 1;	
+							bleh = 80;
+						case 1216:
+							defaultCamZoom = 0.7;
+							beatSpeed = 4;
+							bleh = 60;
+						case 1344:
+							defaultCamZoom = 0.6;
+							bleh = 90;
+							FlxTween.tween(camHUD, {alpha: 0}, 2.5, {ease: FlxEase.expoOut});
+							FlxTween.tween(camStrum, {alpha: 0}, 2.5, {ease: FlxEase.expoOut});
+						case 284:
+							//ugh
+							updateSubs("[Nila]: Ugh.");
+							boyfriend.playAnim("ugh", true);
+							FlxTween.tween(subtitle, {alpha: 0}, 1, {ease: FlxEase.expoIn});
+							
+					}
 				case 'conservation':
 					switch(curStep) {
 						case 128:
@@ -3441,11 +3572,173 @@ class PlayState extends MusicBeatState
 							beatSpeed = 4;
 	
 					}
+				case 'desertion':
+					switch(curStep) {
+						case 1:
+							camVg.fade(0x00000000, 1, true);
+						case 144:
+							defaultCamZoom = 0.6;
+						case 178:
+							defaultCamZoom = 0.65;
+						case 212:
+							defaultCamZoom = 0.7;
+						case 244:
+							defaultCamZoom = 0.65;
+						case 272:
+							defaultCamZoom = 0.6;
+							dad.alpha = 1;
+							camHUD.alpha = 1;
+							CoolUtil.flash(camOther);
+							//startLogo();
+						case 368:
+							defaultCamZoom = 0.65;
+						case 400:
+							defaultCamZoom = 0.6;
+							beatSpeed = 1;
+							CoolUtil.flash(camOther);
+						case 656:
+							defaultCamZoom = 0.65;
+							beatSpeed = 4;
+						case 688:
+							defaultCamZoom = 0.7;
+						case 720:
+							defaultCamZoom = 0.65;
+						case 752:
+							defaultCamZoom = 0.7;
+						case 784:
+							defaultCamZoom = 0.65;
+							beatSpeed = 1;
+						case 912: // 912
+							defaultCamZoom = 0.6;
+							beatSpeed = 4;
+							// show bella
+							CoolUtil.flash(camOther);
+							bellaScene.alpha = 1;
+							memory.alpha = 0.4;
+						case 980:
+							// show bex~
+							FlxTween.tween(bexScene, {alpha: 1}, 0.6, {ease: FlxEase.sineOut});
+						case 1016:
+							// other bree sound?
+							updateSubs("[Bree]: gh..");
+						case 1020:
+							// GAAAH!!!!
+							updateSubs("[Bree]: GAAHHHHHH!!!");
+						case 1040:
+							// hide all
+							bexScene.alpha = 0;
+							bellaScene.alpha = 0;
+							memory.alpha = 0;
+							beatSpeed = 1;
+							CoolUtil.flash(camOther);
+							subtitle.alpha = 0;
+						case 1104:
+							defaultCamZoom = 0.7;
+						case 1168:
+							defaultCamZoom = 0.54;
+						case 1232:
+							defaultCamZoom = 0.65;
+						case 1296:
+							//something calm
+							defaultCamZoom = 0.6;
+							beatSpeed = 4;
+						case 1328:
+							defaultCamZoom = 0.7;
+							beatSpeed = 1;
+						case 1552:
+							defaultCamZoom = 0.54;
+							beatSpeed = 4;
+						case 1680:
+							defaultCamZoom = 0.6;
+						case 1744:
+							defaultCamZoom = 0.65;
+						case 1776:
+							defaultCamZoom = 0.7;
+						case 1808:
+							//end
+							defaultCamZoom = 0.54;
+							FlxTween.tween(camHUD, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
+							FlxTween.tween(camStrum, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
+						case 1840:
+							//UGH
+							updateSubs("[Bree]: Ugh..");
+							bfStrumline.updatePls = true;
+							bfStrumline.x = strumPos[0];
+							powerUp(true);
+						case 1841:
+							bfStrumline.updatePls = false;
+						case 1846:
+							//I WILL NOT BE BESTED
+							updateSubs("[Bree]: Ugh.. I WILL");
+						case 1852:
+							updateSubs("[Bree]: Ugh.. I WILL NOT");
+						case 1856:
+							updateSubs("[Bree]: Ugh.. I WILL NOT BE");
+						case 1860:
+							updateSubs("[Bree]: Ugh.. I WILL NOT BE BESTED.");
+						case 1872: //1872
+							powerUp(false);
+							dad.alpha = 1;
+							beatSpeed = 2;
+							FlxTween.tween(camHUD, {alpha: 1}, 0.7, {ease: FlxEase.sineInOut});
+							FlxTween.tween(camStrum, {alpha: 1}, 0.7, {ease: FlxEase.sineInOut});
+							CoolUtil.flash(camOther);
+							zoomInOpp = false;
+							changeChar(boyfriend, "bex-2dp");
+							changeChar(dad, "bree-2dp");
+							changeChar(third, "bella-2dp");
+							changeStage("desertion2");
+							vgblack.alpha = 0.2;
+							subtitle.alpha = 0;
+						case 2128:
+							beatSpeed = 1;
+							defaultCamZoom = 0.6;
+						case 2192:
+							defaultCamZoom = 0.7;
+						case 2224:
+							defaultCamZoom = 0.8;
+						case 2256:
+							defaultCamZoom = 0.6;
+						case 2320:
+							defaultCamZoom = 0.7;
+						case 2352:
+							defaultCamZoom = 0.6;
+						case 2384:
+							beatSpeed = 2;
+							defaultCamZoom = 0.5;
+						case 2512:
+							defaultCamZoom = 0.6;
+						case 2640:
+							beatSpeed = 4;
+							defaultCamZoom = 0.5;
+						case 2768:
+							defaultCamZoom = 0.6;
+						case 2800:
+							defaultCamZoom = 0.7;
+						case 2832:
+							defaultCamZoom = 0.75;
+						case 2864:
+							defaultCamZoom = 0.6;
+						case 2896:
+							defaultCamZoom = 0.7;
+						case 2912:
+							defaultCamZoom = 0.6;
+						case 2928:
+							updateSubs("[Bree]: AAAAGHHHHHHHH!!!!");
+							defaultCamZoom = 0.5;
+							FlxTween.tween(camHUD, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
+							FlxTween.tween(camStrum, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
+						case 2956:
+							CoolUtil.flash(camOther);
+							dad.alpha = 0;
+							subtitle.alpha = 0;
+						case 2976:
+							camOther.fade(0x00000000, 0.6, false);
+					}
 				case 'desertion-sc':
 					switch(curStep) {
 						case 1:
 							camVg.fade(0x00000000, 1, true);
-							
 						case 16:
 							CoolUtil.flash(camOther);
 						case 144:
@@ -3690,7 +3983,7 @@ class PlayState extends MusicBeatState
 							stageBuild.objectMap.get("outsidenight").alpha = 1;
 							stageBuild.objectMap.get("rain").alpha = 0.16;
 							stageBuild.objectMap.get("outsidenight").animation.play("thunder");
-							vgblack.alpha = 0.5;
+							vgblack.alpha = 0.2;
 						case 1137:
 							dad.playAnim("snap", true);
 						case 1168:
@@ -3702,12 +3995,14 @@ class PlayState extends MusicBeatState
 							changeChar(boyfriend, "bex-2bf");
 							changeChar(dad, "bree-2bf");
 							changeStage("nan");
+							//zoomInOpp = false;
+							zoomOppVal = -0.2;
 						case 1440: // 1440
 							CoolUtil.flash(camOther, 0.5);
 							camVg.fade(0x00ffffff, 0.01, true);
 						case 1664:
 							FlxTween.tween(dad, {alpha: 0}, 0.6, {ease: FlxEase.sineInOut});
-						case 1685: //1680
+						case 1683: //1680
 							defaultCamZoom = 0.72;
 							boyfriend.playAnim("neck", true);
 							focusMiddle = true;
@@ -3723,6 +4018,8 @@ class PlayState extends MusicBeatState
 							boyfriend.playAnim("panic", true);
 							focusMiddle = false;
 							cameraSpeed = 500;
+							//zoomInOpp = false;
+							zoomOppVal = 0.05;
 						case 1697: 
 							cameraSpeed = 1;
 						case 2000:
@@ -3730,6 +4027,9 @@ class PlayState extends MusicBeatState
 						case 2016:
 							defaultCamZoom = 0.76;
 							stageBuild.objectMap.get("outsidenight").animation.play("thunder");
+							FlxTween.tween(camHUD, {alpha: 0}, 1.5, {ease: FlxEase.expoOut});
+							FlxTween.tween(camStrum, {alpha: 0}, 1.5, {ease: FlxEase.expoOut});
+							camVg.fade(0x00000000, 2.5, false);
 					}
 				case 'allegro':
 					switch(curStep) {
@@ -4121,9 +4421,29 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	var moveThings:Bool = false;
 	function powerUp(isBegin:Bool)
 	{
 		if(daSong != 'desertion' && startedSong) return;
+
+		if(isBegin) {
+			FlxTween.tween(deserBg, {alpha: 1}, 0.5, {ease: FlxEase.cubeOut});
+			FlxTween.tween(deserTiles, {alpha: 1}, 0.5, {ease: FlxEase.cubeOut});
+			moveThings = true;
+		}
+		else {
+			moveThings = false;
+			bellaPop.alpha = 0;
+			bexPop.alpha = 0;
+			deserBg.alpha = 0;
+			deserTiles.alpha = 0;
+			deserBar.alpha = 0;
+		}
+	}
+
+	function powerUpOld(isBegin:Bool)
+	{
+		if(daSong != 'desertion-sc' && startedSong) return;
 
 		if(isBegin) {
 			FlxTween.tween(bellaPop, {x: FlxG.width - bellaPop.width}, 0.7, {ease: FlxEase.cubeOut});
@@ -4210,5 +4530,42 @@ class PlayState extends MusicBeatState
 
 		trace("index not found, for some reason: " + index);
 		return -1;
+	}
+
+	function updateSubs(lineA:String = "") {
+		var colorMap:Map<String, FlxColor> = [
+			"[Bree]" 		=> 0xFF7f7387,
+			"[Nila]" 		=> 0xFF66CC99,
+			"[???]"		=> 0xFFFFFFFF
+		];
+
+		var format:FlxTextFormat;
+
+		if(lineA.startsWith("[")) {
+			var name:String = lineA.split(":")[0];
+			var color:FlxColor = FlxColor.WHITE;
+			var outline:FlxColor = FlxColor.BLACK;
+
+			if(colorMap.exists(name))
+				color = colorMap.get(name);
+
+			format = new FlxTextFormat(color, false, false, outline, false);
+		}
+		else {
+			format = new FlxTextFormat(0xFFFFFFFF, false, false, FlxColor.BLACK, false);
+		}
+
+		var indexA:Int = lineA.indexOf(':');
+		if(indexA < 0)
+			indexA = 10;
+
+		subtitle.setFormat(Main.gFont, 34, 0xFFFFFFFF, CENTER);
+		subtitle.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+		subtitle.scale.set(1.2,1.2);
+		subtitle.addFormat(format, 0, indexA);
+		subtitle.text = lineA;
+		subtitle.screenCenter(X);
+		subtitle.y = FlxG.height - subtitle.height - 160;
+		subtitle.alpha = 1;
 	}
 }

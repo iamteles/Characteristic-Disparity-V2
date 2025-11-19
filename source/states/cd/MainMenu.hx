@@ -51,7 +51,7 @@ class MainMenu extends MusicBeatState
         super.create();
         inSub = false;
 
-        DiscordIO.changePresence("In the Menus...", null);
+        DiscordIO.changePresence("In the Main Menu", null);
         CoolUtil.playMusic("MENU");
 
         Main.setMouse(false);
@@ -218,7 +218,7 @@ class MainMenu extends MusicBeatState
 
         if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
-            Main.switchState(new states.cd.TitleScreen());
+            Main.switchState(new states.cd.TitleScreen(), true);
         }
 
 		if(Controls.justPressed("UI_LEFT"))
@@ -257,35 +257,35 @@ class MainMenu extends MusicBeatState
                             FlxTween.tween(item, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
                         else {
                             FlxFlicker.flicker(item, 1, 0.06, true, false, function(_)
-                            {             
+                            {
                                 switch(list[curSelected])
                                 {
                                     case "story mode":
-                                        Main.switchState(new states.cd.StoryMode());
+                                        Main.switchState(new states.cd.StoryMode(), true);
                                     case "menu":
-                                        Main.switchState(new states.cd.MainMenu());
+                                        Main.switchState(new states.cd.MainMenu(), true);
                                     case "freeplay":
-                                        Main.switchState(new states.cd.Freeplay());
+                                        Main.switchState(new states.cd.Freeplay(), true);
                                     case "gallery":
                                         states.cd.Gallery.curCat = "main";
-                                        Main.switchState(new states.cd.Gallery());
+                                        Main.switchState(new states.cd.Gallery(), true);
                                     case "bio":
-                                        Main.switchState(new states.cd.Bios());
+                                        Main.switchState(new states.cd.BiosMenuState(), true);
                                     case "kiss":
-                                        Main.switchState(new states.cd.Kissing());
+                                        Main.switchState(new states.cd.Kissing(), true);
                                     case "shop":
-                                        Main.switchState(new states.ShopState());
+                                        Main.switchState(new states.ShopState(), true);
                                     case "games":
                                         openSubState(new subStates.Game());
                                     case "music":
-                                        Main.switchState(new states.cd.MusicPlayer());
+                                        Main.switchState(new states.cd.MusicPlayer(), true);
                                     case "options":
                                         //openSubState(new subStates.OptionsSubState());
-                                        Main.switchState(new states.menu.OptionsState());
+                                        Main.switchState(new states.menu.OptionsState(), true);
                                     case "credits":
-                                        Main.switchState(new states.cd.Credits());
+                                        Main.switchState(new states.cd.Credits(), true);
                                     default:
-                                        Main.switchState(new states.DebugState());
+                                        Main.switchState(new states.DebugState(), true);
                                 }
                             });
                         }

@@ -110,7 +110,7 @@ class Dialog extends MusicBeatState
 
         Main.setMouse(false);
 
-        DiscordIO.changePresence("Reading dialogue...", null);
+        DiscordIO.changePresence("Reading Dialogue", null);
 
         behind = new FlxGroup();
 		add(behind);

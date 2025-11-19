@@ -49,6 +49,10 @@ class Swat extends MusicBeatState
         super.create();
         CoolUtil.playMusic();
 
+        DiscordIO.changePresence("Playing: SUBGAME-1", null);
+
+        stremMode = SaveData.data.get("Jumpscares");
+
         highscore = SaveData.saveFile.data.swatScore;
 
         camZoom = 1;
@@ -113,12 +117,11 @@ class Swat extends MusicBeatState
 
         scare = new FlxSprite();
         scare.frames = Paths.getSparrowAtlas('minigame/swat/texture');
-        scare.animation.addByPrefix('ah',  'AH', 24, true);
+        scare.animation.addByPrefix('ah',  'AH1', 24, true);
         scare.animation.play('ah');
         scare.alpha = 0;
         scare.cameras = [camHUD];
         add(scare);
-
 
         Main.setMouse(true);
     }

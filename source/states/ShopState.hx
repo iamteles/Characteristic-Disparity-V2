@@ -195,12 +195,12 @@ class ShopState extends MusicBeatState
 
     public static function enterShop()
     {
-        hudTalk.tweenAlpha(0, 1);
+        hudTalk.tweenAlpha(0, 0.6);
 
-        var countTimer = new FlxTimer().start(1, function(tmr:FlxTimer)
+        var countTimer = new FlxTimer().start(0.6, function(tmr:FlxTimer)
         {
             camFollow.setPosition(watts.getMidpoint().x + 480 + wattsOffset, watts.getMidpoint().y + 80);
-            var countTimer = new FlxTimer().start(0.7, function(tmr:FlxTimer)
+            var countTimer = new FlxTimer().start(0.4, function(tmr:FlxTimer)
             {
                 hudBuy.tweenAlpha(1,0.7);
             });
@@ -209,15 +209,16 @@ class ShopState extends MusicBeatState
 
     public static function exitShop(question:Bool = false)
     {
-        hudBuy.tweenAlpha(0, 1);
+        hudBuy.tweenAlpha(0, 0.6);
 
         Main.setMouse(false);
 
-        var countTimer = new FlxTimer().start(1, function(tmr:FlxTimer)
+        var countTimer = new FlxTimer().start(0.6, function(tmr:FlxTimer)
         {
             camFollow.setPosition(watts.getMidpoint().x + wattsOffset, watts.getMidpoint().y + 80);
-            var countTimer = new FlxTimer().start(0.7, function(tmr:FlxTimer)
+            var countTimer = new FlxTimer().start(0.4, function(tmr:FlxTimer)
             {
+                if(question) hudTalk.activeIcon = "watts"; //ugh
                 hudTalk.tweenAlpha(1, 1);
                 if(question) {
                     if(!SaveData.progression.get("oneofthem"))

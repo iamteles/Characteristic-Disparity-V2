@@ -77,7 +77,7 @@ class CharGroup extends FlxTypedGroup<BGChar>
 		super();
 
         if(vip) {
-            right = ['Whisper', 'Sam', 'Nyako', 'Evelyn', 'Abi'];
+            right = ['Imani', 'Sam', 'Nyako', 'Evelyn', 'Abi'];
             left = ['Nobodi', 'Jewel', 'Drown', 'Dorothy', 'Claire'];
         }
 

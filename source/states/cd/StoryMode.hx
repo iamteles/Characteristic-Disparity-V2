@@ -35,7 +35,7 @@ class StoryMode extends MusicBeatState
     {
         super.create();
         CoolUtil.playMusic("LoveLetter");
-        DiscordIO.changePresence("In the Story Mode...", null);
+        DiscordIO.changePresence("In the Story Mode", null);
         usingMouse = false;
 
         weekData = [

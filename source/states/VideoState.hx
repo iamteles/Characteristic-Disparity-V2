@@ -15,7 +15,7 @@ class VideoState extends MusicBeatState
 	{
         CoolUtil.playMusic();
         Main.setMouse(false);
-        DiscordIO.changePresence("Watching cutscene...", null);
+        DiscordIO.changePresence("Watching Cutscene", null);
 
         video = new DoidoVideoSprite();
 		video.antialiasing = SaveData.data.get("Antialiasing");
@@ -48,14 +48,14 @@ class VideoState extends MusicBeatState
         skipped = true;
 
         switch(name) {
-            case "test":
+            /*case "test":
                 Main.skipClearMemory = true;
                 states.VideoState.name = "intro";
-                Main.switchState(new states.VideoState());
-            case "intro":
+                Main.switchState(new states.VideoState());*/
+            case "intro" | "test":
                 Main.skipStuff();
                 Main.skipClearMemory = true;
-                states.cd.TitleScreen.fromIntro = true;
+                //states.cd.TitleScreen.introEnded = true;
 		        Main.switchState(new states.cd.TitleScreen());
             case "divergence":
                 // pop up here?

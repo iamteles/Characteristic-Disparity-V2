@@ -57,6 +57,7 @@ class ShopTalk extends FlxGroup
     var bella:FlxSound;
 
     var starting:String = 'post';
+    public var activeIcon:String = 'watts';
 
     var curChoice:Int = 0;
     var choiceGrp:FlxTypedGroup<FlxText>;
@@ -85,7 +86,7 @@ class ShopTalk extends FlxGroup
         iconW.animation.play("neutral");
         iconW.scale.set(0.7, 0.7);
         iconW.updateHitbox();
-        iconW.x = dialogBig.x + 85;
+        iconW.x = dialogBig.x + 88;
         iconW.y = dialogBig.y + 70;
         add(iconW);
 
@@ -233,7 +234,9 @@ class ShopTalk extends FlxGroup
             return SaveData.progression.get("nila");
         else if(ident == "talk") // theoretically broken for pre-nila but you cant read everything without unlocking her
             return (getSaved("bellaN") && getSaved("bexN") && getSaved("breeN") && getSaved("wattsN"));
-        else if(ident == "buy" || ident == "comp")
+        else if(ident == "buy")
+            return SaveData.shopCheck();
+        else if(ident == "comp")
             return true; // temp
 
         return SaveData.wattsLines.get(ident);
@@ -317,11 +320,11 @@ class ShopTalk extends FlxGroup
                     }
                 }
 
-                ShopState.watts.animation.play("neutralidle");
+                ShopState.watts.animation.play("idle");
                 iconW.animation.play("neutral");
 
                 if(ShopState.nilaMode || ident.startsWith("commotion")) {
-                    ShopState.nila.animation.play("neutralidle");
+                    ShopState.nila.animation.play("idle");
                     iconN.animation.play("neutral");
                 }
 
@@ -333,6 +336,7 @@ class ShopTalk extends FlxGroup
                 icon = iconN;
                 iconHide = iconW;
                 sounder = "nila";
+                activeIcon = "nila";
             }
             else if(info[3] == "b") {
                 dontAnim = true;
@@ -341,7 +345,12 @@ class ShopTalk extends FlxGroup
                 iconHide2 = iconN;
                 icon = iconB;
             }
+            else
+                activeIcon = "watts";
         }
+        else
+            activeIcon = "watts";
+
         curSelecting = false;
         if(!dontAnim)
             char.animation.play(info[1]);
@@ -380,9 +389,22 @@ class ShopTalk extends FlxGroup
         if(alpha == 0)
             activeg = false;
         FlxTween.tween(dialogBig, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
-        FlxTween.tween(iconW, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
-        FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        if(activeIcon == "watts")
+            FlxTween.tween(iconW, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        if(activeIcon == "nila")
+            FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+    }
+
+    function getCompAssessment() {
+        if(SaveData.completion() == 100)
+            return "That means you're all done! Congrats, and thanks for playing! Make sure to check out the gameplay modifiers in the options!";
+        else if(SaveData.shopCheck() && SaveData.progression.get("nila"))
+            return "You've also bought every single thing I have for sale! Thanks a lot for your support! Now, all that's left is to go play those songs and read any bits of story you've missed!";
+        else if(SaveData.shopCheck() && !SaveData.progression.get("nila"))
+            return "You've bought everything I currently have, but I could maybe get some more items in here eventually. Make sure to read everything in the story, and keep in mind that my dialogue counts too!";
+        else
+            return "There's still some stuff around for you to buy so if you wanna get those numbers up, you better start emptying those pockets.";
     }
 
     public function createProgress():WattsDialog {
@@ -391,8 +413,15 @@ class ShopTalk extends FlxGroup
             saveIdent: null,
             lines: [
                 [
-                    'progress is ${SaveData.percentage()}%, as previously shown in the options menu. new text tba.',
-                    "confused",
+                    'So far, you\'ve played ${SaveData.songCompletion()} songs, beaten ${SaveData.storyCompletion()}% of the story and unlocked ${SaveData.extrasCompletion()}% of the extras. '+
+                    (SaveData.progression.get("intimidated") ? 'You\'ve even unlocked ${SaveData.subgameCompletion()} subgames! ':"")+
+                    'That puts you at an overall ${SaveData.completion()}% completion.',
+                    "neutral",
+                    0.05
+                ],
+                [
+                    getCompAssessment(),
+                    "neutral",
                     0.05
                 ],
                 [
@@ -1020,6 +1049,7 @@ class ShopBuy extends FlxGroup
     var dialogBig:FlxSprite;
     var holder:FlxSprite;
     var icon:FlxSprite;
+    var iconN:FlxSprite;
     public static var tex:FlxTypeText;
     
     var tabs:FlxTypedGroup<FlxSprite>;
@@ -1095,7 +1125,23 @@ class ShopBuy extends FlxGroup
         icon.updateHitbox();
         icon.x = dialogBig.x + 70;
         icon.y = dialogBig.y + 60;
+        icon.alpha = 0;
         add(icon);
+
+        iconN = new FlxSprite(0, 0);
+        iconN.frames = Paths.getSparrowAtlas("hud/shop/nilaicons");
+        iconN.animation.addByPrefix("neutral", 'nila text neutral', 24, true);
+        iconN.animation.addByPrefix("sad", 'nila text sad', 24, true);
+        iconN.animation.addByPrefix("happy", 'nila text happy', 24, true);
+        iconN.animation.addByPrefix("angry", 'nila text angry', 24, true);
+        iconN.animation.addByPrefix("confused", 'nila text confused', 24, true);
+        iconN.animation.play("neutral");
+        iconN.scale.set(0.7, 0.7);
+        iconN.updateHitbox();
+        iconN.x = dialogBig.x + 90;
+        iconN.y = dialogBig.y + 60;
+        iconN.alpha = 0;
+        add(iconN);
 
         tex = new FlxTypeText(icon.x + icon.width + 25, icon.y, Std.int(dialogBig.width - (icon.x + icon.width + 25) - 50), '* What are you looking for?', true);
 		tex.alpha = 1;
@@ -1163,7 +1209,6 @@ class ShopBuy extends FlxGroup
         if(alpha == 0)
             activeg = false;
         FlxTween.tween(dialogBig, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
-        FlxTween.tween(icon, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(holder, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(label, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
@@ -1174,6 +1219,20 @@ class ShopBuy extends FlxGroup
 
         if(activeg && ShopState.nilaMode)
             char = FlxG.random.int(0,1);
+
+        if(char == 1)
+            FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+        else
+            FlxTween.tween(icon, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+
+        if(activeg) {
+            if(usingMouse)
+                Main.setMouse(true);
+            else
+                Main.setMouse(false);
+
+            scrollText('What are you looking for?');
+        }
 
         alphaTab(alpha, time);
     }

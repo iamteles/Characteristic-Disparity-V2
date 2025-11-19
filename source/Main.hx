@@ -39,8 +39,11 @@ class Main extends Sprite
 	
 	public static var skipClearMemory:Bool = false; // dont
 	public static var skipTrans:Bool = true; // starts on but it turns false inside Init
-	public static function switchState(?target:FlxState):Void
+	public static function switchState(?target:FlxState, fade:Bool = false):Void
 	{
+		if(fade && FlxG.sound.music != null) {
+			FlxG.sound.music.fadeOut(0.5);
+		}
 		var trans = new GameTransition(false);
 		trans.finishCallback = function()
 		{

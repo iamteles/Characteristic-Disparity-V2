@@ -32,7 +32,7 @@ class Divergence extends MusicBeatState
 
         Main.setMouse(false);
 
-        DiscordIO.changePresence("Reading dialogue...", null);
+        DiscordIO.changePresence("Reading Dialogue", null);
 
         panelGroup = new FlxTypedGroup<FlxSprite>();
 		add(panelGroup);

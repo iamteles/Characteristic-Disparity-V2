@@ -192,7 +192,23 @@ class SaveData
 			false,
 			CHECKMARK,
 			"Whether the character plays a miss animation when you ghost tap."
-		]
+		],
+		"Munchlog"	=> [
+			1,
+			SELECTOR,
+			"Self explanatory.",
+			[1, 999]
+		],
+		"Flashbang Mode" => [
+			false,
+			CHECKMARK,
+			"lol"
+		],
+		"Jumpscares" => [
+			false,
+			CHECKMARK,
+			"Scary little surprise."
+		],
 	];
 
 	public static var progression:Map<String, Dynamic> = [
@@ -207,7 +223,8 @@ class SaveData
 		"debug" => false,
 		"finished" => false,
 		"story" => false,
-		"nila" => false
+		"nila" => false,
+		"plus" => true,
 	];
 	public static var songs:Map<String, Dynamic> = [
 		"euphoria" => false,
@@ -239,48 +256,57 @@ class SaveData
 		"crown" => [
 			false,
 			"People say it transports you to a far away place. Probably junk.",
-			"blah blah blah my name is nila and i am le silly"
+			"Get me some water and we'll find out if this is real or not."
 		],
 		"mic" => [
 			false,
 			"Some old thing. I have no use for it myself.",
-			"blah blah blah ima microphone"
+			"Mom 2's favorite, but she doesn't like admitting to it."
 		],
 		"ticket" => [
 			false,
-			"A ticket to a flavorful festival. Didn't feel like going myself, schedule too busy."
+			"A ticket to a flavorful festival. Didn't feel like going myself, schedule too busy.",
+			"Smells like cinnamon a little."
 		],
 		"time" => [
 			false,
-			"...I don't remember that ever being there. Are you sure you want this?"
+			"Nila's first attempt at a time travelling device. Didn't work like she wanted it to...",
+			"This MAY look like a time travel machine but it actually opens portals to a special alternate reality!"
 		],
 		"tails" => [
 			false,
-			"Its just a can of fake blood. I'm not sure why someone would want it."
+			"It's just a can of fake blood. I'm not sure why anyone would want it.",
+			"I think I heard about this on the internet, once."
 		],
 		"mlc" => [
 			false,
-			"Something to blow bubbles with. Very popular among sponges."
+			"Something to blow bubbles with. Very popular among sponges.",
+			"SINCE WHEN DO WE HAVE ONE OF THESE HERE??? CAN I PLAY, MOM 2???"
 		],
 		"base" => [
 			false,
-			"Previously owned by some soldier guy. I don't have actual children of my own."
+			"Previously owned by some soldier guy. I don't have actual children of my own.",
+			"I wonder if Mom 2 would like one of these..."
 		],
 		"shack" => [
 			false,
-			"FYI, this is not a drink. Don't drink it. Seriously. I'm not trying to get sued."
+			"FYI, this is not a drink. Don't drink it. Seriously. I'm not trying to get sued.",
+			"Would go great with a pickle, probably. Try it and tell me how it tastes."
 		],
 		"music" => [
 			false,
-			"An old disc with some banger tunes to listen. Favourite among collectors."
+			"An old disc with some banger tunes to listen. Favourite among collectors.",
+			"why am i here?"
 		],
 		"gallery" => [
 			false,
-			"Pretty nifty collection of art."
+			"Pretty nifty collection of art.",
+			"why am i here?"
 		],
 		"bio" => [
 			false,
-			"Don't ask me how I got these. Special price since i need to get rid of these ASAP."
+			"Don't ask me how I got these. Special price since i need to get rid of these ASAP.",
+			"why am i here?"
 		],
 		"biop" => [
 			false,
@@ -315,12 +341,12 @@ class SaveData
 		],
 		"egg3" => [
 			false,
-			"Someone wanted me to tell you that AZURE is the code.",
+			"sigh.",
 			"*burp* whoops."
 		],
 		"camera" => [
 			false,
-			"text for watts cam",
+			"Something Nila got from her dad. She's selling this to pay for her research.",
 			"It's a hand me down from my dad. Now it's yours, if you pay, of course."
 		],
 		"fitdon" => [
@@ -385,6 +411,7 @@ class SaveData
 			saveFile.data.swatScore = 0;
 		if(saveFile.data.kissScore == null)
 			saveFile.data.kissScore = 0;
+
 		if(saveFile.data.settings == null)
 		{
 			for(key => values in displaySettings)
@@ -475,9 +502,7 @@ class SaveData
 		else {
 			trace("not found fnfdon");
 		}
-
-		trace(percentage());
-
+		
 		save();
 
 		trace("taiko " + data.get("Taiko Style"));
@@ -591,9 +616,11 @@ class SaveData
 	public static function wipe(?which:String = 'ALL'){
 		switch(which) {
 			case 'PROGRESS':
-				progressionFile.erase();
+				money = 0;
+				shop = [];
 				progression = [
 					"shopentrance" => false,
+					"nilaentrance" => false,
 					"firstboot" => false,
 					"intimidated" => false,
 					"week2" => false,
@@ -601,7 +628,10 @@ class SaveData
 					"vip" => false,
 					"oneofthem" => false,
 					"debug" => false,
-					"finished" => false
+					"finished" => false,
+					"story" => false,
+					"nila" => false,
+					"plus" => true,
 				];
 				songs = [
 					"euphoria" => false,
@@ -625,9 +655,9 @@ class SaveData
 					"divergence-vip" => false,
 					"cupid" => false
 				];
+				wattsNum = -1;
 				wattsLines = [];
-				money = 0;
-				//trace ("Wiping progress " + progressionSave.data.progression + ' ' + progressionSave.data.clowns);
+				progressionFile.erase();
 			case 'HIGHSCORE':
 				FlxG.save.erase();
 			case 'OPTIONS':
@@ -642,7 +672,7 @@ class SaveData
 		load();
 	}
 
-	public static function percentage() {
+	public static function completion() {
 		var count:Int = 0;
 		var songList:Array<String> = [
 			"euphoria",
@@ -655,6 +685,98 @@ class SaveData
 			"sin",
 			"conservation",
 			"irritation",
+			"commotion",
+			"kaboom",
+			"intimidate",
+			"heartpounder",
+			"ripple",
+			"exotic",
+			"customer-service",
+			"euphoria-vip",
+			"nefarious-vip",
+			"divergence-vip",
+			"cupid"
+		];
+
+		var lines:Array<String> = [
+			"bellaA",
+			"bellaB",
+			"bellaC",
+			"bellaD",
+			"bexA",
+			"bexB",
+			"bexC",
+			"bexD",
+			"breeA",
+			"breeB",
+			"wattsA",
+			"wattsC",
+			"wattsD",
+			"nilaA",
+			"nilaB",
+			"nilaC",
+			"nilaD",
+		];
+
+		var progList:Array<String> = [
+			"week1",
+			"week2",
+			"intimidated",
+			"nila",
+			"oneofthem",
+			"story"
+		];
+
+		var shopItems:Array<String> = [
+			"tails",
+			"mlc",
+			"base",
+			"music",
+			"gallery",
+			"bio",
+			"galleryp",
+			"biop",
+			"musicp",
+			"camera",
+			"time",
+			"ylyl",
+			"fitdon",
+			"fnfdon"
+		];
+
+		for (song in songList) {
+			if (songs.get(song))  count++;
+		}
+
+		for (prog in progList) {
+			if (progression.get(prog))  count++;
+		}
+
+		for (watts in lines) {
+			if (wattsLines.get(watts))  count++;
+		}
+		
+		for (extra in shopItems) {
+			if (shop.get(extra))  count++;
+		}
+
+		return Std.int((count/(songList.length+progList.length+lines.length+shopItems.length))*100);
+	}
+
+	public static function songCompletion() {
+		var count:Int = 0;
+		var songList:Array<String> = [
+			"euphoria",
+			"nefarious",
+			"divergence",
+			"allegro",
+			"panic-attack",
+			"convergence",
+			"desertion",
+			"sin",
+			"conservation",
+			"irritation",
+			"commotion",
 			"kaboom",
 			"intimidate",
 			"heartpounder",
@@ -668,37 +790,97 @@ class SaveData
 		];
 
 		for (song in songList) {
-			if (songs.get(song))  count += 2;
+			if (songs.get(song))  count++;
 		}
-		
+
+
+		return '$count/${songList.length}';
+	}
+
+	public static function storyCompletion() {
+		var count:Int = 0;
+		var progList:Array<String> = [
+			"week1",
+			"week2",
+			"intimidated",
+			"nila",
+			"oneofthem",
+			"story"
+		];
+
+		var storySongs:Array<String> = [
+			"ripple",
+			"customer-service",
+			"cupid",
+		];
+
+		var lines:Array<String> = [
+			"bellaA",
+			"bellaB",
+			"bellaC",
+			"bellaD",
+			"bexA",
+			"bexB",
+			"bexC",
+			"bexD",
+			"breeA",
+			"breeB",
+			"wattsA",
+			"wattsC",
+			"wattsD",
+			"nilaA",
+			"nilaB",
+			"nilaC",
+			"nilaD",
+		];
+
+		for (song in storySongs) {
+			if (songs.get(song))  count++;
+		}
+
+		for (prog in progList) {
+			if (progression.get(prog))  count++;
+		}
+
+		for (watts in lines) {
+			if (wattsLines.get(watts))  count++;
+		}
+
+		return Std.int((count/(progList.length+storySongs.length+lines.length))*100);
+	}
+
+	public static function extrasCompletion() {
+		var count:Int = 0;
 		var shopItems:Array<String> = [
-			"crown",
-			"mic",
-			"ticket",
 			"tails",
 			"mlc",
 			"base",
-			"shack",
 			"music",
 			"gallery",
 			"bio",
+			"galleryp",
+			"biop",
+			"musicp",
+			"camera",
+			"time",
+			"ylyl",
 			"fitdon",
-			"fnfdon",
-			"ylyl"
+			"fnfdon"
 		];
 
-		for (item in shopItems) {
-			if (shop.get(item))  count += 2;
+		for (extra in shopItems) {
+			if (shop.get(extra))  count++;
 		}
 
-		if (progression.get("week1"))  count += 12;
-		if (progression.get("week2"))  count += 13;
-		if (progression.get("vip"))  count += 6;
-		if (progression.get("intimidated"))  count += 9;
+		return Std.int((count/(shopItems.length))*100);
+	}
 
-		if (progression.get("debug"))  count += 2; 
+	public static function subgameCompletion() {
+		var count:Int = 0;
+		if(progression.get("intimidated")) count++;
+		if(SaveData.progression.get("finished")) count++;
 
-		return count;
+		return '$count/2';
 	}
 
 	public static function cupidCheck() {
@@ -714,6 +896,7 @@ class SaveData
 			"sin",
 			"conservation",
 			"irritation",
+			"commotion",
 			"kaboom",
 			"intimidate",
 			"heartpounder",
@@ -754,6 +937,16 @@ class SaveData
 		return count;
 	}
 
+	public static function eggCheck():Bool {
+		for(checker in 0...3) {
+			if(shop.get("egg"+checker)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static function eggData():Array<Dynamic> {
 		var name:String = "Egg";
 		var price:Int = 500;
@@ -771,6 +964,58 @@ class SaveData
 		}
 		
 		return [name, price];
+	}
+
+	public static function shopCheck():Bool {
+		var count:Int = 0;
+		var shopItems:Array<String> = [
+			"crown",
+			"mic",
+			"ticket",
+			"tails",
+			"mlc",
+			"base",
+			"shack",
+			"music",
+			"gallery",
+			"bio",
+		];
+
+		if(progression.get("nila")) {
+			shopItems = [
+				"crown",
+				"mic",
+				"ticket",
+				"tails",
+				"mlc",
+				"base",
+				"shack",
+				"galleryp",
+				"biop",
+				"musicp",
+				"camera",
+				"time"
+			];
+		}
+
+		for (item in shopItems) {
+			if (shop.get(item)) {
+				trace("player has " + item);
+				count++;
+			}
+			else
+				trace("player doesnt have " + item);
+		}
+
+		trace(count);
+		trace(shopItems.length);
+
+		var check:Bool = count == (shopItems.length);
+
+		if(check && progression.get("nila"))
+			check = eggCheck();
+
+		return check;
 	}
 
 	public static function updateWindowSize()

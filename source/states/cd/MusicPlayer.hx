@@ -134,7 +134,7 @@ class MusicPlayer extends MusicBeatState
         CoolUtil.playMusic();
         //Main.setMouse(true);
 
-        DiscordIO.changePresence("In the Music Player...", null);
+        DiscordIO.changePresence("In the Music Player", null);
 
         camGame = new FlxCamera();
         FlxG.cameras.reset(camGame);

@@ -1,6 +1,5 @@
 package subStates;
 
-import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;

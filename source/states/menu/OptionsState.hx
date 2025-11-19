@@ -27,6 +27,7 @@ class OptionsState extends MusicBeatState
 			#if !mobile
 			"Controls",
 			#end
+			//"Extras"
 		],
 		"gameplay" => [
 			"Ghost Tapping",
@@ -44,7 +45,7 @@ class OptionsState extends MusicBeatState
 			"Menu Style",
 			//"Song Timer",
 			//"Smooth Healthbar",
-			"Miss on Ghost Tap",
+			//"Dark Mode",
 			"Cutscenes",
 			"FPS Cap",
 			"Resolution",
@@ -57,6 +58,12 @@ class OptionsState extends MusicBeatState
 			"Low Quality",
 			"Text Speed",
 			"Discord RPC"
+		],
+		"extras" => [
+			"Jumpscares",
+			"Flashbang Mode",
+			"Miss on Ghost Tap",
+			"Munchlog"
 		],
 		"save" => [
 			"Reset Progression",
@@ -110,7 +117,10 @@ class OptionsState extends MusicBeatState
 		color.screenCenter();
 		add(color);
 
-		DiscordIO.changePresence("In the Options Menu...", null);
+		DiscordIO.changePresence("In the Options", null);
+
+		if(SaveData.eggCheck())
+			optionShit.get("main").push("Extras");
 
 		var tiles = new FlxBackdrop(Paths.image('menu/freeplay/tile'), XY, 0, 0);
         tiles.velocity.set(30, 30);
@@ -159,7 +169,10 @@ class OptionsState extends MusicBeatState
 		verTxt.setFormat(Main.dsFont, 28, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;
-		verTxt.screenCenter(X);
+		if(!SaveData.eggCheck())
+			verTxt.screenCenter(X);
+		else
+			verTxt.x = 3;
 		verTxt.antialiasing = false;
 		add(verTxt);
 
@@ -207,7 +220,7 @@ class OptionsState extends MusicBeatState
 				button.animation.play('idle');
 				button.ID = i;
 	
-				//button.scale.set(0.65,0.65);
+				button.scale.set(0.95,0.95);
 				button.updateHitbox();
 	
 	
@@ -228,6 +241,13 @@ class OptionsState extends MusicBeatState
 						button.screenCenter();
 						button.x += 300 + 30;
 						button.y += 180;
+					case 4:
+						button.scale.set(0.8,0.8);
+						button.updateHitbox();
+
+						button.screenCenter(X);
+						button.x += 26;
+						button.y += FlxG.height - button.height + 20;
 				}
 	
 				buttonsMain.add(button);

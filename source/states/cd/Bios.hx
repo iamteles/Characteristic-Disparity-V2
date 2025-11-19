@@ -38,7 +38,7 @@ class Bios extends MusicBeatState
     {
         super.create();
 
-        DiscordIO.changePresence("In the Bios Menu...", null);
+        DiscordIO.changePresence("In the Bios Menu", null);
         CoolUtil.playMusic("LoveLetter");
 
         Main.setMouse(false);

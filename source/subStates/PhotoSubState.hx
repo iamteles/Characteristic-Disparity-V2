@@ -32,7 +32,7 @@ class PhotoSubState extends MusicBeatSubState
 	{
 		super();
 		//PlayState.instance.setScript("this", this);
-		//DiscordIO.changePresence("Paused - Restin' a bit");
+		DiscordIO.changePresence("Photo Mode: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
 		this.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
         textsGrp = new FlxTypedGroup<FlxText>();
@@ -42,7 +42,7 @@ class PhotoSubState extends MusicBeatSubState
 
         var textArray:Array<String> = [
             'DPad - Move Camera',
-            'L / R - Zoom In/Out',
+            'L/R or Q/E - Zoom In/Out',
             //'X - Increase Speed',
             'X - Hide Controls',
             'Y - Hide HUD',
@@ -53,7 +53,7 @@ class PhotoSubState extends MusicBeatSubState
 			if(textArray[i] == "") continue;
 		
 			var text = new FlxText(0,0,0,textArray[i]);
-			text.setFormat(Main.gFont, 36, 0xFFFFFFFF, RIGHT);
+			text.setFormat(Main.gFont, 30, 0xFFFFFFFF, RIGHT);
 			text.setPosition(25, FlxG.height - (text.height*(textArray.length - i)) - 15);
             text.setBorderStyle(OUTLINE, 0xFF000000, 1.5);
 			textsGrp.add(text);
@@ -88,6 +88,7 @@ class PhotoSubState extends MusicBeatSubState
 
         PlayState.instance.camHUD.alpha = storedHudA;
         PlayState.instance.camStrum.alpha = storedStrumA;
+        DiscordIO.changePresence("Paused: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
         super.close();
     }
 

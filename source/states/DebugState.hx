@@ -30,7 +30,7 @@ class DebugState extends MusicBeatState
 		Main.setMouse(true);
 
 		// Updating Discord Rich Presence
-		DiscordIO.changePresence("In the Debug Menu...", null);
+		DiscordIO.changePresence("In the Debug Menu", null);
 
 		var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));
 		bg.screenCenter();

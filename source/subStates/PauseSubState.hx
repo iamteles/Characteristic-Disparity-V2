@@ -14,6 +14,7 @@ import data.GameData.MusicBeatSubState;
 import gameObjects.menu.AlphabetMenu;
 import states.*;
 import flixel.addons.display.FlxBackdrop;
+import data.Discord.DiscordIO;
 
 class PauseSubState extends MusicBeatSubState
 {
@@ -40,6 +41,8 @@ class PauseSubState extends MusicBeatSubState
 	public function new()
 	{
 		super();
+		DiscordIO.changePresence("Paused: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
+
 		playstate = PlayState.instance;
 		var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
@@ -131,6 +134,7 @@ class PauseSubState extends MusicBeatSubState
 		pmButton.updateHitbox();
 		pmButton.x = bpButton.x + (bpButton.width/2) - (pmButton.width/2);
 		pmButton.screenCenter(Y);
+		pmButton.y -= 14;
 		if(SaveData.shop.get("camera"))
 			pmButton.alpha = 1;
 		else
@@ -185,6 +189,7 @@ class PauseSubState extends MusicBeatSubState
 	{
 		Main.setMouse(false);
 		pauseSong.stop();
+		DiscordIO.changePresence("Playing: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
 		super.close();
 	}
 

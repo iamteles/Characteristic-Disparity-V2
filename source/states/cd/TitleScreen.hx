@@ -10,37 +10,43 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
 import flixel.addons.display.FlxBackdrop;
+import flixel.util.FlxTimer;
 import data.Conductor;
 
 class TitleScreen extends MusicBeatState
 {
+    //actual title
     var bg:FlxSprite;
     var tiles:FlxBackdrop;
     var logo:FlxSprite;
     var info:FlxText;
 
-    public static var fromIntro:Bool = false;
+    //intro
+    var introBack:FlxSprite;
+
+    static var introEnded:Bool = false;
     override public function create():Void 
     {
         super.create();
-
-        CoolUtil.playMusic("intro");
+		if(!introEnded)
+		{
+			new FlxTimer().start(0.5, function(tmr:FlxTimer) {
+				CoolUtil.playMusic("intro");
+			});
+		}
+        else {
+            CoolUtil.playMusic("intro");
+            //FlxG.sound.music.time = (Conductor.crochet * (8*4));
+        }
         Conductor.setBPM(185);
         SaveData.progression.set("firstboot", true);
         SaveData.save();
 
 		Main.setMouse(false);
 
-        DiscordIO.changePresence("In the Menus...", null);
+        DiscordIO.changePresence("In the Title Screen", null);
 
         CoolUtil.flash(FlxG.camera, 0.5);
-
-        if(fromIntro) {
-            if(FlxG.sound.music != null)
-			    FlxG.sound.music.time = (Conductor.crochet * (8*4));
-
-            fromIntro = false;
-        }
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/title/gradients/' + Main.curTitle[0]));
 		bg.updateHitbox();
@@ -87,15 +93,74 @@ class TitleScreen extends MusicBeatState
         verTxt.y = FlxG.height - verTxt.height - 5;
         verTxt.antialiasing = false;
 		add(verTxt);
+
+        introBack = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(0,0,0));
+		introBack.screenCenter();
+		add(introBack);
+
+        if(introEnded)
+			skipIntro(true);
     }
+
+    override function beatHit()
+	{
+		super.beatHit();
+
+		if(!introEnded)
+		{
+			switch(curBeat)
+			{
+                case 1:
+                    trace("sd logo");
+                case 7:
+                    trace("sd logo hide");
+                case 8:
+                    trace("powered by");
+                case 15:
+                    trace("powered by hide");
+                case 16:
+                    trace("bella and bex");
+                case 20:
+                    trace("bree and watts");
+                case 23:
+                    trace("nila");
+                case 24:
+                    trace("logo show up");
+                case 28:
+                    trace("logo move to left and plus show");
+                case 31:
+                    trace("logo hide and plus center");
+				case 32:
+					skipIntro();
+			}
+		}
+	}
+
+    public function skipIntro(skip:Bool = false)
+	{
+		introEnded = true;
+		
+		if(FlxG.sound.music != null && skip)
+			FlxG.sound.music.time = (Conductor.crochet * (8*4));
+		
+		introBack.visible = false;
+		CoolUtil.flash(FlxG.camera, Conductor.crochet * 4 / 1000, 0xFFFFFFFF);
+	}
 
     var started:Bool = false;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
+        if(FlxG.sound.music != null)
+			if(FlxG.sound.music.playing)
+				Conductor.songPos = FlxG.sound.music.time;
 
-        if(Controls.justPressed("ACCEPT"))
-            end();
+        if(Controls.justPressed("ACCEPT")) {
+            if(introEnded)
+                end();
+            else
+                skipIntro(true);
+        }
     }
 
     function end()

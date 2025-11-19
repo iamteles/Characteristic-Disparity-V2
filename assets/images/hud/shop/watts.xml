@@ -84,4 +84,14 @@
 	<SubTexture name="stand0011" x="1542" y="3358" width="759" height="829" frameX="-5" frameY="-1" frameWidth="764" frameHeight="830"/>
 	<SubTexture name="stand0012" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
 	<SubTexture name="stand0013" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0014" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0015" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0016" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0017" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0018" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0019" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0020" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0021" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0022" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
+	<SubTexture name="stand0023" x="5387" y="2531" width="759" height="830" frameX="-5" frameY="0" frameWidth="764" frameHeight="830"/>
 </TextureAtlas>

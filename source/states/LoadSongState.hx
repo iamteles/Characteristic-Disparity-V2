@@ -45,7 +45,7 @@ class LoadSongState extends MusicBeatState
 
 		mutex = new Mutex();
 		Main.setMouse(false);
-		DiscordIO.changePresence("Loading...", null);
+		DiscordIO.changePresence("Loading", null);
 		
 		loadPercent = 0.0;
 		behind = new FlxGroup();

@@ -81,7 +81,7 @@ class DiscordIO
 class DiscordAPI
 {
 	public static var isInitialized:Bool = false;
-	private static final _defaultID:String = "1155541092725428425";
+	private static final _defaultID:String = "1440721386988634254";
 	public static var clientID(default, set):String = _defaultID;
 	private static var presence:DiscordRichPresence = DiscordRichPresence.create();
 

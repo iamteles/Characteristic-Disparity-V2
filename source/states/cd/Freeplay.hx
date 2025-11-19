@@ -67,7 +67,7 @@ class Freeplay extends MusicBeatState
     {
         super.create();
 
-        DiscordIO.changePresence("In the Freeplay Menu...", null);
+        DiscordIO.changePresence("In the Freeplay Menu", null);
         CoolUtil.playMusic("movement");
 
         Main.setMouse(false);
@@ -86,7 +86,7 @@ class Freeplay extends MusicBeatState
                 
                 songs.push(["conservation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
                 songs.push(["irritation", "watts", 0xFFFEC404, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
-                songs.push(["commotion", "nila", 0xFF66CC99, "Shopkeeper", SaveData.shop.get("mic"), "Purchasable in Watts' Shop"]);
+                songs.push(["commotion", "nila", 0xFF66CC99, "Shopkeeper", SaveData.progression.get("nila"), "Unlockable in Watts' Shop"]);
 
                 songs.push(["euphoria-vip", "bellavip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
                 songs.push(["nefarious-vip", "bexvip", 0xFFFFCB1F, "Week VIP", SaveData.progression.get("vip"), "Unlocked by buying and beating Week VIP"]);
@@ -405,7 +405,7 @@ class CharacterSelect extends MusicBeatSubState
     var bree:FlxSprite;
     var select:FlxSprite;
 
-    var curSelected:Int = 0;
+    var curSelected:Int = 1;
     var usingMouse:Bool = false;
 	public function new()
     {
@@ -440,6 +440,7 @@ class CharacterSelect extends MusicBeatSubState
         spicy.y += 50;
         spicy.y += 60;
         spicy.ID = 0;
+        spicy.alpha = 0.7;
 		add(spicy);
 
         bree = new FlxSprite(0, 261.1).loadGraphic(Paths.image('menu/freeplay/select/bree'));
@@ -462,6 +463,9 @@ class CharacterSelect extends MusicBeatSubState
 		{
 			selected = false;
 		});
+
+        if(FlxG.sound.music != null)
+            FlxTween.tween(FlxG.sound.music, {volume: 0.4}, 0.4);
     }
 
     var lastMouseX:Float = 0;
@@ -485,6 +489,8 @@ class CharacterSelect extends MusicBeatSubState
             FlxG.sound.play(Paths.sound('menu/back'));
             Freeplay.selected = false;
             Main.setMouse(false);
+            if(FlxG.sound.music != null)
+                FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.7);
             close();
         }
 
@@ -501,9 +507,6 @@ class CharacterSelect extends MusicBeatSubState
                     }
                     if(((FlxG.mouse.justPressed && focused) || Controls.justPressed("ACCEPT"))) {
                         selected = true;
-
-                        if(FlxG.sound.music != null)
-                            FlxTween.tween(FlxG.sound.music, {volume: 0.4}, 0.4);
 
                         var sound:String = "bree";
                         if(button.ID == 0)
@@ -551,5 +554,14 @@ class CharacterSelect extends MusicBeatSubState
 
         usingMouse = false;
         Main.setMouse(false);
+
+        if(curSelected == 1) {
+            spicy.alpha = 0.7;
+            bree.alpha = 1;
+        }
+        else {
+            spicy.alpha = 1;
+            bree.alpha = 0.7;
+        }
     }
 }

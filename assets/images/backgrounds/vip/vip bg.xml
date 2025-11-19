@@ -1,95 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="vip bg.png">
-	<!-- Created with Adobe Animate version 20.0.0.17400 -->
+<TextureAtlas imagePath="Vip Stuffs.png">
+	<!-- Created with Adobe Animate version 24.0.0.305 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="Abi0000" x="34" y="5570" width="571" height="659" frameX="-9" frameY="-3" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0001" x="34" y="5570" width="571" height="659" frameX="-9" frameY="-3" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0002" x="34" y="6247" width="563" height="655" frameX="-1" frameY="-18" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0003" x="34" y="6247" width="563" height="655" frameX="-1" frameY="-18" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0004" x="2901" y="6289" width="568" height="646" frameX="0" frameY="-19" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0005" x="2901" y="6289" width="568" height="646" frameX="0" frameY="-19" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0006" x="2310" y="6231" width="573" height="655" frameX="-6" frameY="-3" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0007" x="2310" y="6231" width="573" height="655" frameX="-6" frameY="-3" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Abi0008" x="3011" y="5613" width="571" height="658" frameX="-9" frameY="0" frameWidth="580" frameHeight="673"/>
-	<SubTexture name="Claire0000" x="808" y="925" width="749" height="878" frameX="-13" frameY="-6" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0001" x="808" y="925" width="749" height="878" frameX="-13" frameY="-6" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0002" x="34" y="1813" width="745" height="873" frameX="-13" frameY="-17" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0003" x="34" y="1813" width="745" height="873" frameX="-13" frameY="-17" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0004" x="2515" y="926" width="755" height="865" frameX="0" frameY="-20" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0005" x="2515" y="926" width="755" height="865" frameX="0" frameY="-20" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0006" x="34" y="925" width="756" height="870" frameX="0" frameY="-4" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0007" x="34" y="925" width="756" height="870" frameX="0" frameY="-4" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Claire0008" x="2515" y="1809" width="745" height="874" frameX="-13" frameY="0" frameWidth="762" frameHeight="890"/>
-	<SubTexture name="Dorothy0000" x="1129" y="5564" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0001" x="1129" y="5564" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0002" x="1129" y="5564" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0003" x="2417" y="5489" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0004" x="2417" y="5489" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0005" x="2417" y="5489" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Dorothy0006" x="2417" y="4747" width="588" height="724"/>
-	<SubTexture name="Dorothy0007" x="2417" y="4747" width="588" height="724"/>
-	<SubTexture name="Dorothy0008" x="1720" y="5569" width="572" height="724" frameX="-16" frameY="0" frameWidth="588" frameHeight="724"/>
-	<SubTexture name="Drown0000" x="615" y="6306" width="556" height="639" frameX="-12" frameY="-2" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0001" x="615" y="6306" width="556" height="639" frameX="-12" frameY="-2" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0002" x="2335" y="6953" width="555" height="627" frameX="-2" frameY="-19" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0003" x="2335" y="6953" width="555" height="627" frameX="-2" frameY="-19" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0004" x="34" y="6920" width="555" height="629" frameX="0" frameY="-15" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0005" x="34" y="6920" width="555" height="629" frameX="0" frameY="-15" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0006" x="1762" y="6904" width="555" height="632" frameX="0" frameY="-4" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0007" x="1762" y="6904" width="555" height="632" frameX="0" frameY="-4" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Drown0008" x="1189" y="6311" width="555" height="636" frameX="-6" frameY="0" frameWidth="568" frameHeight="646"/>
-	<SubTexture name="Evelyn0000" x="2526" y="34" width="803" height="874" frameX="0" frameY="-5" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0001" x="2526" y="34" width="803" height="874" frameX="0" frameY="-5" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0002" x="1695" y="923" width="802" height="875" frameX="-6" frameY="-20" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0003" x="1695" y="923" width="802" height="875" frameX="-6" frameY="-20" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0004" x="34" y="34" width="813" height="873" frameX="-8" frameY="-16" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0005" x="34" y="34" width="813" height="873" frameX="-8" frameY="-16" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0006" x="1695" y="34" width="813" height="871" frameX="-5" frameY="-4" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0007" x="1695" y="34" width="813" height="871" frameX="-5" frameY="-4" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Evelyn0008" x="865" y="34" width="812" height="873" frameX="-3" frameY="0" frameWidth="821" frameHeight="895"/>
-	<SubTexture name="Jewel0000" x="1858" y="4633" width="541" height="918" frameX="-6" frameY="-8" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0001" x="1858" y="4633" width="541" height="918" frameX="-6" frameY="-8" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0002" x="1294" y="3751" width="546" height="924" frameX="-13" frameY="-18" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0003" x="1294" y="3751" width="546" height="924" frameX="-13" frameY="-18" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0004" x="606" y="3760" width="545" height="922" frameX="-10" frameY="-16" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0005" x="606" y="3760" width="545" height="922" frameX="-10" frameY="-16" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0006" x="2634" y="3808" width="541" height="921" frameX="0" frameY="0" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0007" x="2634" y="3808" width="541" height="921" frameX="0" frameY="0" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Jewel0008" x="3193" y="3808" width="540" height="920" frameX="-2" frameY="0" frameWidth="559" frameHeight="942"/>
-	<SubTexture name="Nobodi0000" x="3288" y="926" width="651" height="927"/>
-	<SubTexture name="Nobodi0001" x="3288" y="926" width="651" height="927"/>
-	<SubTexture name="Nobodi0002" x="1575" y="1816" width="651" height="927"/>
-	<SubTexture name="Nobodi0003" x="797" y="1821" width="651" height="927"/>
-	<SubTexture name="Nobodi0004" x="3278" y="1871" width="651" height="927"/>
-	<SubTexture name="Nobodi0005" x="3278" y="1871" width="651" height="927"/>
-	<SubTexture name="Nobodi0006" x="2244" y="2701" width="651" height="927"/>
-	<SubTexture name="Nobodi0007" x="2244" y="2701" width="651" height="927"/>
-	<SubTexture name="Nobodi0008" x="34" y="2704" width="651" height="927"/>
-	<SubTexture name="Nyako0000" x="3600" y="6008" width="332" height="377" frameX="-2" frameY="-4" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0001" x="3600" y="6008" width="332" height="377" frameX="-2" frameY="-4" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0002" x="3501" y="2816" width="333" height="384" frameX="0" frameY="-14" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0003" x="3501" y="2816" width="333" height="384" frameX="0" frameY="-14" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0004" x="3501" y="3218" width="333" height="381" frameX="-4" frameY="-14" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0005" x="3501" y="3218" width="333" height="381" frameX="-4" frameY="-14" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0006" x="3600" y="5613" width="333" height="377" frameX="-3" frameY="-2" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0007" x="3600" y="5613" width="333" height="377" frameX="-3" frameY="-2" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Nyako0008" x="623" y="5570" width="333" height="378" frameX="-2" frameY="0" frameWidth="337" frameHeight="398"/>
-	<SubTexture name="Sam0000" x="1466" y="2761" width="577" height="972" frameX="-1" frameY="-5" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0001" x="1466" y="2761" width="577" height="972" frameX="-1" frameY="-5" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0002" x="2061" y="3646" width="555" height="969" frameX="0" frameY="-13" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0003" x="2061" y="3646" width="555" height="969" frameX="0" frameY="-13" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0004" x="34" y="3649" width="554" height="970" frameX="-1" frameY="-7" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0005" x="34" y="3649" width="554" height="970" frameX="-1" frameY="-7" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0006" x="2913" y="2816" width="570" height="974" frameX="-2" frameY="-1" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0007" x="2913" y="2816" width="570" height="974" frameX="-2" frameY="-1" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Sam0008" x="703" y="2766" width="573" height="976" frameX="-1" frameY="0" frameWidth="578" frameHeight="982"/>
-	<SubTexture name="Whisper0000" x="3347" y="34" width="533" height="853" frameX="0" frameY="-2" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0001" x="3347" y="34" width="533" height="853" frameX="0" frameY="-2" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0002" x="3193" y="4746" width="527" height="849" frameX="-2" frameY="-20" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0003" x="3193" y="4746" width="527" height="849" frameX="-2" frameY="-20" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0004" x="584" y="4700" width="527" height="852" frameX="-4" frameY="-13" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0005" x="584" y="4700" width="527" height="852" frameX="-4" frameY="-13" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0006" x="34" y="4637" width="532" height="854" frameX="-4" frameY="0" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0007" x="34" y="4637" width="532" height="854" frameX="-4" frameY="0" frameWidth="536" frameHeight="869"/>
-	<SubTexture name="Whisper0008" x="1169" y="4693" width="532" height="853" frameX="-2" frameY="0" frameWidth="536" frameHeight="869"/>
+	<SubTexture name="Abi0000" x="6241" y="1925" width="571" height="659" frameX="-9" frameY="-3" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0001" x="6241" y="1925" width="571" height="659" frameX="-9" frameY="-3" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0002" x="6824" y="2589" width="563" height="655" frameX="-1" frameY="-18" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0003" x="6824" y="2589" width="563" height="655" frameX="-1" frameY="-18" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0004" x="826" y="887" width="568" height="646" frameX="0" frameY="-19" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0005" x="826" y="887" width="568" height="646" frameX="0" frameY="-19" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0006" x="6241" y="2594" width="573" height="655" frameX="-6" frameY="-3" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0007" x="6241" y="2594" width="573" height="655" frameX="-6" frameY="-3" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Abi0008" x="6822" y="1921" width="571" height="658" frameX="-9" frameY="0" frameWidth="580" frameHeight="673"/>
+	<SubTexture name="Claire0000" x="2416" y="4" width="749" height="878" frameX="-13" frameY="-6" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0001" x="2416" y="4" width="749" height="878" frameX="-13" frameY="-6" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0002" x="4695" y="4" width="745" height="873" frameX="-13" frameY="-17" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0003" x="4695" y="4" width="745" height="873" frameX="-13" frameY="-17" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0004" x="3175" y="4" width="755" height="865" frameX="0" frameY="-20" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0005" x="3175" y="4" width="755" height="865" frameX="0" frameY="-20" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0006" x="1650" y="4" width="756" height="870" frameX="0" frameY="-4" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0007" x="1650" y="4" width="756" height="870" frameX="0" frameY="-4" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Claire0008" x="3940" y="4" width="745" height="874" frameX="-13" frameY="0" frameWidth="762" frameHeight="890"/>
+	<SubTexture name="Dorothy0000" x="2000" y="2753" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0001" x="2000" y="2753" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0002" x="2000" y="2753" width="573" height="724" frameX="-15" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0003" x="1414" y="2750" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0004" x="1414" y="2750" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0005" x="1414" y="2750" width="576" height="724" frameX="-12" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Dorothy0006" x="816" y="2707" width="588" height="724"/>
+	<SubTexture name="Dorothy0007" x="816" y="2707" width="588" height="724"/>
+	<SubTexture name="Dorothy0008" x="4660" y="1927" width="572" height="724" frameX="-16" frameY="0" frameWidth="588" frameHeight="724"/>
+	<SubTexture name="Drown0000" x="2583" y="2753" width="556" height="639" frameX="-12" frameY="-2" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0001" x="2583" y="2753" width="556" height="639" frameX="-12" frameY="-2" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0002" x="4844" y="2774" width="555" height="627" frameX="-2" frameY="-19" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0003" x="4844" y="2774" width="555" height="627" frameX="-2" frameY="-19" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0004" x="4279" y="2722" width="555" height="629" frameX="0" frameY="-15" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0005" x="4279" y="2722" width="555" height="629" frameX="0" frameY="-15" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0006" x="3714" y="2722" width="555" height="632" frameX="0" frameY="-4" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0007" x="3714" y="2722" width="555" height="632" frameX="0" frameY="-4" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Drown0008" x="3149" y="2677" width="555" height="636" frameX="-6" frameY="0" frameWidth="568" frameHeight="646"/>
+	<SubTexture name="Evelyn0000" x="4" y="1770" width="803" height="874" frameX="0" frameY="-5" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0001" x="4" y="1770" width="803" height="874" frameX="0" frameY="-5" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0002" x="4" y="2654" width="802" height="875" frameX="-6" frameY="-20" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0003" x="4" y="2654" width="802" height="875" frameX="-6" frameY="-20" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0004" x="4" y="4" width="813" height="873" frameX="-8" frameY="-16" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0005" x="4" y="4" width="813" height="873" frameX="-8" frameY="-16" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0006" x="827" y="4" width="813" height="871" frameX="-5" frameY="-4" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0007" x="827" y="4" width="813" height="871" frameX="-5" frameY="-4" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Evelyn0008" x="4" y="887" width="812" height="873" frameX="-3" frameY="0" frameWidth="821" frameHeight="895"/>
+	<SubTexture name="Imani0000" x="3135" y="1816" width="500" height="842" frameX="0" frameY="-1" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0001" x="3135" y="1816" width="500" height="842" frameX="0" frameY="-1" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0002" x="5741" y="1925" width="490" height="835" frameX="-4" frameY="-22" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0003" x="5741" y="1925" width="490" height="835" frameX="-4" frameY="-22" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0004" x="5242" y="1927" width="489" height="837" frameX="-7" frameY="-16" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0005" x="5242" y="1927" width="489" height="837" frameX="-7" frameY="-16" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0006" x="3645" y="1825" width="498" height="842" frameX="-4" frameY="0" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0007" x="3645" y="1825" width="498" height="842" frameX="-4" frameY="0" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Imani0008" x="4153" y="1870" width="497" height="842" frameX="-3" frameY="0" frameWidth="502" frameHeight="857"/>
+	<SubTexture name="Jewel0000" x="2584" y="1823" width="541" height="918" frameX="-6" frameY="-8" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0001" x="2584" y="1823" width="541" height="918" frameX="-6" frameY="-8" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0002" x="1478" y="1816" width="546" height="924" frameX="-13" frameY="-18" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0003" x="1478" y="1816" width="546" height="924" frameX="-13" frameY="-18" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0004" x="1650" y="884" width="545" height="922" frameX="-10" frameY="-16" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0005" x="1650" y="884" width="545" height="922" frameX="-10" frameY="-16" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0006" x="2205" y="892" width="541" height="921" frameX="0" frameY="0" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0007" x="2205" y="892" width="541" height="921" frameX="0" frameY="0" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Jewel0008" x="2034" y="1823" width="540" height="920" frameX="-2" frameY="0" frameWidth="559" frameHeight="942"/>
+	<SubTexture name="Nobodi0000" x="5450" y="4" width="651" height="927"/>
+	<SubTexture name="Nobodi0001" x="5450" y="4" width="651" height="927"/>
+	<SubTexture name="Nobodi0002" x="6111" y="4" width="651" height="927"/>
+	<SubTexture name="Nobodi0003" x="6772" y="4" width="651" height="927"/>
+	<SubTexture name="Nobodi0004" x="817" y="1770" width="651" height="927"/>
+	<SubTexture name="Nobodi0005" x="817" y="1770" width="651" height="927"/>
+	<SubTexture name="Nobodi0006" x="3175" y="879" width="651" height="927"/>
+	<SubTexture name="Nobodi0007" x="3175" y="879" width="651" height="927"/>
+	<SubTexture name="Nobodi0008" x="3836" y="888" width="651" height="927"/>
+	<SubTexture name="Nyako0000" x="5409" y="3162" width="332" height="377" frameX="-2" frameY="-4" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0001" x="5409" y="3162" width="332" height="377" frameX="-2" frameY="-4" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0002" x="2756" y="892" width="333" height="384" frameX="0" frameY="-14" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0003" x="2756" y="892" width="333" height="384" frameX="0" frameY="-14" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0004" x="2756" y="1286" width="333" height="381" frameX="-4" frameY="-14" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0005" x="2756" y="1286" width="333" height="381" frameX="-4" frameY="-14" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0006" x="5752" y="2770" width="333" height="377" frameX="-3" frameY="-2" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0007" x="5752" y="2770" width="333" height="377" frameX="-3" frameY="-2" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Nyako0008" x="5409" y="2774" width="333" height="378" frameX="-2" frameY="0" frameWidth="337" frameHeight="398"/>
+	<SubTexture name="Sam0000" x="4497" y="888" width="577" height="972" frameX="-1" frameY="-5" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0001" x="4497" y="888" width="577" height="972" frameX="-1" frameY="-5" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0002" x="6247" y="941" width="555" height="969" frameX="0" frameY="-13" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0003" x="6247" y="941" width="555" height="969" frameX="0" frameY="-13" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0004" x="6812" y="941" width="554" height="970" frameX="-1" frameY="-7" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0005" x="6812" y="941" width="554" height="970" frameX="-1" frameY="-7" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0006" x="5667" y="941" width="570" height="974" frameX="-2" frameY="-1" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0007" x="5667" y="941" width="570" height="974" frameX="-2" frameY="-1" frameWidth="578" frameHeight="982"/>
+	<SubTexture name="Sam0008" x="5084" y="941" width="573" height="976" frameX="-1" frameY="0" frameWidth="578" frameHeight="982"/>
 </TextureAtlas>
