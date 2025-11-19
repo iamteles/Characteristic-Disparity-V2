@@ -13,10 +13,12 @@ import data.GameData.MusicBeatState;
 class BiosMenuState extends MusicBeatState
 {
 	public var bgColors:BioBGColor;
+	var leftArrow:FlxSprite;
+	var rightArrow:FlxSprite;
 	
 	// this makes so you can only read one character's bio
 	// idk if this is unlockable, but coding it just in case
-	public var unlockedTwoCharBio:Bool = true;
+	public var unlockedTwoCharBio:Bool = false;
 	
 	public var curMenu:Int = 0;
 	
@@ -25,10 +27,10 @@ class BiosMenuState extends MusicBeatState
 		"bella" => 0xFFff6057,
 		"bex" => 0xFF07427c,
 		"bree" => 0xFF7d5a99,
-		"watts" => 0xFFf8ff87,
-		"nila" => 0xFFbb6060,
+		"watts" => 0xffffe987,
+		"nila" => 0xFF66CC99,
 		"helica" => 0xFFf8d7c8,
-		"drown" => 0xFF4a2f79,
+		"drown" => 0xff2f6e79,
 		"wave" => 0xFFee6d48,
 		"empitri" => 0xFFffcfcf,
 		"spicy-v2" => 0xFFa60910,
@@ -40,14 +42,31 @@ class BiosMenuState extends MusicBeatState
 		"watts", "nila", "helica", "drown",
 		"wave", "empitri", "spicy-v2",
 	];
+	public var ignoreChars:Map<String, Array<String>> = [
+		"none" => ["none"],
+		"bella" => ["bella", "drown", "wave", "spicy-v2"],
+		"bex" => ["bex", "empitri", "drown", "wave", "spicy-v2"],
+		"bree" => ["bree", "nila", "empitri", "drown", "wave"],
+		"watts" => ["watts", "empitri", "drown", "wave", "spicy-v2"],
+		"nila" => ["nila", "bree", "helica", "empitri", "drown", "wave", "spicy-v2"],
+		"helica" => ["helica", "nila", "empitri", "drown", "wave", "spicy-v2"],
+		"drown" => ["drown", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
+		"wave" => ["wave", "bella", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
+		"empitri" => ["empitri", "bex", "bree", "watts", "nila", "helica", "spicy-v2"],
+		"spicy-v2" => ["bella", "bex", "watts", "nila", "helica", "drown", "wave", "empitri", "spicy-v2"],
+	];
 
 	override function create()
 	{
 		super.create();
+		DiscordIO.changePresence("In the Bios Menu", null);
+		CoolUtil.playMusic("LoveLetter");
+
+		unlockedTwoCharBio = SaveData.shop.get("biop");
 		var bg = new FlxSprite().loadGraphic(Paths.image("menu/bios/bio-bg"));
 		bg.screenCenter();
 		add(bg);
-		
+
 		bgColors = new BioBGColor();
 		bgColors.reloadColors(colorMap.get("bella"));
 		add(bgColors);
@@ -55,19 +74,34 @@ class BiosMenuState extends MusicBeatState
 		for(i in 0...2)
 		{
 			var char = new BioChar();
-			char.flipX = (i == 1);
+			//char.flipX = (i == 1);
 			char.reloadChar(["bella", "none"][i]);
 			curChars.push(char);
 			char.ID = i;
 			add(char);
 		}
+
+		leftArrow = new FlxSprite().loadGraphic(Paths.image("menu/gallery/arrow"));
+		leftArrow.scale.set(0.7, 0.7);
+		leftArrow.updateHitbox();
+        leftArrow.screenCenter(Y);
+		add(leftArrow);
+		
+		rightArrow = new FlxSprite().loadGraphic(Paths.image("menu/gallery/arrow"));
+		rightArrow.flipX = true;
+		rightArrow.scale.set(0.7, 0.7);
+		rightArrow.updateHitbox();
+		rightArrow.screenCenter(Y);
+		rightArrow.x = FlxG.width - rightArrow.width;
+		add(rightArrow);
+
 		changeMenu(0);
 	}
 	
 	final charOffsets:Array<Array<Int>> = [
 		[0, FlxG.width], // first menu
-		[-350, 350], // second menu
-		[-380, -50], // reading (two chars)
+		[-280, 280], // second menu
+		[-420, -50], // reading (two chars)
 		[-280, FlxG.width], // reading (one char)
 	];
 	public function setCharsPos(reading:Bool = false, ?onCreate:Bool = false)
@@ -128,13 +162,24 @@ class BiosMenuState extends MusicBeatState
 	}
 	public function changeChar(change:Int = 0, skipSfx:Bool = false)
 	{
+		if(change == -1)
+			leftArrow.x -= 8;
+		else if(change == 1)
+			rightArrow.x += 8;
+
+		if(!skipSfx)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+
 		var char = curChars[curMenu];
 		var otherChar = curChars[curMenu == 0 ? 1 : 0];
 		
 		var index:Int = possibleChars.indexOf(char.name) + change;
 		index = loopAround(index);
-		if (possibleChars[index] == otherChar.name)
+		while(ignoreChars.get(otherChar.name).contains(possibleChars[index]))
+		{
 			index += change;
+			index = loopAround(index);
+		}
 		index = loopAround(index);
 		
 		char.reloadChar(possibleChars[index]);
@@ -159,6 +204,13 @@ class BiosMenuState extends MusicBeatState
 			
 			if (Controls.justPressed("ACCEPT"))
 				changeMenu(1);
+
+			leftArrow.x = FlxMath.lerp(leftArrow.x, 0, elapsed*8);
+			rightArrow.x = FlxMath.lerp(rightArrow.x, FlxG.width - rightArrow.width, elapsed*8);
+		}
+		else {
+			leftArrow.x = FlxMath.lerp(leftArrow.x, -leftArrow.width-3, elapsed*8);
+			rightArrow.x = FlxMath.lerp(rightArrow.x, FlxG.width+3, elapsed*8);
 		}
 		
 		if (Controls.justPressed("BACK"))
@@ -193,6 +245,20 @@ class BioChar extends FlxSprite
 {
 	public var name:String = "";
 	public var targetX:Float = 0.0;
+
+	public var offsets:Map<String, Array<Float>> = [
+		"none" => [0,0],
+		"bella" => [0,0],
+		"bex" => [0,0],
+		"bree" => [0,0],
+		"watts" => [0,-30],
+		"nila" => [0,-60],
+		"helica" => [0,0],
+		"drown" => [0,0],
+		"wave" => [0,30],
+		"empitri" => [0,70],
+		"spicy-v2" => [0,0],
+	];
 	
 	public function new()
 	{
@@ -202,8 +268,8 @@ class BioChar extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		x = FlxMath.lerp(x, targetX, elapsed * 8);
-		y = FlxMath.lerp(y, FlxG.height+32, elapsed * 8);
+		x = FlxMath.lerp(x, targetX + offsets.get(name)[0], elapsed * 8);
+		y = FlxMath.lerp(y, FlxG.height+32 + offsets.get(name)[1], elapsed * 8);
 	}
 	
 	public function reloadChar(char:String):BioChar
@@ -211,12 +277,13 @@ class BioChar extends FlxSprite
 		targetX += (width / 2);
 		this.name = char;
 		loadGraphic(Paths.image("menu/freeplay/characters/" + char));
-		scale.set(0.75, 0.75);
+		scale.set(0.9, 0.9);
 		updateHitbox();
 		
 		targetX -= (width / 2);
-		y = FlxG.height + 64;
+		y = FlxG.height + 64 + offsets.get(name)[1];
 		offset.y = height;
+		x = targetX + offsets.get(name)[0];
 		return this;
 	}
 }
