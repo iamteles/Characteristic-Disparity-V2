@@ -542,6 +542,7 @@ class BiosMenuState extends MusicBeatState
 		
 		if(skinList == null) return;
 		
+		FlxG.sound.play(Paths.sound("menu/scroll"));
 		var curSkin = skinList.indexOf(char.skin) + change;
 		curSkin = FlxMath.wrap(curSkin, 0, skinList.length - 1);
 		char.reloadChar(
