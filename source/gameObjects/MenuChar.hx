@@ -47,10 +47,7 @@ class MenuChar extends FlxSprite
 	{
 		targetX += (width / 2);
 		this.name = char;
-		if(alt != null)
-			this.skin = alt;
-		else
-			this.skin = char;
+		this.skin = (alt ?? char);
 		loadGraphic(Paths.image("menu/freeplay/characters/" + skin));
 		scale.set(0.9, 0.9);
 		updateHitbox();

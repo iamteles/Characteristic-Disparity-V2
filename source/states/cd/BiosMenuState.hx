@@ -34,7 +34,6 @@ class BiosMenuState extends MusicBeatState
 	var skinTxt:FlxText;
 	
 	public var curMenu:Int = 0;
-	public var curSkin:Int = 0;
 	
 	public var curChars:Array<MenuChar> = [];
 	public var curNames:Array<Array<FlxText>> = [];
@@ -380,11 +379,9 @@ class BiosMenuState extends MusicBeatState
         descBio.antialiasing = false;
         add(descBio);
 
-		skinTxt = new FlxText(0,0,0,'Press ACCEPT to change skins');
+		skinTxt = new FlxText(5, 5, 0,'Press UP/DOWN to change skins');
 		skinTxt.setFormat(Main.dsFont, 32, 0xFFFFFFFF, CENTER);
 		skinTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
-        skinTxt.x = 5;
-        skinTxt.y = FlxG.height - skinTxt.height - 5;
         skinTxt.antialiasing = false;
 		skinTxt.alpha = 0;
 		add(skinTxt);
@@ -467,8 +464,6 @@ class BiosMenuState extends MusicBeatState
 			}
 		}
 		
-		changeSkin();
-		
 		if (curMenu == 2)
 			setCharsPos(true);
 		else {
@@ -538,24 +533,20 @@ class BiosMenuState extends MusicBeatState
 			}
 		}
 	}
-
-	function changeSkin(change:Int = 0) {
-		if(change == 0) {
-			curSkin = 0;
-			return;
-		}
-
-		if(charInfo.get(curChars[0].name)[2] != null && curMenu >= 2) {
-			curSkin += change;
-			curSkin = FlxMath.wrap(curSkin, 0, Std.int(charInfo.get(curChars[0].name)[2].length) - 1);
-		}
-		else {
-			if(curSkin == 0)
-				return;
-			curSkin = 0;
-		}
-
-		curChars[0].reloadChar(curChars[0].name, charInfo.get(curChars[0].name)[2][curSkin]);
+	
+	function changeSkin(change:Int = 0)
+	{
+		var char = curChars[curMenu];
+		var skinList:Array<String> = charInfo.get(char.name)[2];
+		
+		if(skinList == null) return;
+		
+		var curSkin = skinList.indexOf(char.skin) + change;
+		curSkin = FlxMath.wrap(curSkin, 0, skinList.length - 1);
+		char.reloadChar(
+			char.name,
+			skinList[curSkin]
+		);
 	}
 	
 	override function update(elapsed:Float)
@@ -569,16 +560,24 @@ class BiosMenuState extends MusicBeatState
 			if (Controls.justPressed("ACCEPT"))
 				changeMenu(1);
 		}
+		
+		if (curMenu != 2)
+		{
+			if (Controls.justPressed("UI_UP")) changeSkin(-1);
+			if (Controls.justPressed("UI_DOWN")) changeSkin(1);
+		}
 
 		//skin changing
-		if (curMenu == 2 && curChars[1].name == "none") {
-			skinTxt.alpha = FlxMath.lerp(skinTxt.alpha, 1, elapsed * 8);
-
-			if (Controls.justPressed("ACCEPT"))
-				changeSkin(1);
-		}
-		else
-			skinTxt.alpha = FlxMath.lerp(skinTxt.alpha, 0, elapsed * 8);
+		skinTxt.alpha = FlxMath.lerp(
+			skinTxt.alpha,
+			(curMenu < 2 ? (charInfo.get(char.name).length < 3 ? 0 : 1) : 0),
+			elapsed * 16
+		);
+		skinTxt.x = FlxMath.lerp(
+			skinTxt.x,
+			(curMenu < 1) ? 5 : FlxG.width - skinTxt.width - 5,
+			elapsed * 16
+		);
 		
 		leftArrow.x = FlxMath.lerp(
 			leftArrow.x,
