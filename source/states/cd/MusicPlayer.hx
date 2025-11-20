@@ -130,7 +130,8 @@ class MusicPlayer extends MusicBeatState
     public override function create()
     {
         super.create();
-
+		
+		FlxG.autoPause = false;
         CoolUtil.playMusic();
         //Main.setMouse(true);
 
@@ -480,6 +481,13 @@ class MusicPlayer extends MusicBeatState
 
         if(Controls.justPressed("RESET_SPECIAL")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
             FlxG.openURL("https://shatterdisk.bandcamp.com/album/characteristic-disparity-original-soundtrack");
+		
+		if (FlxG.mouse.wheel != 0)
+		{
+			changeSelection(-FlxG.mouse.wheel);
+			usingMouse = true;
+			Main.setMouse(true);
+		}
 
         if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_UP")) {
             changeSelection(-1);
@@ -501,6 +509,7 @@ class MusicPlayer extends MusicBeatState
         
         if(leaving && !threadActive && !left) {
             left = true;
+			FlxG.autoPause = true;
             Main.switchState(new states.cd.MainMenu());
         }
 
@@ -734,4 +743,24 @@ class MusicPlayer extends MusicBeatState
         reloaded = false;
         //reloadAudio();
     }
+	
+	// trying to make the game use less CPU when unfocused
+	var stopDrawing:Bool = false;
+	override function draw()
+	{
+		if(!stopDrawing)
+			super.draw();
+	}
+	
+	override function onFocusLost():Void
+	{
+		stopDrawing = true;
+		super.onFocusLost();
+	}
+	
+	override function onFocus():Void
+	{
+		stopDrawing = false;
+		super.onFocus();
+	}
 }
