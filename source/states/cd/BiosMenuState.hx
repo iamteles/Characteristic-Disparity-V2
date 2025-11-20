@@ -379,10 +379,11 @@ class BiosMenuState extends MusicBeatState
         descBio.antialiasing = false;
         add(descBio);
 
-		skinTxt = new FlxText(5, 5, 0,'Press UP/DOWN to change skins');
+		skinTxt = new FlxText(0, 24, 0,'Press UP/DOWN to change skins');
 		skinTxt.setFormat(Main.dsFont, 32, 0xFFFFFFFF, CENTER);
 		skinTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         skinTxt.antialiasing = false;
+		skinTxt.screenCenter(X);
 		skinTxt.alpha = 0;
 		add(skinTxt);
 
@@ -571,12 +572,12 @@ class BiosMenuState extends MusicBeatState
 		skinTxt.alpha = FlxMath.lerp(
 			skinTxt.alpha,
 			(curMenu < 2 ? (charInfo.get(curChars[curMenu].name).length < 3 ? 0 : 1) : 0),
-			elapsed * 16
+			elapsed * 12
 		);
 		skinTxt.x = FlxMath.lerp(
 			skinTxt.x,
-			(curMenu < 1) ? 5 : FlxG.width - skinTxt.width - 5,
-			elapsed * 16
+			((FlxG.width - skinTxt.width) / 2) + (curMenu < 1 ? 0 : charOffsets[1][1]),
+			elapsed * 8
 		);
 		
 		leftArrow.x = FlxMath.lerp(
