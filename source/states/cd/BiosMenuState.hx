@@ -570,7 +570,7 @@ class BiosMenuState extends MusicBeatState
 		//skin changing
 		skinTxt.alpha = FlxMath.lerp(
 			skinTxt.alpha,
-			(curMenu < 2 ? (charInfo.get(char.name).length < 3 ? 0 : 1) : 0),
+			(curMenu < 2 ? (charInfo.get(curChars[curMenu].name).length < 3 ? 0 : 1) : 0),
 			elapsed * 16
 		);
 		skinTxt.x = FlxMath.lerp(
