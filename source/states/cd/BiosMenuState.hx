@@ -294,8 +294,7 @@ class BiosMenuState extends MusicBeatState
 		DiscordIO.changePresence("In the Bios Menu", null);
 		CoolUtil.playMusic("LoveLetter");
 	
-		unlockedTwoCharBio = true;
-		//unlockedTwoCharBio = SaveData.shop.get("biop");
+		unlockedTwoCharBio = SaveData.shop.get("biop");
 		
 		var bg = new FlxSprite().loadGraphic(Paths.image("menu/bios/bio-bg"));
 		bg.screenCenter();
