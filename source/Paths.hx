@@ -78,30 +78,43 @@ class Paths
 	];
 	public static function clearMemory()
 	{	
-		// sprite handler
-		//var clearCount:Int = 0;
+		// sprite caching
 		var clearCount:Array<String> = [];
 		for(key => graphic in renderedGraphics)
 		{
 			if(dumpExclusions.contains(key + '.png')) continue;
 
-			//trace('cleared $key');
-			//clearCount++;
 			clearCount.push(key);
-
-			if (openfl.Assets.cache.hasBitmapData(key)) 
+			
+			renderedGraphics.remove(key);
+			if(openfl.Assets.cache.hasBitmapData(key))
 				openfl.Assets.cache.removeBitmapData(key);
 			
+			FlxG.bitmap.remove(graphic);
 			#if (flixel < "6.0.0")
 			graphic.dump();
 			#end
 			graphic.destroy();
-			FlxG.bitmap.remove(graphic);
-			renderedGraphics.remove(key);
 		}
 
 		trace('cleared $clearCount');
 		trace('cleared ${clearCount.length} assets');
+
+		// uhhhh
+		@:privateAccess
+		for(key in FlxG.bitmap._cache.keys())
+		{
+			var obj = FlxG.bitmap._cache.get(key);
+			if(obj != null && !renderedGraphics.exists(key))
+			{
+				openfl.Assets.cache.removeBitmapData(key);
+				FlxG.bitmap._cache.remove(key);
+				#if (flixel < "6.0.0")
+				obj.dump();
+				#end
+				obj.destroy();
+			}
+		}
 		
 		// sound clearing
 		for (key => sound in renderedSounds)
