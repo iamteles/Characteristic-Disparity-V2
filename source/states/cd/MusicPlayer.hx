@@ -431,6 +431,7 @@ class MusicPlayer extends MusicBeatState
         timeTxt.x = timeBar.x + (timeBar.width/2) - (timeTxt.width/2);
     }
     
+	var timeBarFollowMouse:Bool = false;
     var formatTime:Float = 0;
     var usingMouse:Bool = false;
     var lastMouseX:Float = 0;
@@ -562,6 +563,42 @@ class MusicPlayer extends MusicBeatState
             else if(vocals != null)
                 vocals.volume = 1;
         }
+		
+		var timeIcon = icon;
+		if (iconL.alpha >= 1.0)
+			timeIcon = iconL;
+		
+		if(CoolUtil.mouseOverlapWorld(timeBar, camGame)
+		|| CoolUtil.mouseOverlapWorld(timeIcon, camGame)) {
+			if(FlxG.mouse.justPressed) {
+				timeBarFollowMouse = true;
+			}
+		}
+		
+		// time bar manipulation
+		if (timeBarFollowMouse)
+		{
+			var mouseX = FlxMath.bound(FlxG.mouse.x, timeBar.x, timeBar.x + timeBar.width);
+			
+			if(FlxG.mouse.justMoved || FlxG.mouse.justPressed)
+			{
+				var maxLength:Float = musicList[0].length;
+				Conductor.songPos = FlxMath.remapToRange(
+					mouseX,
+					timeBar.x, timeBar.x + timeBar.width,
+					0, maxLength
+				);
+				// doing this so the game wont crash (i'm serious)
+				if(Conductor.songPos >= maxLength)
+					Conductor.songPos -= 500;
+				
+				for(music in musicList)
+					music.time = Conductor.songPos;
+			}
+			
+			if (!FlxG.mouse.pressed)
+				timeBarFollowMouse = false;
+		}
 
         if(CoolUtil.mouseOverlapWorld(pause, camGame)) {
             pause.alpha = 1;
