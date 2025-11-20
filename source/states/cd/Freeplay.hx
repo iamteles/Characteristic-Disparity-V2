@@ -416,6 +416,7 @@ class CharacterSelect extends MusicBeatSubState
 
         //Main.setMouse(true);
 
+        FlxG.sound.play(Paths.sound("menu/select"));
 		banana.alpha = 0;
 
         var tiles = new FlxBackdrop(Paths.image('menu/title/tiles/main'), XY, 0, 0);

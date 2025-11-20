@@ -7,6 +7,7 @@ import flixel.input.keyboard.FlxKey;
 import data.Highscore;
 import openfl.system.Capabilities;
 import data.Discord.DiscordIO;
+import data.Windows;
 
 enum SettingType
 {
@@ -208,6 +209,11 @@ class SaveData
 			false,
 			CHECKMARK,
 			"Scary little surprise."
+		],
+		"Dark Mode" => [
+			true,
+			CHECKMARK,
+			"Theme of the Window."
 		],
 	];
 
@@ -565,11 +571,18 @@ class SaveData
 		update();
 	}
 
+	static var lastDark:Bool = false;
 	public static function update()
 	{
 		Main.changeFramerate(Std.parseInt(data.get("FPS Cap")));
 		DiscordIO.check();
 		FlxSprite.defaultAntialiasing = data.get("Antialiasing");
+		#if windows
+		if(SaveData.data.get("Dark Mode") != lastDark)
+			Windows.setDarkMode(lime.app.Application.current.window.title, SaveData.data.get("Dark Mode"));
+
+		lastDark = SaveData.data.get("Dark Mode");
+		#end
 	}
 
 	public static function buyItem(item:String) {

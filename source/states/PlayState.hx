@@ -129,9 +129,6 @@ class PlayState extends MusicBeatState
 	var deserTiles:FlxSprite;
 	var deserBg:FlxSprite;
 	var deserBar:FlxSprite;
-	var bellaScene:FlxSprite;
-	var bexScene:FlxSprite;
-	var memory:FlxSprite;
 	var vhs:FlxSprite;
 
 	var songLogo:FlxSprite;
@@ -386,27 +383,6 @@ class PlayState extends MusicBeatState
 				deserBar.cameras = [camVg];
 				deserBar.y = FlxG.height;
 				add(deserBar);
-
-				bellaScene = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/frame1"));
-				/*bellaScene.scale.set(1.2,1.2);
-				bellaScene.updateHitbox();
-				bellaScene.x -= 50;*/
-				bellaScene.screenCenter();
-				bellaScene.cameras = [camVg];
-				bellaScene.alpha = 0;
-				add(bellaScene);
-
-				bexScene = new FlxSprite().loadGraphic(Paths.image("backgrounds/desertion/frame2"));
-				bexScene.screenCenter();
-				bexScene.cameras = [camVg];
-				bexScene.alpha = 0;
-				add(bexScene);
-
-				memory = new FlxSprite().loadGraphic(Paths.image("vignette-memory"));
-				memory.screenCenter();
-				memory.cameras = [camVg];
-				memory.alpha = 0;
-				add(memory);
 			}
 			else if(daSong == 'divergence' || daSong == 'divergence-old') {
 				divTxt = new FlxSprite().loadGraphic(Paths.image("hud/base/divergence"));
@@ -489,7 +465,7 @@ class PlayState extends MusicBeatState
 		}
 
 		underlay = new FlxSprite().loadGraphic(Paths.image('hud/base/underlay 2'));
-		underlay.scale.set(0.42,0.42);
+		underlay.scale.set(0.45,0.45);
 		underlay.updateHitbox();
 		underlay.screenCenter(Y);
 		underlay.x = -2000;
@@ -879,7 +855,7 @@ class PlayState extends MusicBeatState
 
 		var bloomSongs:Array<String> = ["heartpounder"];
 		var echoSongs:Array<String> = ["ripple", "intimidate", "divergence", "divergence-vip"];
-		var chromSongs:Array<String> = ["convergence", "desertion-sc"];
+		var chromSongs:Array<String> = ["desertion-sc"];
 		var rainSongs:Array<String> = ["desertion"];
 
 		if(SaveData.data.get("Shaders")) {
@@ -1130,7 +1106,7 @@ class PlayState extends MusicBeatState
 					camVg.fade(0x00000000, 0.01, false);
 				}
 
-				if(SaveData.data.get("Shaders"))FlxG.camera.setFilters([chrom]);
+				//if(SaveData.data.get("Shaders"))FlxG.camera.setFilters([chrom]);
 				zoomInOpp = true;
 				zoomOppVal = 0.97 - 0.8;
 			case 'desertion':
@@ -1736,30 +1712,15 @@ class PlayState extends MusicBeatState
 		}
 
 		var daRating = new Rating(rating, Timings.combo, note.assetModifier);
+		add(daRating);
 
-	
-		/*if(SaveData.data.get("Ratings on HUD"))
-		{
-			hudBuild.add(daRating);
-			
-			for(item in daRating.members)
-				item.cameras = [camHUD];
-			
-			var daX:Float = (FlxG.width / 2);
-			if(middlescroll)
-				daX -= FlxG.width / 4;
-
-			daRating.setPos(daX, SaveData.data.get('Downscroll') ? FlxG.height - 100 : 100);
-		}
-		else
-		{*/
-			add(daRating);
-
-			daRating.setPos(
-				boyfriend.x + boyfriend.ratingsOffset.x,
-				boyfriend.y + boyfriend.ratingsOffset.y
-			);
-		//}
+		var char = boyfriend;
+		if(daSong == "kaboom" && invertedCharacters)
+			char = dad;
+		daRating.setPos(
+			char.x + char.ratingsOffset.x,
+			char.y + char.ratingsOffset.y
+		);
 
 		hudBuild.updateText();
 	}
@@ -3613,11 +3574,7 @@ class PlayState extends MusicBeatState
 							beatSpeed = 4;
 							// show bella
 							CoolUtil.flash(camOther);
-							bellaScene.alpha = 1;
-							memory.alpha = 0.4;
 						case 980:
-							// show bex~
-							FlxTween.tween(bexScene, {alpha: 1}, 0.6, {ease: FlxEase.sineOut});
 						case 1016:
 							// other bree sound?
 							updateSubs("[Bree]: gh..");
@@ -3626,9 +3583,6 @@ class PlayState extends MusicBeatState
 							updateSubs("[Bree]: GAAHHHHHH!!!");
 						case 1040:
 							// hide all
-							bexScene.alpha = 0;
-							bellaScene.alpha = 0;
-							memory.alpha = 0;
 							beatSpeed = 1;
 							CoolUtil.flash(camOther);
 							subtitle.alpha = 0;
@@ -3659,12 +3613,12 @@ class PlayState extends MusicBeatState
 							defaultCamZoom = 0.54;
 							FlxTween.tween(camHUD, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
 							FlxTween.tween(camStrum, {alpha: 0}, 0.7, {ease: FlxEase.sineInOut});
+							powerUp(true);
 						case 1840:
 							//UGH
 							updateSubs("[Bree]: Ugh..");
 							bfStrumline.updatePls = true;
 							bfStrumline.x = strumPos[0];
-							powerUp(true);
 						case 1841:
 							bfStrumline.updatePls = false;
 						case 1846:
@@ -3934,7 +3888,7 @@ class PlayState extends MusicBeatState
 							defaultCamZoom = 0.72;
 						case 2608:
 							camVg.fade(0x00000000, 0.6, false);
-							FlxTween.tween(camHUD, {alpha: 0}, 0.6, {ease: FlxEase.sineInOut});
+							FlxTween.tween(camHUD, {alpha: 0}, 1.2, {ease: FlxEase.sineInOut});
 					}
 				case 'panic-attack':
 					switch(curStep) {

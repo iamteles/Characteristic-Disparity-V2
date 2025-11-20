@@ -12,6 +12,7 @@ import flixel.effects.FlxFlicker;
 import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxTimer;
 import data.Conductor;
+import openfl.display.BlendMode;
 
 class TitleScreen extends MusicBeatState
 {
@@ -28,17 +29,8 @@ class TitleScreen extends MusicBeatState
     override public function create():Void 
     {
         super.create();
-		if(!introEnded)
-		{
-			new FlxTimer().start(0.5, function(tmr:FlxTimer) {
-				CoolUtil.playMusic("intro");
-			});
-		}
-        else {
-            CoolUtil.playMusic("intro");
-            //FlxG.sound.music.time = (Conductor.crochet * (8*4));
-        }
-        Conductor.setBPM(185);
+        CoolUtil.playMusic("intro_plus");
+        Conductor.setBPM(105);
         SaveData.progression.set("firstboot", true);
         SaveData.save();
 
@@ -98,7 +90,7 @@ class TitleScreen extends MusicBeatState
 		introBack.screenCenter();
 		add(introBack);
 
-        if(introEnded)
+        //if(introEnded)
 			skipIntro(true);
     }
 
@@ -140,8 +132,8 @@ class TitleScreen extends MusicBeatState
 	{
 		introEnded = true;
 		
-		if(FlxG.sound.music != null && skip)
-			FlxG.sound.music.time = (Conductor.crochet * (8*4));
+		/*if(FlxG.sound.music != null && skip)
+			FlxG.sound.music.time = (Conductor.crochet * (8*4));*/
 		
 		introBack.visible = false;
 		CoolUtil.flash(FlxG.camera, Conductor.crochet * 4 / 1000, 0xFFFFFFFF);
@@ -167,8 +159,8 @@ class TitleScreen extends MusicBeatState
     {
         if(started) return;
         started = true;
-        CoolUtil.playMusic("");
-        FlxG.sound.play(Paths.sound("intro/end"));
+        //CoolUtil.playMusic("");
+        //FlxG.sound.play(Paths.sound("intro/end"));
         CoolUtil.flash(FlxG.camera, 1, 0xffffffff); 
         FlxFlicker.flicker(info, 2, 0.06, true, false, function(_)
         {

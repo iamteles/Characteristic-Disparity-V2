@@ -197,6 +197,10 @@
 		-100,
 		310
 	],
+	"rating_position": [
+		830,
+		200
+	],
 	"sing_duration": 6.1,
 	"scale": 1
 }

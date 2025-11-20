@@ -45,7 +45,7 @@ class OptionsState extends MusicBeatState
 			"Menu Style",
 			//"Song Timer",
 			//"Smooth Healthbar",
-			//"Dark Mode",
+			"Dark Mode",
 			"Cutscenes",
 			"FPS Cap",
 			"Resolution",
