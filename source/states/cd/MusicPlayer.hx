@@ -551,7 +551,7 @@ class MusicPlayer extends MusicBeatState
             Conductor.songPos += elapsed * 1000;
         }
 
-        if(Controls.justPressed("ACCEPT")) {
+        if(Controls.justPressed("ACCEPT_SPECIAL")) {
             playSong();
         }
 

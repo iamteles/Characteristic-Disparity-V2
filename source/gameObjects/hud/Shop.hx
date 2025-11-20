@@ -1447,7 +1447,7 @@ class ShopItem extends FlxGroup
 
         display = new FlxSprite(x, y);
         display.frames = Paths.getSparrowAtlas("hud/shop/ITEMS");
-        display.animation.addByPrefix("idle", displayThingo, 24, true);
+        display.animation.addByPrefix("idle", displayThingo + "0", 24, true);
         display.animation.play("idle");
         display.scale.set(0.6, 0.6);
         display.updateHitbox();
