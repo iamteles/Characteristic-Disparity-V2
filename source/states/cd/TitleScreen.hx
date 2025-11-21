@@ -119,20 +119,20 @@ class TitleScreen extends MusicBeatState
         tpt.alpha = 0;
         add(tpt);
 
+        oldLogo = new FlxSprite().loadGraphic(Paths.image('menu/title/logo-basic'));
+        oldLogo.scale.set(0.8,0.8);
+        oldLogo.updateHitbox();
+		oldLogo.screenCenter();
+        oldLogo.y += 80;
+        oldLogo.alpha = 0;
+		add(oldLogo);
+
         plus = new FlxSprite().loadGraphic(Paths.image('menu/title/plus'));
         plus.scale.set(0.8,0.8);
         plus.updateHitbox();
 		plus.screenCenter();
         plus.alpha = 0;
 		add(plus);
-
-        oldLogo = new FlxSprite().loadGraphic(Paths.image('menu/title/logo'));
-        oldLogo.scale.set(0.6,0.6);
-        oldLogo.updateHitbox();
-		oldLogo.screenCenter();
-        oldLogo.y += 80;
-        oldLogo.alpha = 0;
-		add(oldLogo);
 
         vhs = new FlxSprite();
         vhs.frames = Paths.getSparrowAtlas("backgrounds/cave/vhs");
@@ -182,7 +182,7 @@ class TitleScreen extends MusicBeatState
                     logoActive = true;
                     plusActive = true;
                 case 50:
-                    FlxTween.tween(plus, {alpha: 1}, 3);
+                    FlxTween.tween(plus, {alpha: 1}, 2);
                 case 60:
                     trace("hide");
                     logoActive = false;
@@ -239,8 +239,8 @@ class TitleScreen extends MusicBeatState
         }
 
         if(plusActive) {
-            plus.x = (FlxG.width/2) - (plus.width/2) + FlxG.random.float(-0.005 * plus.width, 0.005 * plus.width);
-            plus.y = (FlxG.height/2) - (plus.height/2) + FlxG.random.float(-0.005 * plus.height, 0.005 * plus.height);
+            plus.x = (FlxG.width/2) - (plus.width/2) + FlxG.random.float(-0.003 * plus.width, 0.003 * plus.width);
+            plus.y = (FlxG.height/2) - (plus.height/2) + FlxG.random.float(-0.003 * plus.height, 0.003 * plus.height);
         }
     }
 
