@@ -13,6 +13,8 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxTimer;
 import data.Conductor;
 import openfl.display.BlendMode;
+import flixel.math.FlxMath;
+import gameObjects.MenuChar;
 
 class TitleScreen extends MusicBeatState
 {
@@ -24,12 +26,24 @@ class TitleScreen extends MusicBeatState
 
     //intro
     var introBack:FlxSprite;
+    var vhs:FlxSprite;
+    var shatterdisk:FlxSprite;
+    var tpt:FlxText;
+    var oldLogo:FlxSprite;
+    var plus:FlxSprite;
+
+    var sdActive:Bool = false;
+    var tptActive:Bool = false;
+    var logoActive:Bool = false;
+    var plusActive:Bool = false;
 
     static var introEnded:Bool = false;
     override public function create():Void 
     {
         super.create();
-        CoolUtil.playMusic("intro_plus");
+        new FlxTimer().start(1, function(tmr:FlxTimer) {
+            CoolUtil.playMusic("intro_plus");
+        });
         Conductor.setBPM(105);
         SaveData.progression.set("firstboot", true);
         SaveData.save();
@@ -72,7 +86,7 @@ class TitleScreen extends MusicBeatState
 
         var text:String = "Press START!";
         info = new FlxText(0,0,0,text);
-		info.setFormat(Main.gFont, 50, 0xFFFFFFFF, CENTER);
+		info.setFormat(Main.titleFont, 50, 0xFFFFFFFF, CENTER);
 		info.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.4);
         info.screenCenter(X);
         info.y = 599.95;
@@ -90,51 +104,106 @@ class TitleScreen extends MusicBeatState
 		introBack.screenCenter();
 		add(introBack);
 
-        //if(introEnded)
+        shatterdisk = new FlxSprite().loadGraphic(Paths.image('menu/title/shatterdisk'));
+        shatterdisk.scale.set(0.8,0.8);
+        shatterdisk.updateHitbox();
+		shatterdisk.screenCenter();
+        shatterdisk.y += 80;
+        shatterdisk.alpha = 0;
+		add(shatterdisk);
+
+        tpt = new FlxText(0,0,0,"Originally made for the\nTurtle Pals Tapes Mod Jam");
+		tpt.setFormat(Main.titleFont, 60, 0xFFFFFFFF, CENTER);
+        tpt.screenCenter();
+        tpt.y += 80;
+        tpt.alpha = 0;
+        add(tpt);
+
+        plus = new FlxSprite().loadGraphic(Paths.image('menu/title/plus'));
+        plus.scale.set(0.8,0.8);
+        plus.updateHitbox();
+		plus.screenCenter();
+        plus.alpha = 0;
+		add(plus);
+
+        oldLogo = new FlxSprite().loadGraphic(Paths.image('menu/title/logo'));
+        oldLogo.scale.set(0.6,0.6);
+        oldLogo.updateHitbox();
+		oldLogo.screenCenter();
+        oldLogo.y += 80;
+        oldLogo.alpha = 0;
+		add(oldLogo);
+
+        vhs = new FlxSprite();
+        vhs.frames = Paths.getSparrowAtlas("backgrounds/cave/vhs");
+        vhs.animation.addByPrefix("idle", 'idle', 16, true);
+        vhs.animation.play('idle');
+        vhs.scale.set(3, 3);
+        vhs.updateHitbox();
+        vhs.screenCenter();
+        vhs.alpha = 1;
+        vhs.blend = SUBTRACT;
+        vhs.antialiasing = false;
+        add(vhs);
+
+        if(introEnded)
 			skipIntro(true);
     }
 
-    override function beatHit()
+    override function stepHit()
 	{
-		super.beatHit();
+		super.stepHit();
 
 		if(!introEnded)
 		{
-			switch(curBeat)
+			switch(curStep)
 			{
                 case 1:
-                    trace("sd logo");
-                case 7:
-                    trace("sd logo hide");
-                case 8:
-                    trace("powered by");
-                case 15:
-                    trace("powered by hide");
+                    started = true;
+                    trace("show");
+                    sdActive = true;
+                case 10:
+                    trace("hide");
+                    sdActive = false;
+                    shatterdisk.alpha = 0;
                 case 16:
-                    trace("bella and bex");
-                case 20:
-                    trace("bree and watts");
-                case 23:
-                    trace("nila");
-                case 24:
-                    trace("logo show up");
-                case 28:
-                    trace("logo move to left and plus show");
-                case 31:
-                    trace("logo hide and plus center");
-				case 32:
-					skipIntro();
+                    trace("show");
+                    tptActive = true;
+                case 26:
+                    trace("hide");
+                    tptActive = false;
+                    tpt.alpha = 0;
+                case 32:
+                    trace("show");
+                case 42:
+                    trace("hide");
+                case 48:
+                    trace("show");
+                    logoActive = true;
+                    plusActive = true;
+                case 50:
+                    FlxTween.tween(plus, {alpha: 1}, 3);
+                case 60:
+                    trace("hide");
+                    logoActive = false;
+                    plusActive = false;
+                    oldLogo.alpha = 0;
+                    plus.visible = false;
+                case 64:
+                    skipIntro();					
 			}
 		}
 	}
 
     public function skipIntro(skip:Bool = false)
 	{
+        started = true;
 		introEnded = true;
 		
-		/*if(FlxG.sound.music != null && skip)
-			FlxG.sound.music.time = (Conductor.crochet * (8*4));*/
-		
+		if(FlxG.sound.music != null && skip)
+			FlxG.sound.music.time = (Conductor.crochet * 16);
+
+        vhs.visible = false;
 		introBack.visible = false;
 		CoolUtil.flash(FlxG.camera, Conductor.crochet * 4 / 1000, 0xFFFFFFFF);
 	}
@@ -147,11 +216,31 @@ class TitleScreen extends MusicBeatState
 			if(FlxG.sound.music.playing)
 				Conductor.songPos = FlxG.sound.music.time;
 
-        if(Controls.justPressed("ACCEPT")) {
+        if(Controls.justPressed("ACCEPT") && started) {
             if(introEnded)
                 end();
             else
                 skipIntro(true);
+        }
+
+        if(sdActive) {
+            shatterdisk.y = FlxMath.lerp(shatterdisk.y, (FlxG.height/2) - (shatterdisk.height/2), elapsed * 8);
+            shatterdisk.alpha = FlxMath.lerp(shatterdisk.alpha, 1, elapsed * 8);
+        }
+
+        if(tptActive) {
+            tpt.y = FlxMath.lerp(tpt.y, (FlxG.height/2) - (tpt.height/2), elapsed * 8);
+            tpt.alpha = FlxMath.lerp(tpt.alpha, 1, elapsed * 8);
+        }
+
+        if(logoActive) {
+            oldLogo.y = FlxMath.lerp(oldLogo.y, (FlxG.height/2) - (oldLogo.height/2), elapsed * 8);
+            oldLogo.alpha = FlxMath.lerp(oldLogo.alpha, 1, elapsed * 8);
+        }
+
+        if(plusActive) {
+            plus.x = (FlxG.width/2) - (plus.width/2) + FlxG.random.float(-0.005 * plus.width, 0.005 * plus.width);
+            plus.y = (FlxG.height/2) - (plus.height/2) + FlxG.random.float(-0.005 * plus.height, 0.005 * plus.height);
         }
     }
 

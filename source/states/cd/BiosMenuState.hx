@@ -16,6 +16,7 @@ typedef BioData = {
 	var ?series:String;
 	var ?age:String;
 	var ?height:String;
+	var ?va:String;
 	var ?about:String;
 }
 class BiosMenuState extends MusicBeatState
@@ -117,6 +118,7 @@ class BiosMenuState extends MusicBeatState
 			series: "Characteristic Disparity",
 			age: "21",
 			height: "5'11",
+			va: "Annie Stars",
 			about: "The daughter of Zeus herself, Bree lives in the Pantheon, a moving pack of islands about the clouds where the gods reside. Bree was demoted from her status of higher god and moved to the lowest class, where she works to get her position back. From birth, she was given the title of \"god of balance\" and she adopted this rule by killing anyone she deems as a \"balance ruiner\" because of her twisted perception of Earth.",
 		},
 		// watts
@@ -173,6 +175,7 @@ class BiosMenuState extends MusicBeatState
 			series: "Flavor Rave",
 			age: "??",
 			height: "?'??",
+			va: "Sandy Can",
 			about: "The up-and-coming rock star. Her loud and enthusiastic attitude has recently become popular among locals, making her travel from her far away home to perform in town and catching someone's unwanted attention.",
 		},
 		
@@ -438,6 +441,8 @@ class BiosMenuState extends MusicBeatState
 					descBio.text += "Age: " + data.age + separator;
 				if (data.height != null)
 					descBio.text += "Height: " + data.height + separator;
+				if (data.va != null)
+					descBio.text += "VA: " + data.va + separator;
 				if (data.about != null)
 					descBio.text += data.about + separator;
 			}
