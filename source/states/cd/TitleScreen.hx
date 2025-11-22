@@ -51,7 +51,7 @@ class TitleScreen extends MusicBeatState
             FlxG.sound.music.time = (Conductor.crochet * 16);
         }
         else {
-            new FlxTimer().start(0.5, function(tmr:FlxTimer) {
+            new FlxTimer().start(0.3, function(tmr:FlxTimer) {
                 CoolUtil.playMusic("intro_plus");
             });
         }

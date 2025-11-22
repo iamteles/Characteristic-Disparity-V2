@@ -288,7 +288,10 @@ class Slider extends MusicBeatSubState
         var songString:String = "";
         var songArray:Array<String> = (cast weekData[0]);
         for(song in songArray) {
-            songString += song.toUpperCase();
+            if(song == "desertion")
+                songString += "???";
+            else
+                songString += song.toUpperCase();
             songString += "\n";
         }
 
@@ -302,7 +305,7 @@ class Slider extends MusicBeatSubState
             FlxTween.tween(i, {alpha: 1}, 0.3);
 
         updatePos();
-            lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
         lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
 

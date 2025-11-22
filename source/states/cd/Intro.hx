@@ -88,9 +88,9 @@ class Warning extends MusicBeatState
 		tiles.alpha = 0.7;
         add(tiles);
 
-		var tex:String = "Warning!\n\nThis mod features flashing lights that may\nbe harmful to those with photosensitivity.\nYou can disable them in the Options menu.\n\nPress ENTER to continue!";
+		var tex:String = "Warning!\n\nThis mod features flashing lights that may\nbe harmful to those with photosensitivity.\nYou can disable them in the Options menu.\n\nPress ACCEPT to continue!";
 		if(isPlaytester)
-			tex = "Hello playtester!\n\nThank you so much for helping us ensure\nthe mod has a bug-free experience... again!\nWe ask you that you NOT share anything in this\nbuild to anyone to keep the surprise!\nPlease report any bugs to whoever sent you this :)\n\nPress ENTER to continue!\nBuild ID: MjAxMTI1";
+			tex = "Hello playtester!\n\nThank you so much for helping us ensure\nthe mod has a bug-free experience... again!\nWe ask you that you NOT share anything in this\nbuild to anyone to keep the surprise!\nPlease report any bugs to whoever sent you this :)\n\nPress ACCEPT to continue!\nBuild ID: MjAxMTI1";
 		var popUpTxt = new FlxText(0,0,0,tex);
 		popUpTxt.setFormat(Main.gFont, 43, 0xFFFFFFFF, CENTER);
 		popUpTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.5);
@@ -159,8 +159,14 @@ class IntroLoading extends MusicBeatState
 
 			Paths.preloadGraphic('menu/title/gradients/' + Main.curTitle[0]);
 			Paths.preloadGraphic('menu/title/tiles/' + Main.curTitle[0]);
-			Paths.preloadGraphic('menu/title/logo');
+			Paths.preloadGraphic('menu/title/logo-plus');
+			Paths.preloadGraphic('menu/title/logo-basic');
 			Paths.preloadGraphic("menu/intros/flixel");
+
+			Paths.preloadGraphic('menu/title/shatterdisk');
+			Paths.preloadGraphic('menu/title/plus');
+			Paths.preloadGraphic('menu/title/game');
+			Paths.preloadGraphic('backgrounds/cave/vhs');
 
 			loadPercent = 1.0;
 			trace('finished loading');

@@ -55,6 +55,7 @@ class Gallery extends MusicBeatState
 			["menu/gallery/fanart/" + "skydimensions", "", "SkyDimensions on Newgrounds"],
 			["menu/gallery/fanart/" + "curesupremefan", "", "@Curesupremefan on Twitter"],
 			["menu/gallery/fanart/" + "teeeeeeeee_jay", "", "@teeeeeeeee_jay on Twitter"],
+			["menu/gallery/fanart/" + "lukasp", "", "@_lukasp on Discord"],
 		],
 		"concepts" => [
 			// v1

@@ -188,7 +188,9 @@ class Dialog extends MusicBeatState
 		add(box);
 
         clickSfx = new FlxSound();
-		clickSfx.loadEmbedded(Paths.sound('menu/scroll'), false, false);
+		clickSfx.loadEmbedded(Paths.sound('dialog/click'), false, false);
+        if(SaveData.data.get("Text Speed") == "FAST")
+            clickSfx.volume = 0.7;
 		FlxG.sound.list.add(clickSfx);
 
         tex = new FlxTypeText(box.x + 25, box.y + 123, Std.int(FlxG.width - 110), 'placeholder', true);
