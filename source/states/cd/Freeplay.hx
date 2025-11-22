@@ -35,6 +35,7 @@ class Freeplay extends MusicBeatState
     ];
     static var curSelected:Int = 0;
     static var curDiff:Int = 0;
+    var old:Bool = false;
 
     var texts:FlxTypedGroup<FlxSprite>;
     var characters:FlxTypedGroup<FlxSprite>;
@@ -55,7 +56,7 @@ class Freeplay extends MusicBeatState
 	public var lerpValues:ScoreData;
     var scores:FlxText;
     var diff:FlxText;
-    var old:Bool = false;
+    var scoreTxt:FlxText;
 
     public function new(old:Bool = false)
 	{
@@ -139,10 +140,10 @@ class Freeplay extends MusicBeatState
                 char.color = 0xFF000000;
             characters.add(char);
 
-            if(charN == "cute" || charN == "evil" || charN == "duo" || charN == "bellavip" || charN == "duovip")
+            if(charN == "cute" || charN == "evil" || charN == "bellavip" || charN == "watts")
                 char.offset.set(50,0);
-            else if(charN == "cutenevil" || charN == "duo-shop")
-                char.offset.set(100,0);
+            else if(charN == "cutenevil" || charN == "duo" || charN == "duovip" || charN == "duo-shop")
+                char.offset.set(150,0);
             else if(charN == "bex" || charN == "bex-scared")
                 char.offset.set(-50,0);
             else if(charN == "spicy-v2")
@@ -201,6 +202,15 @@ class Freeplay extends MusicBeatState
         shack.y = 5;
 		add(shack);
 
+        scoreTxt = new FlxText(0,0,0,(old ? 'Press X to switch to CDv2' : 'Press X to switch to CDv1'));
+		scoreTxt.setFormat(Main.dsFont, 32, 0xFFFFFFFF, CENTER);
+		scoreTxt.setBorderStyle(OUTLINE, 0xFF000000, 2);
+        scoreTxt.y = FlxG.height - scoreTxt.height - 5;
+		scoreTxt.screenCenter(X);
+        scoreTxt.antialiasing = false;
+        scoreTxt.alpha = 0;
+		add(scoreTxt);
+
         changeSelection();
     }
 
@@ -218,7 +228,7 @@ class Freeplay extends MusicBeatState
 		if(Controls.justPressed("R_SPECIAL"))
 			changeCategory(1);
 
-        if(Controls.justPressed("BACK"))
+        if(Controls.justPressed("BACK") && !old)
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
@@ -247,8 +257,13 @@ class Freeplay extends MusicBeatState
         if(Controls.justPressed("ACCEPT") && focused)
             go2Song(songs[curSelected]);
 
-        if(SaveData.shop.get("time") && Controls.justPressed("BOTPLAY"))
-            Main.switchState(new states.cd.Freeplay(!old));
+        if(curSelected < 3 && SaveData.shop.get("time")) {
+            scoreTxt.alpha = FlxMath.lerp(scoreTxt.alpha, 1, elapsed*6);
+            if((Controls.justPressed("BOTPLAY") ||(Controls.justPressed("BACK") && old)))
+                Main.switchState(new states.cd.Freeplay(!old));
+        }
+        else
+            scoreTxt.alpha = FlxMath.lerp(scoreTxt.alpha, 0, elapsed*6);
         
         scores.text = "";
 
@@ -312,7 +327,7 @@ class Freeplay extends MusicBeatState
                 switch(song[0]) {
                     case "kaboom":
                         openSubState(new CharacterSelect());
-                    case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "euphoria-old"/* | "nefarious-old" | "divergence-old"*/ | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
+                    case "cupid" | "ripple" | "customer-service" | "euphoria" | "nefarious" | "divergence" | "euphoria-old" | "nefarious-old" | "divergence-old" | "allegro" | "panic-attack" | "convergence" | "desertion" | "sin":
                         trace(SaveData.songs.get(song[0]));
                         if(SaveData.data.get("Dialogue in Freeplay") == "ON" || (SaveData.data.get("Dialogue in Freeplay") == "UNSEEN" && !SaveData.songs.get(song[0]))) {
                             states.cd.Dialog.dialog = song[0];

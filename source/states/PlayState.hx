@@ -469,9 +469,12 @@ class PlayState extends MusicBeatState
 		underlay.updateHitbox();
 		underlay.screenCenter(Y);
 		underlay.x = -2000;
-		underlay.y -= 180;
+		if(SaveData.data.get("Downscroll"))
+			underlay.y -= 180;
+		else
+			underlay.y += 180;
 		underlay.cameras = [camOther];
-		underlay.visible = logoExists;
+		underlay.visible = (logoExists && daSong != "heartpounder");
 		add(underlay);
 
 		songLogo = new FlxSprite().loadGraphic(Paths.image('hud/songnames/$daSong'));
@@ -479,7 +482,10 @@ class PlayState extends MusicBeatState
 		songLogo.updateHitbox();
 		songLogo.screenCenter(Y);
 		songLogo.x = -2000;
-		songLogo.y -= 180;
+		if(SaveData.data.get("Downscroll"))
+			songLogo.y -= 180;
+		else
+			songLogo.y += 180;
 		songLogo.cameras = [camOther];
 		songLogo.visible = logoExists;
 		add(songLogo);
@@ -3550,7 +3556,7 @@ class PlayState extends MusicBeatState
 							dad.alpha = 1;
 							camHUD.alpha = 1;
 							CoolUtil.flash(camOther);
-							//startLogo();
+							startLogo();
 						case 368:
 							defaultCamZoom = 0.65;
 						case 400:

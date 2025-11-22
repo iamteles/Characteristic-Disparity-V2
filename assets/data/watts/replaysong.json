@@ -7,6 +7,13 @@
             0.05
         ],
         [
+            "I'm gonna leave you two to it.",
+            "neutral",
+            0.05,
+            "n",
+            "n"
+        ],
+        [
             "what?",
             "confused",
             0.05

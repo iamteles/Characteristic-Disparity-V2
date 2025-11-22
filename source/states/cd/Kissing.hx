@@ -90,6 +90,7 @@ class Kissing extends MusicBeatState
         breeRight = new FlxSprite().loadGraphic(Paths.image('minigame/breeright'));
 		breeRight.updateHitbox();
 		breeRight.screenCenter();
+        breeRight.alpha = 0;
 		add(breeRight);
 
         breeAngry = new FlxSprite().loadGraphic(Paths.image('minigame/breeangry'));
@@ -303,12 +304,13 @@ class Kissing extends MusicBeatState
 
         warning.alpha = 0;
 
+        FlxG.sound.play(Paths.sound('miss/miss1'));
         new FlxTimer().start(0.7, function(tmr:FlxTimer)
         {
             bxbOops.alpha = 0;
             bxbDie.alpha = 1;
 
-            FlxG.sound.play(Paths.sound('thunder'));
+            FlxG.sound.play(Paths.sound('thunder-loud'));
 
             new FlxTimer().start(1.4, function(tmr:FlxTimer)
             {

@@ -28,22 +28,34 @@ class TitleScreen extends MusicBeatState
     var introBack:FlxSprite;
     var vhs:FlxSprite;
     var shatterdisk:FlxSprite;
+    var sdText:FlxText;
     var tpt:FlxText;
     var oldLogo:FlxSprite;
     var plus:FlxSprite;
+    var game:FlxSprite;
+    var gameText:FlxText;
 
     var sdActive:Bool = false;
     var tptActive:Bool = false;
     var logoActive:Bool = false;
     var plusActive:Bool = false;
+    var gameActive:Bool = false;
 
     static var introEnded:Bool = false;
     override public function create():Void 
     {
         super.create();
-        new FlxTimer().start(1, function(tmr:FlxTimer) {
+
+        if(introEnded){
             CoolUtil.playMusic("intro_plus");
-        });
+            FlxG.sound.music.time = (Conductor.crochet * 16);
+        }
+        else {
+            new FlxTimer().start(0.5, function(tmr:FlxTimer) {
+                CoolUtil.playMusic("intro_plus");
+            });
+        }
+
         Conductor.setBPM(105);
         SaveData.progression.set("firstboot", true);
         SaveData.save();
@@ -112,6 +124,13 @@ class TitleScreen extends MusicBeatState
         shatterdisk.alpha = 0;
 		add(shatterdisk);
 
+        sdText = new FlxText(0,0,0,"Presents");
+		sdText.setFormat(Main.titleFont, 42, 0xFFFFFFFF, CENTER);
+        sdText.screenCenter(X);
+        sdText.y = shatterdisk.y + shatterdisk.height - 80 - 10;
+        sdText.alpha = 0;
+        add(sdText);
+
         tpt = new FlxText(0,0,0,"Originally made for the\nTurtle Pals Tapes Mod Jam");
 		tpt.setFormat(Main.titleFont, 60, 0xFFFFFFFF, CENTER);
         tpt.screenCenter();
@@ -134,6 +153,25 @@ class TitleScreen extends MusicBeatState
         plus.alpha = 0;
 		add(plus);
 
+        game = new FlxSprite();
+        game.frames = Paths.getSparrowAtlas("menu/title/game");
+        game.animation.addByPrefix("stop", 'idle0000', 20, true);
+        game.animation.addByPrefix("idle", 'idle', 30, false);
+        game.animation.play('stop');
+        game.scale.set(2, 2);
+        game.updateHitbox();
+        game.screenCenter();
+        game.y += 80;
+        game.alpha = 0;
+        add(game);
+
+        gameText = new FlxText(0,0,0,"Characteristic Disparity");
+		gameText.setFormat(Main.titleFont, 60, 0xFFFFFFFF, CENTER);
+        gameText.screenCenter(X);
+        gameText.y = game.y + game.height + 10 - 80;
+        gameText.alpha = 0;
+        add(gameText);
+
         vhs = new FlxSprite();
         vhs.frames = Paths.getSparrowAtlas("backgrounds/cave/vhs");
         vhs.animation.addByPrefix("idle", 'idle', 16, true);
@@ -147,7 +185,7 @@ class TitleScreen extends MusicBeatState
         add(vhs);
 
         if(introEnded)
-			skipIntro(true);
+			skipIntro(false);
     }
 
     override function stepHit()
@@ -161,28 +199,34 @@ class TitleScreen extends MusicBeatState
                 case 1:
                     started = true;
                     trace("show");
-                    sdActive = true;
-                case 10:
-                    trace("hide");
-                    sdActive = false;
-                    shatterdisk.alpha = 0;
-                case 16:
-                    trace("show");
                     tptActive = true;
-                case 26:
+                case 10:
                     trace("hide");
                     tptActive = false;
                     tpt.alpha = 0;
+                case 16:
+                    trace("show");
+                    game.animation.play('idle');
+                    gameActive = true;
+                case 26:
+                    trace("hide");
+                    gameActive = false;
+                    game.alpha = 0;
+                    gameText.alpha = 0;
                 case 32:
                     trace("show");
+                    sdActive = true;
                 case 42:
                     trace("hide");
+                    sdActive = false;
+                    shatterdisk.alpha = 0;
+                    sdText.alpha = 0;
                 case 48:
                     trace("show");
                     logoActive = true;
                     plusActive = true;
                 case 50:
-                    FlxTween.tween(plus, {alpha: 1}, 2);
+                    FlxTween.tween(plus, {alpha: 1}, 1.5);
                 case 60:
                     trace("hide");
                     logoActive = false;
@@ -205,10 +249,18 @@ class TitleScreen extends MusicBeatState
 
         vhs.visible = false;
 		introBack.visible = false;
+        shatterdisk.visible = false;
+        sdText.visible = false;
+        tpt.visible = false;
+        oldLogo.visible = false;
+        plus.visible = false;
+        game.visible = false;
+        gameText.visible = false;
 		CoolUtil.flash(FlxG.camera, Conductor.crochet * 4 / 1000, 0xFFFFFFFF);
 	}
 
     var started:Bool = false;
+    var exiting:Bool = false;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -226,6 +278,7 @@ class TitleScreen extends MusicBeatState
         if(sdActive) {
             shatterdisk.y = FlxMath.lerp(shatterdisk.y, (FlxG.height/2) - (shatterdisk.height/2), elapsed * 8);
             shatterdisk.alpha = FlxMath.lerp(shatterdisk.alpha, 1, elapsed * 8);
+            sdText.alpha = FlxMath.lerp(sdText.alpha, 1, elapsed * 8);
         }
 
         if(tptActive) {
@@ -242,14 +295,20 @@ class TitleScreen extends MusicBeatState
             plus.x = (FlxG.width/2) - (plus.width/2) + FlxG.random.float(-0.003 * plus.width, 0.003 * plus.width);
             plus.y = (FlxG.height/2) - (plus.height/2) + FlxG.random.float(-0.003 * plus.height, 0.003 * plus.height);
         }
+
+        if(gameActive) {
+            game.y = FlxMath.lerp(game.y, (FlxG.height/2) - (game.height/2), elapsed * 8);
+            game.alpha = FlxMath.lerp(game.alpha, 1, elapsed * 8);
+            gameText.alpha = FlxMath.lerp(gameText.alpha, 1, elapsed * 8);
+        }
     }
 
     function end()
     {
-        if(started) return;
-        started = true;
-        //CoolUtil.playMusic("");
-        //FlxG.sound.play(Paths.sound("intro/end"));
+        if(exiting) return;
+        exiting = true;
+        CoolUtil.playMusic("");
+        FlxG.sound.play(Paths.sound("intro/end_plus"));
         CoolUtil.flash(FlxG.camera, 1, 0xffffffff); 
         FlxFlicker.flicker(info, 2, 0.06, true, false, function(_)
         {

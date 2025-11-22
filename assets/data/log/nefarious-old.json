@@ -1,0 +1,33 @@
+{
+    "characters": ["cute", "evil"],
+    "background": "retro",
+    "finisher": "nefarious-old",
+    "song": "freeplay",
+    "lines": [
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "aight you got your rap battle"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "leave"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "But that was so fun! :_)"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Ill let you choose the song this time!!! :)"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "..."
+        }
+    ]
+}

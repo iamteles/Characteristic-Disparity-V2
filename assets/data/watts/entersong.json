@@ -2,9 +2,16 @@
     "ident": "entersong",
     "lines": [
         [
-            "…",
+            "...",
             "confused",
             0.05
+        ],
+        [
+            "...ahem, please excuse me, I have some adult business to take care of.",
+            "neutral",
+            0.05,
+            "n",
+            "n"
         ],
         [
             "what?",

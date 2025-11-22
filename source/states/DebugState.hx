@@ -17,7 +17,7 @@ using StringTools;
 
 class DebugState extends MusicBeatState
 {
-	var optionShit:Array<String> = ["menu", "video", "ending", "shop reset", "bios menu"];
+	var optionShit:Array<String> = ["menu", "video", "ending", "shop reset", "kiss"];
 	static var curSelected:Int = 0;
 
 	var optionGroup:FlxTypedGroup<Alphabet>;

@@ -107,8 +107,8 @@ class ShopTalk extends FlxGroup
         iconB = new FlxSprite(0, 0).loadGraphic(Paths.image('hud/shop/bella'));
         iconB.scale.set(0.7, 0.7);
         iconB.updateHitbox();
-        iconB.x = dialogBig.x + 100;
-        iconB.y = dialogBig.y + 75;
+        iconB.x = dialogBig.x + 120;
+        iconB.y = dialogBig.y + 65;
         add(iconB);
 
         watts1 = new FlxSound();
@@ -267,6 +267,13 @@ class ShopTalk extends FlxGroup
                 ShopState.camFollow.setPosition(ShopState.watts.getMidpoint().x, ShopState.watts.getMidpoint().y + 80);
             }
         }
+        else {
+            if((ident == 'entersong' || ident == 'replaysong') && curLine == 2) {
+                FlxTween.tween(ShopState.watts, {x: 628.6}, 1.2, {ease: FlxEase.expoOut});
+                FlxTween.tween(ShopState.nila, {y: 650}, 1.2, {ease: FlxEase.expoOut});
+                FlxG.sound.play(Paths.sound("run"));
+            }
+        }
 
         if(curLine == 0 && dialogData.saveIdent != null) {
             SaveData.wattsLines.set(dialogData.saveIdent, true);
@@ -389,7 +396,7 @@ class ShopTalk extends FlxGroup
         if(alpha == 0)
             activeg = false;
         FlxTween.tween(dialogBig, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
-        if(activeIcon == "watts")
+        if(activeIcon == "watts" && dialogData.ident != "entersong" && dialogData.ident != "replaysong")
             FlxTween.tween(iconW, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         if(activeIcon == "nila")
             FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
@@ -1520,35 +1527,53 @@ class ShopItem extends FlxGroup
                         SaveData.buyItem(item);
                         SaveData.transaction(-Std.int(info[2]));
 
+                        var hadPrev:Bool = true;
                         if(item.endsWith("p")) {
-                            if(!SaveData.shop.get(item.substring(0, item.length-1)))
+                            if(!SaveData.shop.get(item.substring(0, item.length-1))) {
                                 SaveData.buyItem(info[0].substring(0, item.length-1));
+                                hadPrev = false;
+                            }
                         }
 
                         if(item.startsWith("egg")) {
                             SaveData.buyItem("fnfdon");
                             SaveData.buyItem("fitdon");
                             SaveData.buyItem("ylyl");
+                            states.cd.MainMenu.unlocks.push("All easter egg skins unlocked!\nExtra options!");
                         }
 
-                        if(item == 'crown') {
+                        if(item == 'time') {
+                            states.cd.MainMenu.unlocks.push("Song: CDv1 Songs");
+                            if(!SaveData.progression.get("vip"))
+                                states.cd.MainMenu.unlocks.push("Song: Exotic");
+                        }
+
+                        if(item == 'biop' && hadPrev)
+                            states.cd.MainMenu.unlocks.push("Bios Menu upgraded!");
+                        else if(item == 'biop' || item == 'bio')
+                            states.cd.MainMenu.unlocks.push("Bios Menu!");
+
+                        if(item == 'galleryp' && hadPrev)
+                            states.cd.MainMenu.unlocks.push("Gallery upgraded!");
+                        else if(item == 'galleryp' || item == 'gallery')
+                            states.cd.MainMenu.unlocks.push("Gallery!");
+
+                        if(item == 'musicp' && hadPrev)
+                            states.cd.MainMenu.unlocks.push("Music Player upgraded!");
+                        else if(item == 'musicp' || item == 'music')
+                            states.cd.MainMenu.unlocks.push("Music Player!");
+
+                        if(item == 'crown')
                             states.cd.MainMenu.unlocks.push("Week 1: VIP!");
-                            //Main.switchState(new states.cd.MainMenu());
-                        }
 
-                        if(item == 'shack') {
+                        if(item == 'shack')
                             states.cd.MainMenu.unlocks.push("Song: Ripple! (FREEPLAY)\nSong: Customer Service! (FREEPLAY)");
-                           // Main.switchState(new states.cd.MainMenu());
-                        }
 
-                        if(item == 'ticket') {
+                        if(item == 'ticket')
                             states.cd.MainMenu.unlocks.push("Song: Kaboom! (FREEPLAY)");
-                            //Main.switchState(new states.cd.MainMenu());
-                        }
 
-                        if(item == 'camera') {
+                        if(item == 'camera')
                             states.cd.MainMenu.unlocks.push("Photo Mode!");
-                        }
 
                     }
                     else if (item != 'mic'){
