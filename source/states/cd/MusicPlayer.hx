@@ -21,10 +21,10 @@ class MusicPlayer extends MusicBeatState
         ["Euphoria", "mochoco", "songs/euphoria/Inst", "songs/euphoria/Voices"],
         ["Nefarious", "teles", "songs/nefarious/Inst", "songs/nefarious/Voices"],
         ["Divergence", "CharaWhy", "songs/divergence/Inst", "songs/divergence/Voices"],
-        ["Allegro", "teles ft. mochoco", "songs/allegro/Inst", "songs/allegro/Voices"],
+        ["Allegro", "teles ft. mochoco", "songs/allegro/old/Inst", "songs/allegro/old/Voices"],
         ["Panic Attack", "mochoco", "songs/panic-attack/Inst", "songs/panic-attack/Voices"],
         ["Convergence", "CharaWhy", "songs/convergence/Inst", "songs/convergence/Voices"],
-        ["Desertion", "mochoco", "songs/desertion/Inst", "songs/desertion/Voices"],
+        ["Desertion", "mochoco", "songs/desertion-sc/Inst", "songs/desertion-sc/Voices"],
         ["sin.", "teles ft. mochoco", "songs/sin/old/Inst", "songs/sin/old/Voices"],
         ["Intimidate", "mochoco", "songs/intimidate/Inst", "songs/intimidate/Voices"],
         ["Conservation", "CharaWhy", "songs/conservation/Inst", "songs/conservation/Voices"],
@@ -44,8 +44,8 @@ class MusicPlayer extends MusicBeatState
         ["Over the Clouds", "YaBoiJustin", "music/overTheHorizonHelica-old"],
         ["Movement", "CharaWhy", "music/movement"],
         ["Whatcha Buyin?", "CharaWhy", "music/WhatchaBuyin"],
-        ["Love Letter (Bios Theme)", "mochoco", "music/LoveLetter"],
-        ["Allegretto (Credits Theme)", "teles", "music/credits"],
+        ["Love Letter", "mochoco", "music/LoveLetter"],
+        ["Allegretto", "teles", "music/credits"],
         ["Euphoria (Dialogue)", "mochoco", "music/dialogue/old/11"],
         ["Nefarious (Dialogue)", "mochoco", "music/dialogue/old/12"],
         ["Divergence (Dialogue)", "mochoco", "music/dialogue/old/13"],
@@ -55,24 +55,31 @@ class MusicPlayer extends MusicBeatState
         ["Desertion (Dialogue)", "teles", "music/dialogue/old/24"],
         ["Godsend (Finale)", "mochoco", "music/godsend"],
         ["Ripple (Dialogue)", "teles", "music/dialogue/freeplay"],
-        ["Reiterate (Game Over)", "teles", "music/death/reiterate"],
-        ["THUNDEROUS (Bree Game Over)", "teles", "music/death/bree"],
+        ["Reiterate", "teles", "music/death/reiterate"],
+        ["THUNDEROUS", "teles", "music/death/bree"],
         ["Speaker", "mochoco", "music/speaker"],
-        ["Reiterate (Retro)", "teles", "music/death/reiterate-old"]
+        ["Reiterate (Classic)", "teles", "music/death/reiterate-old"]
     ],[
+        ["CD+", "CharaWhy", "music/intro_plus"],
+        ["Desertion+", "mochoco", "songs/desertion/Inst", "songs/desertion/Voices"],
+        ["Commotion", "HighPoweredKeyz ft. mochoco", "songs/commotion/Inst", "songs/commotion/Voices"],
+        ["Allegro (Remastered)", "teles ft. mochoco", "songs/allegro/Inst", "songs/allegro/Voices"],
+        ["sin. (Remastered)", "teles ft. mochoco", "songs/sin/Inst", "songs/sin/Voices"],
         ["Nefarious! Mini (Extra)", "mochoco", "music/extra/nefarious-mini"],
         ["Ripple VIP (Extra)", "CharaWhy", "music/extra/ripple-vip"],
-        ["sin. (Remastered)", "teles ft. mochoco", "songs/sin/Inst", "songs/sin/Voices"],
-        ["Resmooched Romance", "YaBoiJustin", "music/kiss"],
+        ["smooch", "YaBoiJustin", "music/kiss"],
         ["fly in da soup", "teles", "music/fly"],
-        ["Over the Clouds (New)", "YaBoiJustin", "music/overTheHorizonHelica"],
-        ["Euphoria (New Dialogue)", "mochoco", "music/dialogue/11"],
-        ["Nefarious (New Dialogue)", "mochoco", "music/dialogue/12"],
-        ["Divergence (New Dialogue)", "mochoco", "music/dialogue/13"],
-        ["Allegro (New Dialogue)", "mochoco", "music/dialogue/21"],
-        ["Panic Attack (New Dialogue)", "mochoco", "music/dialogue/22"],
-        ["Convergence (New Dialogue)", "mochoco", "music/dialogue/23"],
-        ["Desertion (New Dialogue)", "mochoco", "music/dialogue/24"],
+        ["Over the Clouds+", "YaBoiJustin", "music/overTheHorizonHelica"],
+        ["Over the Beaker", "Ruevoid", "music/overTheHorizonNila"],
+        ["Whatcha Tryin?", "CharaWhy", "music/WhatchaBuyinNila"],
+        ["What Could've Been", "Ruevoid", "music/gallery"],
+        ["Euphoria (Dialogue+)", "mochoco", "music/dialogue/11"],
+        ["Nefarious (Dialogue+)", "mochoco", "music/dialogue/12"],
+        ["Divergence (Dialogue+)", "mochoco", "music/dialogue/13"],
+        ["Allegro (Dialogue+)", "mochoco", "music/dialogue/21"],
+        ["Panic Attack (Dialogue+)", "mochoco", "music/dialogue/22"],
+        ["Convergence (Dialogue+)", "mochoco", "music/dialogue/23"],
+        ["Desertion (Dialogue+)", "mochoco", "music/dialogue/24"],
         ["Euphoria (Classic)", "mochoco", "songs/euphoria-old/Inst", "songs/euphoria-old/Voices"],
         ["Nefarious (Classic)", "teles", "songs/nefarious-old/Inst", "songs/nefarious-old/Voices"],
         ["Divergence (Classic)", "CharaWhy", "songs/divergence-old/Inst", "songs/divergence-old/Voices"],
@@ -479,8 +486,8 @@ class MusicPlayer extends MusicBeatState
             changeSelection(0);
         }
 
-        if(Controls.justPressed("RESET_SPECIAL")) //TO-DO (IMPORTANT): SEPARATE LINKS FOR VOL 1 and 2
-            FlxG.openURL("https://shatterdisk.bandcamp.com/album/characteristic-disparity-original-soundtrack");
+        if(Controls.justPressed("RESET_SPECIAL"))
+            FlxG.openURL("https://hyperfollow.com/cdv2");
 		
 		if (FlxG.mouse.wheel != 0)
 		{

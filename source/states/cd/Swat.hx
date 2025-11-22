@@ -50,6 +50,7 @@ class Swat extends MusicBeatState
         CoolUtil.playMusic();
 
         DiscordIO.changePresence("Playing: SUBGAME-1", null);
+        Paths.preloadSound("music/fly");
 
         stremMode = SaveData.data.get("Jumpscares");
 
@@ -179,7 +180,7 @@ class Swat extends MusicBeatState
             openSubState(new subStates.SubgamePause());
         }
 
-        if(FlxG.mouse.justPressed && !dead && begun) {
+        if((FlxG.mouse.justPressed || Controls.justPressed("RIGHT")) && !dead && begun) {
             var playedSound:Bool = false;
             for(fly in flies) {
                 if(CoolUtil.mouseOverlap(fly, FlxG.camera) && !fly.swatted) {

@@ -1097,7 +1097,7 @@ class PlayState extends MusicBeatState
 				if(!SaveData.data.get("Low Quality")) {
 					dad.alpha = 0;
 					camHUD.alpha = 0;
-					vgblack.alpha = 0.8;
+					vgblack.alpha = 0.4;
 					FlxG.camera.fade(0xFF000000, 0.01, false);
 					stageBuild.tweenStage(0, 0.01);
 				}
@@ -1717,16 +1717,18 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var daRating = new Rating(rating, Timings.combo, note.assetModifier);
-		add(daRating);
+		if(!strumline.isTaiko) {
+			var daRating = new Rating(rating, Timings.combo, note.assetModifier);
+			add(daRating);
 
-		var char = boyfriend;
-		if(daSong == "kaboom" && invertedCharacters)
-			char = dad;
-		daRating.setPos(
-			char.x + char.ratingsOffset.x,
-			char.y + char.ratingsOffset.y
-		);
+			var char = boyfriend;
+			if(daSong == "kaboom" && invertedCharacters)
+				char = dad;
+			daRating.setPos(
+				char.x + char.ratingsOffset.x,
+				char.y + char.ratingsOffset.y
+			);
+		}
 
 		hudBuild.updateText();
 	}
@@ -2947,7 +2949,7 @@ class PlayState extends MusicBeatState
 							zoomOppVal = -0.1;
 						case 436:
 							dad.miss(2);
-							boyfriend.miss(3);
+							//boyfriend.miss(3);
 						case 448:
 							bellasings = false;
 						case 512:
@@ -3086,10 +3088,10 @@ class PlayState extends MusicBeatState
 							});
 	
 						case 2144:
-							defaultCamZoom = 0.6;
+							defaultCamZoom = 0.5;
 						case 2400: 
 							CoolUtil.flash(camOther, 0.5);
-							defaultCamZoom = 0.5;
+							defaultCamZoom = 0.4;
 							beatSpeed = 4;
 						case 2528:
 							FlxG.camera.fade(0x00000000, 1, false);
@@ -3962,7 +3964,7 @@ class PlayState extends MusicBeatState
 							camVg.fade(0x00ffffff, 0.01, true);
 						case 1664:
 							FlxTween.tween(dad, {alpha: 0}, 0.6, {ease: FlxEase.sineInOut});
-						case 1683: //1680
+						case 1684: //1680
 							defaultCamZoom = 0.72;
 							boyfriend.playAnim("neck", true);
 							focusMiddle = true;

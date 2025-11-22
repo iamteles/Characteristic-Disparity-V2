@@ -23,6 +23,13 @@ class SubgamePause extends MusicBeatSubState
 		var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
 
+		var pause = new FlxText(0,0,0,'PAUSED');
+		pause.setFormat(Main.dsFont, 120, 0xFFFFFFFF, CENTER);
+		pause.setBorderStyle(OUTLINE, 0xFF000000, 4);
+        pause.screenCenter();
+        pause.antialiasing = false;
+		add(pause);
+
         banana.alpha = 0.5;
 	}
 

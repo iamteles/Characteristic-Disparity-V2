@@ -1539,7 +1539,7 @@ class ShopItem extends FlxGroup
                             SaveData.buyItem("fnfdon");
                             SaveData.buyItem("fitdon");
                             SaveData.buyItem("ylyl");
-                            states.cd.MainMenu.unlocks.push("All easter egg skins unlocked!\nExtra options!");
+                            states.cd.MainMenu.unlocks.push("All easter egg skins unlocked!");
                         }
 
                         if(item == 'time') {

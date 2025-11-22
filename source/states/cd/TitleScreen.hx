@@ -57,14 +57,8 @@ class TitleScreen extends MusicBeatState
         }
 
         Conductor.setBPM(105);
-        SaveData.progression.set("firstboot", true);
-        SaveData.save();
-
 		Main.setMouse(false);
-
         DiscordIO.changePresence("In the Title Screen", null);
-
-        CoolUtil.flash(FlxG.camera, 0.5);
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/title/gradients/' + Main.curTitle[0]));
 		bg.updateHitbox();
@@ -104,7 +98,7 @@ class TitleScreen extends MusicBeatState
         info.y = 599.95;
         add(info);
 
-        var verTxt = new FlxText(0,0,0,'@Team Shatterdisk 2025');
+        var verTxt = new FlxText(0,0,0,'v2.5.0');
 		verTxt.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.x = 5;
@@ -243,6 +237,9 @@ class TitleScreen extends MusicBeatState
 	{
         started = true;
 		introEnded = true;
+
+        SaveData.progression.set("firstboot", true);
+        SaveData.save();
 		
 		if(FlxG.sound.music != null && skip)
 			FlxG.sound.music.time = (Conductor.crochet * 16);
@@ -271,7 +268,7 @@ class TitleScreen extends MusicBeatState
         if(Controls.justPressed("ACCEPT") && started) {
             if(introEnded)
                 end();
-            else
+            else if(SaveData.progression.get("firstboot"))
                 skipIntro(true);
         }
 

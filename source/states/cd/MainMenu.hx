@@ -270,7 +270,7 @@ class MainMenu extends MusicBeatState
                                         states.cd.Gallery.curCat = "main";
                                         Main.switchState(new states.cd.Gallery(), true);
                                     case "bio":
-                                        Main.switchState(new states.cd.BiosMenuState(), true);
+                                        Main.switchState(new states.cd.Bios(), true);
                                     case "kiss":
                                         Main.switchState(new states.cd.Kissing(), true);
                                     case "shop":

@@ -62,7 +62,7 @@ class OptionsState extends MusicBeatState
 		"extras" => [
 			"Jumpscares",
 			"Flashbang Mode",
-			"Miss on Ghost Tap",
+			//"Miss on Ghost Tap",
 			"Munchlog"
 		],
 		"save" => [
@@ -119,8 +119,8 @@ class OptionsState extends MusicBeatState
 
 		DiscordIO.changePresence("In the Options", null);
 
-		if(SaveData.eggCheck())
-			optionShit.get("main").push("Extras");
+		/*if(SaveData.eggCheck())
+			optionShit.get("main").push("Extras");*/
 
 		var tiles = new FlxBackdrop(Paths.image('menu/freeplay/tile'), XY, 0, 0);
         tiles.velocity.set(30, 30);

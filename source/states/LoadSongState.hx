@@ -251,7 +251,11 @@ class LoadSongState extends MusicBeatState
 					Paths.preloadGraphic("hud/base/convergence");
 					Paths.preloadSound("sounds/thunder");
 				case "desertion":
-					Paths.preloadGraphic("backgrounds/desertion/power up");
+					//Paths.preloadGraphic("backgrounds/desertion/power up");
+					Paths.preloadGraphic("backgrounds/desertion/bg");
+					Paths.preloadGraphic("backgrounds/desertion/bex");
+					Paths.preloadGraphic("backgrounds/desertion/bella");
+					Paths.preloadGraphic("backgrounds/desertion/bar");
 				case "nefarious" | "euphoria":
 					Paths.preloadGraphic('backgrounds/week1/bgchars');
 				case "heartpounder": // quarter pounder :joy:
@@ -264,6 +268,10 @@ class LoadSongState extends MusicBeatState
 					/*Paths.preloadGraphic("notes/taiko/notes");
 					Paths.preloadGraphic("notes/base/splashes"); //...?!*/
 					Paths.preloadGraphic("menu/story/Taiko-" + SaveData.data.get("Taiko Style").toLowerCase());
+					Paths.preloadSound("sounds/punch/punch_1");
+					Paths.preloadSound("sounds/punch/punch_2");
+					Paths.preloadSound("sounds/punch/punch_3");
+					Paths.preloadSound("sounds/punch/punch_4");
 
 					var taikoData = data.SongData.loadFromJson("sin", "taiko");
 					var taikoList:Array<Note> = ChartLoader.getChart(taikoData);
