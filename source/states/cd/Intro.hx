@@ -207,7 +207,7 @@ class IntroLoading extends MusicBeatState
 		{
 			byeLol = true;
 			Main.skipClearMemory = true;
-			if(FlxG.random.bool(1)) {
+			if(true) {
 				states.VideoState.name = "test";
 				Main.switchState(new states.VideoState());
 			}

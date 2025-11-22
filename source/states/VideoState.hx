@@ -6,37 +6,51 @@ import data.Discord.DiscordIO;
 import data.DoidoVideoSprite;
 import flixel.util.FlxTimer;
 import subStates.CutscenePauseSubState;
+import hxvlc.util.Handle;
 
 class VideoState extends MusicBeatState
 {
     public static var name:String = "divergence";
     private var video:DoidoVideoSprite;
+    var loaded:Bool = false;
 	override public function create():Void
 	{
         CoolUtil.playMusic();
         Main.setMouse(false);
         DiscordIO.changePresence("Watching Cutscene", null);
 
-        video = new DoidoVideoSprite();
-		video.antialiasing = SaveData.data.get("Antialiasing");
+        Handle.initAsync(function(success:Bool):Void
+		{
+            if(!success)
+                trace("uh oh");
+            
+            video = new DoidoVideoSprite();
+            video.antialiasing = SaveData.data.get("Antialiasing");
 
-		video.bitmap.onFormatSetup.add(function():Void {
-			if (video.bitmap != null && video.bitmap.bitmapData != null) {
-				video.setGraphicSize(FlxG.width, FlxG.height);
-				video.updateHitbox();
-				video.screenCenter();
-			}
-		});
+            video.bitmap.onEncounteredError.add(function(message:String):Void
+			{
+				trace('VLC Error: $message');
+			});
 
-        video.bitmap.onEndReached.add(function():Void {
-            close();
-        });
+            video.bitmap.onFormatSetup.add(function():Void {
+                if (video.bitmap != null && video.bitmap.bitmapData != null) {
+                    video.setGraphicSize(FlxG.width, FlxG.height);
+                    video.updateHitbox();
+                    video.screenCenter();
+                }
+            });
 
-        video.load(Paths.video(name));
-        add(video);
-        
-        new FlxTimer().start(0.001, function(tmr) {
-            video.play();
+            video.bitmap.onEndReached.add(function():Void {
+                close();
+            });
+
+            video.load(Paths.video(name));
+            add(video);
+            
+            new FlxTimer().start(0.001, function(tmr) {
+                loaded = true;
+                video.play();
+            });
         });
 
 		super.create();
@@ -79,7 +93,7 @@ class VideoState extends MusicBeatState
     override function update(elapsed:Float) {
         super.update(elapsed);
         
-        if(Controls.justPressed("ACCEPT") && !skipped) {
+        if(Controls.justPressed("ACCEPT") && !skipped && loaded) {
             if(!hasPause.contains(name))
                 pauseVideo();
             else if(SaveData.progression.get("firstboot"))
@@ -98,7 +112,9 @@ class VideoState extends MusicBeatState
                 case SKIP:                
                     close();
                 case RESTART:
-                    video.restart();
+                    video.pause();
+					video.bitmap.position = 0.0;
+					video.resume();
                 default:
                     video.resume();
             }
