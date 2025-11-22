@@ -12,7 +12,7 @@
         {
             "character": "left",
             "frame": "smug",
-            "text": "Bex Parker... I need a word with you."
+            "text": "Bex Parker. A word?"
         },
         {
             "character": "right",
@@ -32,7 +32,7 @@
         {
             "character": "left",
             "frame": "annoyed",
-            "text": "YOU my friend- are DISRUPTING the balance on Earth."
+            "text": "YOU, my friend- are DISRUPTING the balance on Earth."
         },
         {
             "character": "right",
@@ -62,22 +62,22 @@
         {
             "character": "right",
             "frame": "mad",
-            "text": "who the hell do you think you are."
+            "text": "who the hell do you think you are?"
         },
         {
             "character": "left",
             "frame": "stun talk",
-            "text": "I told you who I am, or did you forget."
+            "text": "I told you who I am, or did you forget?"
         },
         {
             "character": "left",
             "frame": "yap",
-            "text": "Just in case you forgot, my name is Bree, god of-"
+            "text": "My name is Bree, god of-"
         },
         {
             "character": "right",
             "frame": "annoyed",
-            "text": "yeah i fuckin heard you the first time"
+            "text": "yeah i fuckin heard you the first time."
         },
         {
             "character": "left",
@@ -86,24 +86,74 @@
         },
         {
             "character": "left",
+            "frame": "yap",
+            "text": "You see, I've been sensing some really weird shit down here on Earth."
+        },
+        {
+            "character": "left",
+            "frame": "yap",
+            "text": "Godlike aura readings where there shouldn't be."
+        },
+        {
+            "character": "left",
             "frame": "annoyed",
-            "text": "Anyway, I suggest you comply with me and end what you have with her."
-        },
-        {
-            "character": "left",
-            "frame": "smug",
-            "text": "You wouldn't want me to intervene would you..."
-        },
-        {
-            "character": "left",
-            "frame": "smug",
-            "text": "...Rebecca."
+            "text": "And they've only cropped up after you and your sweetheart got together."
         },
         {
             "character": "right",
             "frame": "annoyed",
-            "text": "!"
+            "text": "..."
         },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "Exclusively where you two have been, might I add."
+        },
+        {
+            "character": "right",
+            "frame": "annoyed",
+            "text": "...what the hell are you talking abo-"
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "Now, you HUMANS shouldn't be doing that."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "It's wrong... a THREAT."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "And my duty as god of balance is to eliminate such threats."
+        },
+        {
+            "character": "right",
+            "frame": "annoyed",
+            "text": "huh."
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "I'm usually not one to do things the civil way, but I'll try just this once."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "Will you leave her and break that aura..."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "or am I gonna have to do something about the two of you?"
+        },
+        {
+            "character": "right",
+            "frame": "annoyed",
+            "text": "...?!"
+        },        
         {
             "character": "right",
             "frame": "mad",
@@ -111,7 +161,7 @@
         },
         {
             "character": "left",
-            "frame": "smug",
+            "frame": "annoyed",
             "text": "Alright then."
         }
     ]

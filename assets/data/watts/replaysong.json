@@ -1,0 +1,43 @@
+{
+    "ident": "replaysong",
+    "lines": [
+        [
+            "...",
+            "confused",
+            0.05
+        ],
+        [
+            "I'm gonna leave you two to it.",
+            "neutral",
+            0.05,
+            "n",
+            "n"
+        ],
+        [
+            "what?",
+            "confused",
+            0.05
+        ],
+        [
+            "You wanna go at it again?",
+            "confused",
+            0.05
+        ],
+        [
+            "...",
+            "confused",
+            0.05
+        ],
+        [
+            "I guess that's fine by me... Do what you have to...",
+            "sad",
+            0.05
+        ],
+        [
+            "* Plead\n* Taunt",
+            "sad",
+            0.05,
+            "q"
+        ]
+    ]
+}

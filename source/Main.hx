@@ -11,7 +11,6 @@ import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
 import openfl.Lib;
-import data.Discord.DiscordClient;
 
 using StringTools;
 
@@ -26,16 +25,9 @@ class Main extends Sprite
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 
-		#if DISCORD_RPC
-		if (!DiscordClient.isInitialized) {
-			DiscordClient.initialize();
-			Application.current.window.onClose.add(function() {
-				DiscordClient.shutdown();
-			});
-		}
-		#end
-
-		addChild(new FlxGame(1280, 720, Init, 120, 120, true));
+		var ws:Array<String> = SaveData.displaySettings.get("Resolution")[0].split("x");
+		var windowSize:Array<Int> = [Std.parseInt(ws[0]),Std.parseInt(ws[1])];
+		addChild(new FlxGame(windowSize[0], windowSize[1], Init, 120, 120, true));
 
 		#if desktop
 		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
@@ -44,11 +36,15 @@ class Main extends Sprite
 	}
 	public static var gFont:String = Paths.font("matsaleh.ttf");
 	public static var dsFont:String = Paths.font("ds.ttf");
+	public static var titleFont:String = Paths.font("nexa.ttf");
 	
 	public static var skipClearMemory:Bool = false; // dont
 	public static var skipTrans:Bool = true; // starts on but it turns false inside Init
-	public static function switchState(?target:FlxState):Void
+	public static function switchState(?target:FlxState, fade:Bool = false):Void
 	{
+		if(fade && FlxG.sound.music != null) {
+			FlxG.sound.music.fadeOut(0.5);
+		}
 		var trans = new GameTransition(false);
 		trans.finishCallback = function()
 		{
@@ -91,42 +87,41 @@ class Main extends Sprite
 		}
 	}
 
-	public static var possibleTitles:Array<Array<String>> = [
-		["main", "overTheHorizon"]
+	public static var curTitle:Array<String> = ["main", "overTheHorizon"];
+	public static var titles:Map<String, Array<String>> = [
+		"HORIZON" => ["main", "overTheHorizon", "free"],
+		"THUNDER" => ["bree", "overTheHorizonBree", "week2"],
+		"COUNTER" => ["watts", "shopkeeper", "shopentrance"],
+		"CLOUDS" => ["helica", "overTheHorizonHelica", "intimidated"],
+		"BEAKER" => ["nila", "overTheHorizonNila", "free"],
+		"CLOUDS-OLD" => ["helica", "overTheHorizonHelica-old", "intimidated"],
+		"V1" => ["retro", "speaker", "free"],
 	];
-	public static var randomized:Int = 0;
 	
 	public static function setMouse(visibility:Bool = false)
 	{
-		#if !mobile
 		FlxG.mouse.visible = visibility;
-		#else
-		FlxG.mouse.visible = false;
-		#end
 	}
 
 	public static function randomizeTitle()
 	{
-		var temp:Array<Array<String>> = [
-			["main", "overTheHorizon"]
-		];
+		if(SaveData.data.get("Menu Style") == "RANDOMIZE") {
+			var temp:Array<Array<String>> = [titles.get("HORIZON")];
 
-		if(SaveData.progression.get("week2")) {
-			temp.push(["bree", "overTheHorizonBree"]);
+			for(style in ["THUNDER", "COUNTER", "CLOUDS"])
+				if(titles.get(style)[2] == "free" || SaveData.progression.get(titles.get(style)[2]))
+					temp.push(titles.get(style));
+
+			curTitle = temp[FlxG.random.int(0, temp.length-1)];
 		}
-
-		if(SaveData.progression.get("shopentrance")) {
-			temp.push(["watts", "shopkeeper"]);
+		else {
+			var eyup:String = SaveData.data.get("Menu Style").toUpperCase();
+			trace(eyup);
+			if(titles.get(eyup)[2] == "free" || SaveData.progression.get(titles.get(eyup)[2]))
+				curTitle = titles.get(eyup);
+			else
+				curTitle = titles.get("HORIZON");
 		}
-
-		if(SaveData.songs.get("sin"))
-			temp.push(["helica", "overTheHorizonHelica"]); // celica
-
-		possibleTitles = temp;
-		randomized = FlxG.random.int(0, possibleTitles.length-1);
-
-		//trace(randomized);
-		//trace(Main.possibleTitles);
 	}
 
 	#if desktop
@@ -164,7 +159,6 @@ class Main extends Sprite
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
-		DiscordClient.shutdown();
 		Sys.exit(1);
 	}
 	#end

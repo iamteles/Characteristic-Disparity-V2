@@ -5,80 +5,119 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import data.GameData.MusicBeatState;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import data.Conductor;
 import flixel.ui.FlxBar;
-import gameObjects.android.FlxVirtualPad;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
+import flixel.FlxObject;
+import flixel.FlxCamera;
+import sys.thread.Thread;
 
 class MusicPlayer extends MusicBeatState
 {
-    public static var songs:Array<Array<Dynamic>> = [
+    var threadActive:Bool = true;
+    public static var songs:Array<Array<Array<Dynamic>>> = [[
         ["Characteristic Disparity", "CharaWhy", "music/intro"],
-        ["Euphoria", "Coco Puffs", "songs/euphoria/Inst", "songs/euphoria/Voices"],
+        ["Euphoria", "mochoco", "songs/euphoria/Inst", "songs/euphoria/Voices"],
         ["Nefarious", "teles", "songs/nefarious/Inst", "songs/nefarious/Voices"],
         ["Divergence", "CharaWhy", "songs/divergence/Inst", "songs/divergence/Voices"],
-        ["Allegro", "teles ft. Coco Puffs", "songs/allegro/Inst", "songs/allegro/Voices"],
-        ["Panic Attack", "Coco Puffs", "songs/panic-attack/Inst", "songs/panic-attack/Voices"],
+        ["Allegro", "teles ft. mochoco", "songs/allegro/old/Inst", "songs/allegro/old/Voices"],
+        ["Panic Attack", "mochoco", "songs/panic-attack/Inst", "songs/panic-attack/Voices"],
         ["Convergence", "CharaWhy", "songs/convergence/Inst", "songs/convergence/Voices"],
-        ["Desertion", "Coco Puffs", "songs/desertion/Inst", "songs/desertion/Voices"],
-        ["sin.", "teles ft. Coco Puffs", "songs/sin/Inst", "songs/sin/Voices"],
-        ["Intimidate", "Coco Puffs", "songs/intimidate/Inst", "songs/intimidate/Voices"],
+        ["Desertion", "mochoco", "songs/desertion-sc/Inst", "songs/desertion-sc/Voices"],
+        ["sin.", "teles ft. mochoco", "songs/sin/old/Inst", "songs/sin/old/Voices"],
+        ["Intimidate", "mochoco", "songs/intimidate/Inst", "songs/intimidate/Voices"],
         ["Conservation", "CharaWhy", "songs/conservation/Inst", "songs/conservation/Voices"],
-        ["Irritation", "Coco Puffs ft. CharaWhy", "songs/irritation/Inst", "songs/irritation/Voices"],
+        ["Irritation", "mochoco ft. CharaWhy", "songs/irritation/Inst", "songs/irritation/Voices"],
         ["Euphoria VIP", "CharaWhy ft. Leebert", "songs/euphoria-vip/Inst", "songs/euphoria-vip/Voices"],
         ["Nefarious VIP", "CharaWhy", "songs/nefarious-vip/Inst", "songs/nefarious-vip/Voices"],
         ["Divergence VIP", "CharaWhy", "songs/divergence-vip/Inst", "songs/divergence-vip/Voices"],
         ["Kaboom!", "teles ft. HighPoweredKeyz", "songs/kaboom/Inst", "songs/kaboom/Voices"],
         ["Ripple", "CharaWhy", "songs/ripple/Inst", "songs/ripple/Voices"],
         ["Customer Service", "teles ft. Jospi", "songs/customer-service/Inst", "songs/customer-service/Voices"],
-        ["HeartPounder", "Coco Puffs", "songs/heartpounder/Inst", "songs/heartpounder/Voices"],
-        ["Exotic", "Coco Puffs", "songs/exotic/Inst"],
+        ["HeartPounder", "mochoco", "songs/heartpounder/Inst", "songs/heartpounder/Voices"],
+        ["Exotic", "mochoco", "songs/exotic/Inst"],
         ["Cupid", "teles", "songs/cupid/Inst", "songs/cupid/Voices"],
-        ["Over the Horizon", "Coco Puffs", "music/overTheHorizon"],
+        ["Over the Horizon", "mochoco", "music/overTheHorizon"],
         ["Over the Thunder", "CharaWhy", "music/overTheHorizonBree"],
         ["Over the Counter", "teles", "music/shopkeeper"],
-        ["Over the Clouds", "YaBoiJustin", "music/overTheHorizonHelica"],
+        ["Over the Clouds", "YaBoiJustin", "music/overTheHorizonHelica-old"],
         ["Movement", "CharaWhy", "music/movement"],
         ["Whatcha Buyin?", "CharaWhy", "music/WhatchaBuyin"],
-        ["Love Letter (Bios Theme)", "Coco Puffs", "music/LoveLetter"],
-        ["Allegretto (Credits Theme)", "teles", "music/credits"],
-        ["Euphoria (Dialogue)", "Coco Puffs", "music/dialogue/11"],
-        ["Nefarious (Dialogue)", "Coco Puffs", "music/dialogue/12"],
-        ["Divergence (Dialogue)", "Coco Puffs", "music/dialogue/13"],
-        ["Allegro (Dialogue)", "Coco Puffs", "music/dialogue/21"],
-        ["Panic Attack (Dialogue)", "Coco Puffs", "music/dialogue/22"],
-        ["Convergence (Dialogue)", "teles", "music/dialogue/23"],
-        ["Desertion (Dialogue)", "teles", "music/dialogue/24"],
-        ["Godsend (Finale)", "Coco Puffs", "music/godsend"],
+        ["Love Letter", "mochoco", "music/LoveLetter"],
+        ["Allegretto", "teles", "music/credits"],
+        ["Euphoria (Dialogue)", "mochoco", "music/dialogue/old/11"],
+        ["Nefarious (Dialogue)", "mochoco", "music/dialogue/old/12"],
+        ["Divergence (Dialogue)", "mochoco", "music/dialogue/old/13"],
+        ["Allegro (Dialogue)", "mochoco", "music/dialogue/old/21"],
+        ["Panic Attack (Dialogue)", "mochoco", "music/dialogue/old/22"],
+        ["Convergence (Dialogue)", "teles", "music/dialogue/old/23"],
+        ["Desertion (Dialogue)", "teles", "music/dialogue/old/24"],
+        ["Godsend (Finale)", "mochoco", "music/godsend"],
         ["Ripple (Dialogue)", "teles", "music/dialogue/freeplay"],
-        ["Reiterate (Game Over Theme)", "teles", "music/death/reiterate"],
+        ["Reiterate", "teles", "music/death/reiterate"],
         ["THUNDEROUS", "teles", "music/death/bree"],
-        ["Speaker", "Coco Puffs", "music/speaker"],
-        ["Reiterate Retro", "teles", "music/death/reiterate-old"]
-    ];
+        ["Speaker", "mochoco", "music/speaker"],
+        ["Reiterate (Classic)", "teles", "music/death/reiterate-old"]
+    ],[
+        ["CD+", "CharaWhy", "music/intro_plus"],
+        ["Desertion+", "mochoco", "songs/desertion/Inst", "songs/desertion/Voices"],
+        ["Commotion", "HighPoweredKeyz ft. mochoco", "songs/commotion/Inst", "songs/commotion/Voices"],
+        ["Allegro (Remastered)", "teles ft. mochoco", "songs/allegro/Inst", "songs/allegro/Voices"],
+        ["sin. (Remastered)", "teles ft. mochoco", "songs/sin/Inst", "songs/sin/Voices"],
+        ["Nefarious! Mini (Extra)", "mochoco", "music/extra/nefarious-mini"],
+        ["Ripple VIP (Extra)", "CharaWhy", "music/extra/ripple-vip"],
+        ["smooch", "YaBoiJustin", "music/kiss"],
+        ["fly in da soup", "teles", "music/fly"],
+        ["Over the Clouds+", "YaBoiJustin", "music/overTheHorizonHelica"],
+        ["Over the Beaker", "Ruevoid", "music/overTheHorizonNila"],
+        ["Whatcha Tryin?", "CharaWhy", "music/WhatchaBuyinNila"],
+        ["What Could've Been", "Ruevoid", "music/gallery"],
+        ["Euphoria (Dialogue+)", "mochoco", "music/dialogue/11"],
+        ["Nefarious (Dialogue+)", "mochoco", "music/dialogue/12"],
+        ["Divergence (Dialogue+)", "mochoco", "music/dialogue/13"],
+        ["Allegro (Dialogue+)", "mochoco", "music/dialogue/21"],
+        ["Panic Attack (Dialogue+)", "mochoco", "music/dialogue/22"],
+        ["Convergence (Dialogue+)", "mochoco", "music/dialogue/23"],
+        ["Desertion (Dialogue+)", "mochoco", "music/dialogue/24"],
+        ["Euphoria (Classic)", "mochoco", "songs/euphoria-old/Inst", "songs/euphoria-old/Voices"],
+        ["Nefarious (Classic)", "teles", "songs/nefarious-old/Inst", "songs/nefarious-old/Voices"],
+        ["Divergence (Classic)", "CharaWhy", "songs/divergence-old/Inst", "songs/divergence-old/Voices"],
+    ]];
     static var curSelected:Int = 0;
 
     var playing:Bool = false;
     var looping:Bool = false;
     var vocalsMuted:Bool = false;
+    var reloaded:Bool = false;
 
     var clouds:FlxSprite;
+    var cloudsL:FlxSprite;
     var frame:FlxSprite;
+    var frameL:FlxSprite;
     var arrow:FlxSprite;
+    var arrowL:FlxSprite;
 
     var skipF:FlxSprite;
     var skipB:FlxSprite;
     var pause:FlxSprite;
     var loop:FlxSprite;
 
+    var vol1:FlxSprite;
+    var vol2:FlxSprite;
+    var volguide:FlxSprite;
+    var volguideL:FlxSprite;
+    var logo:FlxSprite;
+
     var timeBar:FlxBar;
     var icon:FlxSprite;
+    var iconL:FlxSprite;
     var timeTxt:FlxText;
 
     var songName:FlxText;
     var songComposer:FlxText;
     var hints:FlxText;
+    var hintsL:FlxText;
 
     var holders:FlxTypedGroup<FlxSprite>;
     var names:FlxTypedGroup<FlxSprite>;
@@ -87,15 +126,31 @@ class MusicPlayer extends MusicBeatState
 	public var vocals:FlxSound;
 	public var musicList:Array<FlxSound> = [];
     var songLength:Float = 0;
+
+    public static var camFollow:FlxObject = new FlxObject();
+    public static var camGame:FlxCamera;
+    public static var camHUD:FlxCamera;
+    var vol:Int = 0;
+
+    var leaving:Bool = false;
+    var left:Bool = false;
     public override function create()
     {
         super.create();
-
+		
+		FlxG.autoPause = false;
         CoolUtil.playMusic();
+        //Main.setMouse(true);
 
-        Main.setMouse(true);
+        DiscordIO.changePresence("In the Music Player", null);
 
-        DiscordClient.changePresence("In the Music Player...", null);
+        camGame = new FlxCamera();
+        FlxG.cameras.reset(camGame);
+        FlxG.cameras.setDefaultDrawTarget(camGame, true);
+
+        camHUD = new FlxCamera();
+		camHUD.bgColor.alphaFloat = 0;
+        FlxG.cameras.add(camHUD, false);
 
         var color = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFFFFFFF);
 		color.screenCenter();
@@ -106,13 +161,19 @@ class MusicPlayer extends MusicBeatState
         clouds.y = -2.55;
 		add(clouds);
 
+        cloudsL = new FlxSprite().loadGraphic(Paths.image('menu/music/sky-pink'));
+        cloudsL.x = -5.2;
+        cloudsL.y = -2.55;
+        cloudsL.alpha = 0;
+		add(cloudsL);
+
         holders = new FlxTypedGroup<FlxSprite>();
 		add(holders);
 
         names = new FlxTypedGroup<FlxSprite>();
 		add(names);
 
-        for(i in 0...songs.length)
+        for(i in 0...songs[0].length)
         {
             var num:String = Std.string(i+1) + ". ";
             if(i <= 8)
@@ -126,9 +187,31 @@ class MusicPlayer extends MusicBeatState
 
             var text = new FlxText(0,0,0,"");
             text.setFormat(Main.gFont, 30, 0xFF000000, CENTER);
-            text.text = num + songs[i][0];
-            //trace(num + songs[i][0]);
+            text.text = num + songs[0][i][0];
+            trace(num + songs[vol][i][0]);
             text.x = 774.85;
+            text.y = holder.y + 10;
+            text.ID = i;
+            names.add(text);
+        }
+
+        for(i in 0...songs[1].length)
+        {
+            var num:String = Std.string(i+1) + ". ";
+            if(i <= 8)
+                num = "0" + num;
+
+            var holder = new FlxSprite().loadGraphic(Paths.image('menu/music/song-pink'));
+            holder.x = -holder.width - 65;
+            holder.y = 143.25 + ((i-curSelected)*holder.height);
+            holder.ID = i;
+            holders.add(holder);
+
+            var text = new FlxText(0,0,0,"");
+            text.setFormat(Main.gFont, 30, 0xFF000000, CENTER);
+            text.text = num + songs[1][i][0];
+            trace(num + songs[vol][i][0]);
+            text.x = holder.x + 13;
             text.y = holder.y + 10;
             text.ID = i;
             names.add(text);
@@ -139,92 +222,212 @@ class MusicPlayer extends MusicBeatState
         frame.y = -3.8;
 		add(frame);
 
+        frameL = new FlxSprite().loadGraphic(Paths.image('menu/music/list-overlay-pink'));
+        frameL.flipX = true;
+        frameL.x = -frameL.width;
+        frameL.y = -3.8;
+		add(frameL);
+
         arrow = new FlxSprite().loadGraphic(Paths.image('menu/music/arrow'));
         arrow.x = 1251;
         arrow.y = 149.7;
 		add(arrow);
 
+        arrowL = new FlxSprite().loadGraphic(Paths.image('menu/music/arrow-pink'));
+        //arrowL.flipX = true;
+        arrowL.x = -93;
+        arrowL.y = 149.7;
+		add(arrowL);
+
+        var where:Float = 397;
+        var what:Float = 150;
+
         pause = new FlxSprite();
         pause.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        pause.animation.addByPrefix('pause',  'play button', 24, true);
-        pause.animation.addByPrefix('play',  'pause button', 24, true);
+        pause.animation.addByPrefix('pause',  'play0', 24, true);
+        pause.animation.addByPrefix('play',  'pause0', 24, true);
+        pause.animation.addByPrefix('pause-pink',  'play-pink', 24, true);
+        pause.animation.addByPrefix('play-pink',  'pause-pink', 24, true);
         pause.animation.play('pause');
-        pause.x = 290.05;
-        pause.y = 299.05;
+        pause.x = 57.7 + what + 5;//290.05;
+        pause.y = where;
         pause.alpha = 0.8;
         add(pause);
 
         skipB = new FlxSprite();
         skipB.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        skipB.animation.addByPrefix('idle',  'last track', 24, true);
+        skipB.animation.addByPrefix('idle',  'last0', 24, true);
+        skipB.animation.addByPrefix('idle-pink',  'last-pink', 24, true);
         skipB.animation.play('idle');
         skipB.x = 57.7;
-        skipB.y = 287.5;
+        skipB.y = where;
         skipB.alpha = 0.8;
         add(skipB);
 
         skipF = new FlxSprite();
         skipF.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        skipF.animation.addByPrefix('idle',  'next track', 24, true);
+        skipF.animation.addByPrefix('idle',  'next0', 24, true);
+        skipF.animation.addByPrefix('idle-pink',  'next-pink', 24, true);
         skipF.animation.play('idle');
-        skipF.x = 512.65;
-        skipF.y = 287.9;
+        skipF.x = 57.7 + (what*2) + 7;//512.65;
+        skipF.y = where;
         skipF.alpha = 0.8;
         add(skipF);
 
         loop = new FlxSprite();
         loop.frames = Paths.getSparrowAtlas('menu/music/buttons');
-        loop.animation.addByPrefix('idle',  'Loop0000', 24, true);
+        loop.animation.addByPrefix('idle',  'loop0', 24, true);
+        loop.animation.addByPrefix('idle-pink',  'loop-pink', 24, true);
         loop.animation.play('idle');
-        loop.x = 293.1;
-        loop.y = 149.1;
+        loop.x = 512.65 + 5;//293.1;
+        loop.y = where;
         loop.alpha = 0.6;
         add(loop);
 
+        vol1 = new FlxSprite().loadGraphic(Paths.image('menu/music/vol1'));
+        vol1.scale.set(0.5,0.5);
+        vol1.updateHitbox();
+        vol1.y += 23;
+        vol1.x = clouds.width / 2 - vol1.width / 2 - 10; 
+		add(vol1);
+
+        vol2 = new FlxSprite().loadGraphic(Paths.image('menu/music/vol2'));
+        vol2.scale.set(0.5,0.5);
+        vol2.updateHitbox();
+        vol2.alpha = 0;
+        vol2.y += 23;
+        vol2.x = clouds.width / 2 - vol2.width / 2 - 10; 
+		add(vol2);
+
+        volguide = new FlxSprite().loadGraphic(Paths.image('menu/music/volguide'));
+        volguide.visible = SaveData.shop.get("musicp");
+		add(volguide);
+
+        volguideL = new FlxSprite().loadGraphic(Paths.image('menu/music/volguide-pink'));
+        volguideL.visible = SaveData.shop.get("musicp");
+        volguideL.x = frame.x - volguide.width;
+        volguideL.alpha = 0;
+		add(volguideL);
+
         timeBar = new FlxBar(
-			115.3, 539.5,
+			115.3, 539.5 + 8,
 			LEFT_TO_RIGHT,
 			482,
 			13.5
 		);
-		timeBar.createFilledBar(0xFFFFFFFF, 0xFF3B4877);
+		timeBar.createFilledBar(0xFFFFFFFF, 0xFF3B4877); //0xFF773B5C
 		timeBar.updateBar();
         add(timeBar);
 
         icon = new FlxSprite().loadGraphic(Paths.image('menu/music/cursor'));
-        icon.y = 520.4;
+        icon.y = 520.4 + 8;
 		add(icon);
+
+        iconL = new FlxSprite().loadGraphic(Paths.image('menu/music/cursor-pink'));
+        iconL.y = 520.4 + 8;
+        iconL.alpha = 0;
+		add(iconL);
 
         timeTxt = new FlxText(0,0,0,"0:00 / 0:00");
         timeTxt.setFormat(Main.gFont, 30, 0xFF3B4877, CENTER);
         timeTxt.x = timeBar.x + (timeBar.width/2) - (timeTxt.width/2);
-        timeTxt.y = icon.y + icon.height + 2;
+        timeTxt.y = icon.y + icon.height + 2 + 5;
         add(timeTxt);
 
         songName = new FlxText(0,0,0,"Euphoria");
         songName.setFormat(Main.gFont, 50, 0xFF3B4877, CENTER);
         songName.x = timeBar.x + (timeBar.width/2) - (songName.width/2);
-        songName.y = timeTxt.y + timeTxt.height + 3;
+        songName.y = timeTxt.y + timeTxt.height + 3 + 5;
         add(songName);
 
-        songComposer = new FlxText(0,0,0,"Coco Puffs");
+        songComposer = new FlxText(0,0,0,"mochoco");
         songComposer.setFormat(Main.gFont, 30, 0xFF3B4877, CENTER);
         songComposer.x = timeBar.x + (timeBar.width/2) - (songComposer.width/2);
-        songComposer.y = songName.y + songName.height + 2;
+        songComposer.y = songName.y + songName.height + 2 + 5;
         add(songComposer);
 
-        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\n- / +: Decrease / Increase Volume\nSPACE: Resume / Play\nV: Mute Vocals\n");
+        hints = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nSELECT: View in Web");
         hints.setFormat(Main.gFont, 20, 0xFF000000, LEFT);
         hints.x = frame.x + 70;
-        hints.y = 9;
+        hints.y = 6;
         add(hints);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(BLANK, B);
-            add(virtualPad);
-        }
+        hintsL = new FlxText(0,0,0,"LEFT / RIGHT: Skip Song\nACCEPT: Play / Pause\nX: Mute Vocals\nY: Toggle Loop\nSELECT: View in Web");
+        hintsL.setFormat(Main.gFont, 20, 0xFF000000, RIGHT);
+        hintsL.x = -70-hintsL.width;
+        hintsL.y = 6;
+        add(hintsL);
+
+        logo = new FlxSprite().loadGraphic(Paths.image('menu/loading'));
+		logo.scale.set(0.3,0.3);
+		logo.updateHitbox();
+		logo.x = FlxG.width - logo.width - 15;
+		logo.y = FlxG.height;
+        logo.alpha = 0;
+        logo.cameras = [camHUD];
+		add(logo);
+
+        camFollow.setPosition(FlxG.width / 2, FlxG.height / 2);
+		FlxG.camera.follow(camFollow, LOCKON, 1);
+		FlxG.camera.focusOn(camFollow.getPosition());
 
         changeSelection();
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+
+        // does this suck? be honest
+        var load = Thread.create(function()
+        {
+            for(i in 0...songs[0].length) {
+                if(leaving) break;
+                if(!songs[0][i][4]) {
+                    Paths.preloadMusicPlayer(songs[0][i][2]);
+                    if(songs[0][i][3] != null)
+                        Paths.preloadMusicPlayer(songs[0][i][3]);
+
+                    trace("loaded " + songs[0][i][0]);
+                    songs[0][i][4] = true;
+                }
+
+                if(reloaded == false) {
+                    if(!songs[vol][curSelected][4]) {
+                        Paths.preloadMusicPlayer(songs[vol][curSelected][2]);
+                        if(songs[vol][curSelected][3] != null)
+                            Paths.preloadMusicPlayer(songs[vol][curSelected][3]);
+
+                        trace("loaded " + songs[vol][curSelected][0]);
+                        songs[vol][curSelected][4] = true;
+                    }
+                }
+            }
+
+            if(SaveData.shop.get("musicp")) { // no need to load songs you haven't unlocked yet
+                for(i in 0...songs[1].length) {
+                    if(leaving) break;
+                    if(!songs[1][i][4]) {
+                        Paths.preloadMusicPlayer(songs[1][i][2]);
+                        if(songs[1][i][3] != null)
+                            Paths.preloadMusicPlayer(songs[1][i][3]);
+
+                        trace("loaded " + songs[1][i][0]);
+                        songs[1][i][4] = true;
+                    }
+
+                    if(reloaded == false) {
+                        if(!songs[vol][curSelected][4]) {
+                            Paths.preloadMusicPlayer(songs[vol][curSelected][2]);
+                            if(songs[vol][curSelected][3] != null)
+                                Paths.preloadMusicPlayer(songs[vol][curSelected][3]);
+
+                            trace("loaded " + songs[vol][curSelected][0]);
+                            songs[vol][curSelected][4] = true;
+                        }
+                    }
+                }
+            }
+
+            threadActive = false;
+        });
     }
 
     public function updateTimeTxt()
@@ -236,29 +439,84 @@ class MusicPlayer extends MusicBeatState
         timeTxt.x = timeBar.x + (timeBar.width/2) - (timeTxt.width/2);
     }
     
+	var timeBarFollowMouse:Bool = false;
     var formatTime:Float = 0;
-    var virtualPad:FlxVirtualPad;
+    var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
-        var left:Bool = Controls.justPressed("UI_LEFT");
 
-        var right:Bool = Controls.justPressed("UI_RIGHT");
+        camGame.followLerp = elapsed * 6;
+        cloudsL.alpha = FlxMath.lerp(cloudsL.alpha, vol, elapsed*6);
 
-        var back:Bool = Controls.justPressed("BACK");
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed);
+        if(threadActive) {
+            logo.y = FlxMath.lerp(logo.y, FlxG.height - logo.height - 15, elapsed * 8);
+        }
+        
+        if((Controls.justPressed("L_SPECIAL") || Controls.justPressed("R_SPECIAL")) && SaveData.shop.get("musicp")) {
+            if(vol == 0)
+                vol = 1;
+            else
+                vol = 0;
 
-        var accept:Bool = FlxG.keys.justPressed.SPACE;
+            vol1.alpha = 1-vol;
+            vol2.alpha = vol;
 
-        if(left)
+            volguide.alpha = 1-vol;
+            volguideL.alpha = vol;
+
+            playSong(false);
+
+            icon.alpha = 1-vol;
+            iconL.alpha = vol;
+
+            skipB.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+            skipF.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+            loop.animation.play('idle' + (vol == 0 ? "" : '-pink'));
+
+            timeBar.createFilledBar(0xFFFFFFFF, (vol == 0 ? 0xFF3B4877 : 0xFF773B5C)); //
+            timeTxt.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
+            songName.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
+            songComposer.color = (vol == 0 ? 0xFF3B4877 : 0xFF773B5C);
+
+            camFollow.setPosition((!(vol == 1) ? (FlxG.width/2) : (FlxG.width/2) - 581), FlxG.height/2);
+            curSelected = 0;
+            changeSelection(0);
+        }
+
+        if(Controls.justPressed("RESET_SPECIAL"))
+            FlxG.openURL("https://hyperfollow.com/cdv2");
+		
+		if (FlxG.mouse.wheel != 0)
+		{
+			changeSelection(-FlxG.mouse.wheel);
+			usingMouse = true;
+			Main.setMouse(true);
+		}
+
+        if(Controls.justPressed("UI_LEFT") || Controls.justPressed("UI_UP")) {
             changeSelection(-1);
-        if(right)
-            changeSelection(1);
+            usingMouse = false;
+            Main.setMouse(false);
+        }
 
-        if(back)
+        if(Controls.justPressed("UI_RIGHT") || Controls.justPressed("UI_DOWN")) {
+            changeSelection(1);
+            usingMouse = false;
+            Main.setMouse(false);
+        }
+
+        if(Controls.justPressed("BACK"))
         {
+            leaving = true;
             FlxG.sound.play(Paths.sound('menu/back'));
+        }
+        
+        if(leaving && !threadActive && !left) {
+            left = true;
+			FlxG.autoPause = true;
             Main.switchState(new states.cd.MainMenu());
         }
 
@@ -275,20 +533,26 @@ class MusicPlayer extends MusicBeatState
 
         formatTime = ((Conductor.songPos / songLength));
         icon.x = (timeBar.x + (timeBar.width * (formatTime))) - (icon.width/2);
+        iconL.x = (timeBar.x + (timeBar.width * (formatTime))) - (iconL.width/2);
         timeBar.percent = formatTime*100;
         updateTimeTxt();
 
-        if(Conductor.songPos >= songLength)
+        if(playing) {
+            if(!reloaded && songs[vol][curSelected][4])
+                reloadAudio();
+        }
+
+        if(Conductor.songPos >= songLength && reloaded)
         {
             if(looping)
-                reloadAudio();
+                reloaded = false;
             else
                 changeSelection(1);
         }
 
         for(song in musicList)
         {
-            if(playing && Conductor.songPos >= 0)
+            if(playing && reloaded && Conductor.songPos >= 0)
             {
                 if(!song.playing)
                     song.play(Conductor.songPos);
@@ -299,24 +563,60 @@ class MusicPlayer extends MusicBeatState
                 song.stop();
         }
 
-        if(playing)
+        if(playing && reloaded)
         {
             Conductor.songPos += elapsed * 1000;
         }
 
-        if(accept) {
+        if(Controls.justPressed("ACCEPT_SPECIAL")) {
             playSong();
         }
 
-        if(FlxG.keys.justPressed.V) {
+        if(Controls.justPressed("X_SPECIAL")) {
             vocalsMuted = !vocalsMuted;
             if(vocals != null && vocalsMuted)
                 vocals.volume = 0;
             else if(vocals != null)
                 vocals.volume = 1;
         }
+		
+		var timeIcon = icon;
+		if (iconL.alpha >= 1.0)
+			timeIcon = iconL;
+		
+		if(CoolUtil.mouseOverlapWorld(timeBar, camGame)
+		|| CoolUtil.mouseOverlapWorld(timeIcon, camGame)) {
+			if(FlxG.mouse.justPressed) {
+				timeBarFollowMouse = true;
+			}
+		}
+		
+		// time bar manipulation
+		if (timeBarFollowMouse)
+		{
+			var mouseX = FlxMath.bound(FlxG.mouse.x, timeBar.x, timeBar.x + timeBar.width);
+			
+			if(FlxG.mouse.justMoved || FlxG.mouse.justPressed)
+			{
+				var maxLength:Float = musicList[0].length;
+				Conductor.songPos = FlxMath.remapToRange(
+					mouseX,
+					timeBar.x, timeBar.x + timeBar.width,
+					0, maxLength
+				);
+				// doing this so the game wont crash (i'm serious)
+				if(Conductor.songPos >= maxLength)
+					Conductor.songPos -= 500;
+				
+				for(music in musicList)
+					music.time = Conductor.songPos;
+			}
+			
+			if (!FlxG.mouse.pressed)
+				timeBarFollowMouse = false;
+		}
 
-        if(CoolUtil.mouseOverlap(pause, FlxG.camera)) {
+        if(CoolUtil.mouseOverlapWorld(pause, camGame)) {
             pause.alpha = 1;
             if(FlxG.mouse.justPressed) {
                 playSong();
@@ -325,7 +625,7 @@ class MusicPlayer extends MusicBeatState
         else
             pause.alpha = 0.8;
 
-        if(CoolUtil.mouseOverlap(skipF, FlxG.camera)) {
+        if(CoolUtil.mouseOverlapWorld(skipF, camGame)) {
             skipF.alpha = 1;
             if(FlxG.mouse.justPressed) {
                 changeSelection(1);
@@ -334,7 +634,7 @@ class MusicPlayer extends MusicBeatState
         else
             skipF.alpha = 0.8;
 
-        if(CoolUtil.mouseOverlap(skipB, FlxG.camera)) {
+        if(CoolUtil.mouseOverlapWorld(skipB, camGame)) {
             skipB.alpha = 1;
             if(FlxG.mouse.justPressed) {
                 changeSelection(-1);
@@ -343,7 +643,15 @@ class MusicPlayer extends MusicBeatState
         else
             skipB.alpha = 0.8;
 
-        if(CoolUtil.mouseOverlap(loop, FlxG.camera)) {
+        if(Controls.justPressed("LOOP")) {
+            looping = !looping;
+            if(looping)
+                loop.alpha = 1;
+            else
+                loop.alpha = 0.6;
+        }
+
+        if(CoolUtil.mouseOverlapWorld(loop, camGame)) {
             if(FlxG.mouse.justPressed) {
                 looping = !looping;
                 if(looping)
@@ -352,18 +660,32 @@ class MusicPlayer extends MusicBeatState
                     loop.alpha = 0.6;
             }
         }
+
+        if(lastMouseX != FlxG.mouse.getScreenPosition(camGame).x || lastMouseY != FlxG.mouse.getScreenPosition(camGame).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(camGame).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(camGame).y;
+        }
     }
 
-    function playSong() {
-        playing = !playing;
-        if(playing)
-            pause.animation.play('play');
+    function playSong(?force:Bool) {
+        if(force != null)
+            playing = force;
         else
-            pause.animation.play('pause');
+            playing = !playing;
+        if(playing)
+            pause.animation.play('play' + (vol == 0 ? "" : '-pink'));
+        else
+            pause.animation.play('pause' + (vol == 0 ? "" : '-pink'));
     }
 
 	function reloadAudio()
 	{
+        if(reloaded) return;
+        reloaded = true;
         Conductor.songPos = 0;
         for(song in musicList)
         {
@@ -388,14 +710,14 @@ class MusicPlayer extends MusicBeatState
 		}
 
 		inst = new FlxSound();
-		inst.loadEmbedded(Paths.getPath(songs[curSelected][2] + ".ogg"), false, false);
+		inst.loadEmbedded(Paths.getPath(songs[vol][curSelected][2] + ".ogg"), false, false);
 		songLength = inst.length;
 		addMusic(inst);
 
-		if(songs[curSelected][3] != null)
+		if(songs[vol][curSelected][3] != null)
 		{
 			vocals = new FlxSound();
-			vocals.loadEmbedded(Paths.getPath(songs[curSelected][3] + ".ogg"), false, false);
+			vocals.loadEmbedded(Paths.getPath(songs[vol][curSelected][3] + ".ogg"), false, false);
             if(vocalsMuted)
                 vocals.volume = 0;
             else
@@ -406,14 +728,18 @@ class MusicPlayer extends MusicBeatState
 
     public function changeSelection(change:Int = 0)
     {
+        for(song in musicList)
+        {
+            song.stop();
+        }
         //if(selected) return; //do not
         curSelected += change;
-        curSelected = FlxMath.wrap(curSelected, 0, songs.length - 1);
+        curSelected = FlxMath.wrap(curSelected, 0, songs[vol].length - 1);
         //if(change != 0)
         //    FlxG.sound.play(Paths.sound("menu/scroll"));
 
-        songName.text = songs[curSelected][0];
-        songComposer.text = songs[curSelected][1];
+        songName.text = songs[vol][curSelected][0];
+        songComposer.text = songs[vol][curSelected][1];
 
         songName.x = timeBar.x + (timeBar.width/2) - (songName.width/2);
         songName.y = timeTxt.y + timeTxt.height + 3;
@@ -421,6 +747,27 @@ class MusicPlayer extends MusicBeatState
         songComposer.x = timeBar.x + (timeBar.width/2) - (songComposer.width/2);
         songComposer.y = songName.y + songName.height + 2;
 
-        reloadAudio();
+        reloaded = false;
+        //reloadAudio();
     }
+	
+	// trying to make the game use less CPU when unfocused
+	var stopDrawing:Bool = false;
+	override function draw()
+	{
+		if(!stopDrawing)
+			super.draw();
+	}
+	
+	override function onFocusLost():Void
+	{
+		stopDrawing = true;
+		super.onFocusLost();
+	}
+	
+	override function onFocus():Void
+	{
+		stopDrawing = false;
+		super.onFocus();
+	}
 }

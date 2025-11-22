@@ -147,6 +147,13 @@ class StrumNote extends FlxSprite
 					addOffset("confirm", 37, 38);
 				if(strumData == 2)
 					addOffset("confirm", 38, 36);
+			case "fnfdon":
+				strumSize = 0.85;
+				frames = Paths.getSparrowAtlas('notes/$assetModifier/strums');
+
+				animation.addByPrefix("static",  'strum $direction static',  24, false);
+				animation.addByPrefix("pressed", 'strum $direction pressed', 12, false);
+				animation.addByPrefix("confirm", 'strum $direction confirm', 24, false);
 			default:
 				strumSize = 0.7;
 				frames = Paths.getSparrowAtlas('notes/$assetModifier/strums');

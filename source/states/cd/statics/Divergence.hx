@@ -12,7 +12,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 using StringTools;
 
@@ -32,7 +32,7 @@ class Divergence extends MusicBeatState
 
         Main.setMouse(false);
 
-        DiscordClient.changePresence("Reading dialogue...", null);
+        DiscordIO.changePresence("Reading Dialogue", null);
 
         panelGroup = new FlxTypedGroup<FlxSprite>();
 		add(panelGroup);
@@ -57,16 +57,7 @@ class Divergence extends MusicBeatState
             //    panel.alpha = FlxMath.lerp(panel.alpha, 0, elapsed*12);
         }
 
-        var isTouch:Bool = false;
-        #if mobile
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.justPressed)
-                isTouch = true;
-        }
-        #end
-
-        if((FlxG.keys.justPressed.SPACE || isTouch)) {
+        if(Controls.justPressed("ACCEPT")) {
             if(curLine == (imgs.length-1)) {
                 if(!SaveData.progression.get("week1"))
                     states.cd.MainMenu.unlocks.push("Week 2!\nFreeplay!");

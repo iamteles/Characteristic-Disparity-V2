@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -13,11 +13,12 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
 import flixel.input.keyboard.FlxKey;
-import gameObjects.android.FlxVirtualPad;
 
 class MainMenu extends MusicBeatState
 {
-	var list:Array<String> = ["story mode", "freeplay", "shop", "music", "gallery", "bio", "kiss", "credits", "options"];
+    public static var inSub:Bool = false;
+
+	var list:Array<String> = ["story mode", "freeplay", "shop", "music", "gallery", "bio", "games", "credits", "options"];
     var hints:Array<String> = [
         "Play the main storyline!", 
         "Replay story songs or play some bonus ones!", 
@@ -25,7 +26,7 @@ class MainMenu extends MusicBeatState
         "Listen to our OST!", 
         "Lots of bonus art!", 
         "Learn more about the protagonists of the mod!",
-        "Special Subgame!",
+        "Special Subgames!",
         "The awesome people who made the mod!", 
         "Tinker the mod to your liking!"
     ];
@@ -39,25 +40,26 @@ class MainMenu extends MusicBeatState
     var arrowR:FlxSprite;
     var info:FlxText;
     var bar:FlxSprite;
-    var mouseInfo:FlxSprite;
 
     var popUp:FlxSprite;
     var popUpTxt:FlxText;
     var isPop:Bool = false;
     public static var unlocks:Array<String> = [];
 
-    public static var virtualPad:FlxVirtualPad;
-
 	override function create()
 	{
         super.create();
+        inSub = false;
 
-        DiscordClient.changePresence("In the Menus...", null);
+        DiscordIO.changePresence("In the Main Menu", null);
         CoolUtil.playMusic("MENU");
 
         Main.setMouse(false);
 
-        bg = new FlxSprite().loadGraphic(Paths.image(SaveData.menuBg));
+        var menuBg:String = SaveData.menuBg;
+        if(Main.curTitle[0] == "retro")
+            menuBg = 'menu/title/gradients/retro';
+        bg = new FlxSprite().loadGraphic(Paths.image(menuBg));
 		bg.updateHitbox();
 		bg.screenCenter();
 		add(bg);
@@ -96,7 +98,7 @@ class MainMenu extends MusicBeatState
             text.screenCenter(X);
             text.y = 47;
 
-            if(name == "kiss")
+            if(name == "games")
                 text.offset.set(0,50);
 
             if(i == curSelected) {
@@ -138,26 +140,34 @@ class MainMenu extends MusicBeatState
 		info.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		info.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         info.y = FlxG.height - info.height - 5;
+        //info.antialiasing = false;
 
         bar = new FlxSprite().makeGraphic(FlxG.width, Std.int(info.height) + 10, 0xFF000000);
 		bar.y = FlxG.height - bar.height;
 		add(bar);
         add(info);
 
+        /*
         mouseInfo = new FlxSprite().loadGraphic(Paths.image("menu/main/info"));
 		mouseInfo.updateHitbox();
         mouseInfo.x = 0;
         mouseInfo.y = FlxG.height - mouseInfo.height;
 		add(mouseInfo);
+        */
 
         changeSelection();
+
+        if(SaveData.progression.get("intimidated") && !SaveData.progression.get("story")) {
+            unlocks.push("A special Subgame!");
+            SaveData.progression.set("story", true);
+            SaveData.save();
+        }
 
         if(SaveData.cupidCheck() && !SaveData.progression.get("finished")) {
             unlocks.push("Song: Cupid (FREEPLAY)\nA special Subgame!");
             SaveData.progression.set("finished", true);
             SaveData.save();
         }
-
 
         if(unlocks.length > 0) {
             Paths.preloadSound('sounds/gift');
@@ -198,11 +208,6 @@ class MainMenu extends MusicBeatState
                 }});
             }});
         }
-
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
-            add(virtualPad);
-        }
     }
 
     var shaking:Bool = false;
@@ -211,39 +216,14 @@ class MainMenu extends MusicBeatState
     {
         super.update(elapsed);
 
-        //info.text = CoolUtil.posToTimer(SaveData.curTime());
-
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(back)
-        {
+        if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
-            Main.switchState(new states.cd.TitleScreen());
+            Main.switchState(new states.cd.TitleScreen(), true);
         }
 
-		if(left)
+		if(Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(right)
+		if(Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
         if(Controls.pressed("UI_LEFT") && !selected)
@@ -255,50 +235,60 @@ class MainMenu extends MusicBeatState
         else if(!selected)
             arrowR.alpha = 0.7;
 
-        if(accept && !selected && focused)
+        if(Controls.justPressed("ACCEPT") && !selected && focused)
         {
             if(returnMenu(curSelected)) {
-                selected = true;
-                FlxTween.tween(arrowL, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                FlxTween.tween(arrowR, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                FlxG.sound.play(Paths.sound("menu/select"));
-                for(item in buttons.members)
-                {
-                    if(item.ID != curSelected)
-                        FlxTween.tween(item, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
-                    else {
-                        FlxFlicker.flicker(item, 1, 0.06, true, false, function(_)
-                        {             
-                            switch(list[curSelected])
+                if(list[curSelected] == "games") {
+                    for(item in buttons.members.concat(texts.members)) {
+                        if(item.ID == curSelected)
+                            item.alpha = 0;
+                    }
+                    inSub = true;
+                    openSubState(new subStates.Game());
+                }
+                else {
+                    selected = true;
+                    FlxTween.tween(arrowL, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                    FlxTween.tween(arrowR, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                    FlxG.sound.play(Paths.sound("menu/select"));
+                    for(item in buttons.members)
+                    {
+                        if(item.ID != curSelected)
+                            FlxTween.tween(item, {alpha: 0}, 0.4, {ease: FlxEase.cubeOut});
+                        else {
+                            FlxFlicker.flicker(item, 1, 0.06, true, false, function(_)
                             {
-                                case "story mode":
-                                    Main.switchState(new states.cd.StoryMode());
-                                case "menu":
-                                    Main.switchState(new states.cd.MainMenu());
-                                case "freeplay":
-                                    Main.switchState(new states.cd.Freeplay());
-                                case "gallery":
-                                    Main.switchState(new states.cd.Gallery());
-                                case "bio":
-                                    Main.switchState(new states.cd.Bios());
-                                case "kiss":
-                                    Main.switchState(new states.cd.Kissing());
-                                case "shop":
-                                    Main.switchState(new states.ShopState.LoadShopState());
-                                case "music":
-                                    if(SaveData.data.get("Preload Songs")) {
-                                        Main.switchState(new states.LoadSongState.LoadMusicPlayer());
-                                    }
-                                    else
-                                        Main.switchState(new states.cd.MusicPlayer());
-                                case "options":
-                                    Main.switchState(new states.menu.OptionsState());
-                                case "credits":
-                                    Main.switchState(new states.cd.Credits());
-                                default:
-                                    Main.switchState(new states.DebugState());
-                            }
-                        });
+                                switch(list[curSelected])
+                                {
+                                    case "story mode":
+                                        Main.switchState(new states.cd.StoryMode(), true);
+                                    case "menu":
+                                        Main.switchState(new states.cd.MainMenu(), true);
+                                    case "freeplay":
+                                        Main.switchState(new states.cd.Freeplay(), true);
+                                    case "gallery":
+                                        states.cd.Gallery.curCat = "main";
+                                        Main.switchState(new states.cd.Gallery(), true);
+                                    case "bio":
+                                        Main.switchState(new states.cd.Bios(), true);
+                                    case "kiss":
+                                        Main.switchState(new states.cd.Kissing(), true);
+                                    case "shop":
+                                        Main.switchState(new states.ShopState(), true);
+                                    case "games":
+                                        openSubState(new subStates.Game());
+                                    case "music":
+                                        Main.switchState(new states.cd.MusicPlayer(), true);
+                                    case "options":
+                                        //openSubState(new subStates.OptionsSubState());
+                                        Main.switchState(new states.menu.OptionsState(), true);
+                                    case "credits":
+                                        Main.switchState(new states.cd.Credits(), true);
+                                    default:
+                                        Main.switchState(new states.DebugState(), true);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -316,7 +306,7 @@ class MainMenu extends MusicBeatState
                 });
             }
         }
-        else if(accept && isPop) {
+        else if(Controls.justPressed("ACCEPT") && isPop) {
             selected = false;
             isPop = false;
             popUp.alpha = 0;
@@ -324,28 +314,30 @@ class MainMenu extends MusicBeatState
             unlocks = [];
         }
 
-        for(item in buttons.members)
-        {
-            if(!selected || item.ID == curSelected) item.x = FlxMath.lerp(item.x, ((FlxG.width/2) - (item.width/2)) + ((curSelected - item.ID)*-397.8), elapsed*6);
+        if(!inSub) {
+            for(item in buttons.members)
+            {
+                if(!selected || item.ID == curSelected) item.x = FlxMath.lerp(item.x, ((FlxG.width/2) - (item.width/2)) + ((curSelected - item.ID)*-397.8), elapsed*6);
 
-            if(item.ID == curSelected) {
-                if (shaking)
-                    item.offset.x = FlxG.random.float(-0.05 * item.width, 0.05 * item.width);
-                if (shaking)
-                    item.offset.y = FlxG.random.float(-0.05 * item.height, 0.05 * item.height);
-                item.alpha = FlxMath.lerp(item.alpha, 1, elapsed*12);
+                if(item.ID == curSelected) {
+                    if (shaking)
+                        item.offset.x = FlxG.random.float(-0.05 * item.width, 0.05 * item.width);
+                    if (shaking)
+                        item.offset.y = FlxG.random.float(-0.05 * item.height, 0.05 * item.height);
+                    item.alpha = FlxMath.lerp(item.alpha, 1, elapsed*12);
+                }
+                else
+                    if(!selected) item.alpha = FlxMath.lerp(item.alpha, 0.5, elapsed*12);
             }
-            else
-                if(!selected) item.alpha = FlxMath.lerp(item.alpha, 0.5, elapsed*12);
-        }
 
-        for(item in texts.members)
-        {
-            item.y = FlxMath.lerp(item.y, 47, elapsed*6);
-            if(item.ID == curSelected)
-                item.alpha = 1;
-            else
-                item.alpha = 0;
+            for(item in texts.members)
+            {
+                item.y = FlxMath.lerp(item.y, 47, elapsed*6);
+                if(item.ID == curSelected)
+                    item.alpha = 1;
+                else
+                    item.alpha = 0;
+            }
         }
 
         //YLYL EASTER EGG
@@ -400,8 +392,8 @@ class MainMenu extends MusicBeatState
             info.text = hints[curSelected];
         else {
             switch(list[curSelected]) {
-                case "kiss":
-                    info.text = "Unlock this by beating every song!";
+                case "games":
+                    info.text = "Unlock this by beating the Story Mode!";
                 default:
                     info.text = "Unlock this by buying something from Watts' Store!";
             }
@@ -414,7 +406,7 @@ class MainMenu extends MusicBeatState
     function returnMenu(num:Int):Bool
     {
         if(unlockables.contains(list[num]))
-            return SaveData.shop.get(list[num]);
+            return (SaveData.shop.get(list[num]) || SaveData.shop.get(list[num] + 'p'));
         else if(list[num] == "freeplay") {
             if(SaveData.progression.get("week1") == null)
                 return false;
@@ -427,8 +419,8 @@ class MainMenu extends MusicBeatState
             else
                 return SaveData.progression.get("week2");
         }
-        else if(list[num] == "kiss") {
-            return SaveData.cupidCheck();
+        else if(list[num] == "games") {
+            return SaveData.progression.get("intimidated");
         }
         else
             return true;

@@ -1,99 +1,182 @@
 package data;
 
-import Sys.sleep;
+import lime.app.Application;
+
 #if DISCORD_RPC
-import discord_rpc.DiscordRpc;
+import Sys.sleep;
+import hxdiscord_rpc.Discord;
+import hxdiscord_rpc.Types;
 #end
 
-using StringTools;
+/*
+	New Discord.hx rewrite is here!
 
-class DiscordClient
+	Main purpose is to simplify Discord RPC implementation throughout the engine,
+	removing many redundancies and the huge mess that was incompatible platforms.
+
+	The current system is split into 2 classes, DiscordIO and DiscordAPI.
+	DiscordIO is used by the game to set RPC status and is what decides wether its
+	on or off. It's also used to block other platforms (HTML5, Neko and Android)
+	from accessing DiscordAPI, to avoid having to use if statements to fix any
+	classes they cant use.
+
+	DiscordAPI functions largely like the old DiscordIO but now is able to remember
+	the last RPC status used and fixes a couple of unoptimized things (trying to initialize
+	or shutdown while isInitialized is true or false, respectively, now stops the function
+	from doing anything)
+
+	Another feature is that you can now toggle Discord RPC from the Options Menu!
+
+	- teles
+*/
+
+class DiscordIO
 {
-	public static var isInitialized:Bool = false;
-	public function new()
+	public static var lastDetails:String = "In the Menus";
+	public static function initialize()
 	{
 		#if DISCORD_RPC
-		//trace("Discord Client starting...");
-		DiscordRpc.start({
-			clientID: "1155541092725428425",
-			onReady: onReady,
-			onError: onError,
-			onDisconnected: onDisconnected
-		});
-		//trace("Discord Client started.");
+		if (!DiscordAPI.isInitialized) {
+			DiscordAPI.initialize();
+			
+			Application.current.window.onClose.add(function() {
+				DiscordAPI.shutdown();
+			});
 
-		while (true)
-		{
-			DiscordRpc.process();
-			sleep(2);
-			////trace("Discord Client Update");
+			trace("initialized Discord RPC");
 		}
-
-		DiscordRpc.shutdown();
 		#end
 	}
-	
+
 	public static function shutdown()
 	{
 		#if DISCORD_RPC
-		DiscordRpc.shutdown();
+		DiscordAPI.shutdown();
+		trace("shutdown Discord RPC");
 		#end
 	}
-	
-	static function onReady()
+
+	public static function changePresence(?details:String = 'In the Menus', ?state:Null<String>, ?log:Bool = true)
 	{
 		#if DISCORD_RPC
-		DiscordRpc.presence({
-			details: "In the Menus",
-			state: null,
-			largeImageKey: 'icon',
-			largeImageText: "CD v2"
-		});
+		DiscordAPI.changePresence(details, state);
+		if(log)
+			trace("changed RPC to " + details);
+		lastDetails = details;
 		#end
 	}
 
-	static function onError(_code:Int, _message:String)
+	public static function check()
 	{
-		//trace('Error! $_code : $_message');
+		#if DISCORD_RPC
+		if(SaveData.data.get("Discord RPC"))
+			DiscordAPI.initialize();
+		else
+			shutdown();
+		#end
+	}
+}
+
+#if DISCORD_RPC
+class DiscordAPI
+{
+	public static var isInitialized:Bool = false;
+	private static final _defaultID:String = "1440721386988634254";
+	public static var clientID(default, set):String = _defaultID;
+	private static var presence:DiscordRichPresence = DiscordRichPresence.create();
+
+	public dynamic static function shutdown() {
+		if(isInitialized)
+			Discord.Shutdown();
+		isInitialized = false;
+	}
+	
+	private static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void {
+		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
+
+		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0) //New Discord IDs/Discriminator system
+			trace('(Discord) Connected to User (${cast(requestPtr.username, String)}#${cast(requestPtr.discriminator, String)})');
+		else //Old discriminators
+			trace('(Discord) Connected to User (${cast(requestPtr.username, String)})');
+
+		changePresence(DiscordIO.lastDetails);
 	}
 
-	static function onDisconnected(_code:Int, _message:String)
-	{
-		//trace('Disconnected! $_code : $_message');
+	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void {
+		trace('Discord: Error ($errorCode: ${cast(message, String)})');
+	}
+
+	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void {
+		trace('Discord: Disconnected ($errorCode: ${cast(message, String)})');
 	}
 
 	public static function initialize()
 	{
-		#if DISCORD_RPC
-		var DiscordDaemon = sys.thread.Thread.create(() ->
+		if(isInitialized) //stop!
+			return;
+
+		var discordHandlers:DiscordEventHandlers = DiscordEventHandlers.create();
+		discordHandlers.ready = cpp.Function.fromStaticFunction(onReady);
+		discordHandlers.disconnected = cpp.Function.fromStaticFunction(onDisconnected);
+		discordHandlers.errored = cpp.Function.fromStaticFunction(onError);
+		Discord.Initialize(clientID, cpp.RawPointer.addressOf(discordHandlers), 1, null);
+
+		trace("Discord Client initialized");
+
+		sys.thread.Thread.create(() ->
 		{
-			new DiscordClient();
+			var localID:String = clientID;
+			while (localID == clientID)
+			{
+				#if DISCORD_DISABLE_IO_THREAD
+				Discord.UpdateConnection();
+				#end
+				Discord.RunCallbacks();
+
+				// Wait 2 seconds until the next loop...
+				Sys.sleep(2);
+			}
 		});
-		//trace("Discord Client initialized");
 		isInitialized = true;
-		#end
 	}
 
-	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
+	public static function changePresence(?details:String = 'In the Menus', ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
-		#if DISCORD_RPC
-		var startTimestamp:Float = if(hasStartTimestamp) Date.now().getTime() else 0;
+		var startTimestamp:Float = 0;
+		if (hasStartTimestamp) startTimestamp = Date.now().getTime();
+		if (endTimestamp > 0) endTimestamp = startTimestamp + endTimestamp;
 
-		if (endTimestamp > 0)
+		presence.details = details;
+		presence.state = state;
+		presence.largeImageKey = 'icon';
+		presence.largeImageText = "Engine Version: " + Application.current.meta.get('version');
+		presence.smallImageKey = smallImageKey;
+		// Obtained times are in milliseconds so they are divided so Discord can use it
+		presence.startTimestamp = Std.int(startTimestamp / 1000);
+		presence.endTimestamp = Std.int(endTimestamp / 1000);
+		updatePresence();
+	}
+
+	public static function updatePresence() {
+		Discord.UpdatePresence(cpp.RawConstPointer.addressOf(presence));
+	}
+	
+	public static function resetClientID() {
+		clientID = _defaultID;
+	}
+
+	private static function set_clientID(newID:String)
+	{
+		var change:Bool = (clientID != newID);
+		clientID = newID;
+
+		if(change && isInitialized)
 		{
-			endTimestamp = startTimestamp + endTimestamp;
+			shutdown();
+			initialize();
+			updatePresence();
 		}
-
-		DiscordRpc.presence({
-			details: details,
-			state: state,
-			largeImageKey: 'icon',
-			largeImageText: "CDv2",
-			smallImageKey : smallImageKey,
-			// Obtained times are in milliseconds so they are divided so Discord can use it
-			startTimestamp : Std.int(startTimestamp / 1000),
-            endTimestamp : Std.int(endTimestamp / 1000)
-		});
-		#end
+		return newID;
 	}
 }
+#end

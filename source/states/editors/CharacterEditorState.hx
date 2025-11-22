@@ -22,7 +22,7 @@ import data.CharacterData;
 import data.GameData.MusicBeatState;
 import openfl.net.FileReference;
 import states.PlayState;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 //import sys.io.File;
 
 class CharacterEditorState extends MusicBeatState
@@ -94,7 +94,7 @@ class CharacterEditorState extends MusicBeatState
 
 		Main.setMouse(true);
 
-		DiscordClient.changePresence("Editing character: " + curChar.toUpperCase(), null);
+		DiscordIO.changePresence("Editing character: " + curChar.toUpperCase(), null);
 		
 		Rating.preload("base");
 		

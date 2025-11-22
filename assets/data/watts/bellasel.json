@@ -2,9 +2,18 @@
     "ident": "bellasel",
     "lines": [
         [
-            "A. How do you know her?\n* B. How close are you two?\n* ESC. Go Back.",
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
             "neutral",
-            0.05
+            0.05,
+            "q","n",
+            ["bellaA", "bellaB", "bellaC", "bellaD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bellaA", "bellaB", "bellaC"]
         ]
     ]
 }

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="cute girl talking.png">
+	<!-- Created with Adobe Animate version 23.0.0.407 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="cute talk0000" x="0" y="0" width="534" height="711" pivotX="0" pivotY="0" frameX="-5" frameY="0" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0001" x="0" y="0" width="534" height="711" frameX="-5" frameY="0" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0002" x="534" y="0" width="541" height="667" frameX="-1" frameY="-44" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0003" x="534" y="0" width="541" height="667" frameX="-1" frameY="-44" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0004" x="1075" y="0" width="544" height="653" frameX="0" frameY="-58" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0005" x="1075" y="0" width="544" height="653" frameX="0" frameY="-58" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0006" x="0" y="711" width="544" height="650" frameX="0" frameY="-61" frameWidth="544" frameHeight="711"/>
+	<SubTexture name="cute talk0007" x="0" y="711" width="544" height="650" frameX="0" frameY="-61" frameWidth="544" frameHeight="711"/>
+</TextureAtlas>

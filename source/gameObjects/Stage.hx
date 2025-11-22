@@ -71,6 +71,8 @@ class Stage extends FlxGroup
 		switch(song) {
 			case 'conservation':
 				curStage = 'irritation';
+			case 'euphoria-old' | 'nefarious-old' | 'divergence-old':
+				curStage = 'exotic';
 			default:
 				curStage = song;
 		}

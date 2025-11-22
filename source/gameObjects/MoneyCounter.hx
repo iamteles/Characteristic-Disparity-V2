@@ -11,7 +11,7 @@ import states.PlayState;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.math.FlxMath;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 
 class MoneyCounter extends FlxGroup
 {

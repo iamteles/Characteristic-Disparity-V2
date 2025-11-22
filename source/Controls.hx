@@ -27,7 +27,7 @@ class Controls
 	{
 		if(!allControls.exists(bind))
 		{
-			//trace("that bind does not exist dumbass");
+			trace("that bind does not exist dumbass");
 			return false;
 		}
 
@@ -122,7 +122,7 @@ class Controls
 		// ui buttons
 		'ACCEPT' => [
 			[FlxKey.SPACE, FlxKey.ENTER],
-			[FlxPad.A, FlxPad.X],
+			[FlxPad.A],
 		],
 		'BACK' => [
 			[FlxKey.BACKSPACE, FlxKey.ESCAPE],
@@ -131,6 +131,34 @@ class Controls
 		'PAUSE' => [
 			[FlxKey.ENTER, FlxKey.ESCAPE],
 			[FlxPad.START],
+		],
+		'BOTPLAY' => [
+			[FlxKey.X, FlxKey.R],
+			[FlxPad.X],
+		],
+		'X_SPECIAL' => [
+			[FlxKey.X],
+			[FlxPad.X],
+		],
+		'LOOP' => [
+			[FlxKey.Y, FlxKey.TAB],
+			[FlxPad.Y],
+		],
+		'L_SPECIAL' => [
+			[FlxKey.Q],
+			[FlxPad.LEFT_SHOULDER, LEFT_TRIGGER_BUTTON],
+		],
+		'R_SPECIAL' => [
+			[FlxKey.E],
+			[FlxPad.RIGHT_SHOULDER, RIGHT_TRIGGER_BUTTON],
+		],
+		'ACCEPT_SPECIAL' => [
+			[FlxKey.ENTER],
+			[FlxPad.A],
+		],
+		'RESET_SPECIAL' => [
+			[FlxKey.SPACE, FlxKey.NONE],
+			[FlxPad.BACK, FlxPad.NONE],
 		],
 	];
 

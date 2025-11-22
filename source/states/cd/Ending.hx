@@ -12,7 +12,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 using StringTools;
 
@@ -46,7 +46,7 @@ class Ending extends MusicBeatState
 
         Main.setMouse(false);
 
-        DiscordClient.changePresence("Reading dialogue...", null);
+        DiscordIO.changePresence("Reading Dialogue", null);
 
 
         panelGroup = new FlxTypedGroup<FlxSprite>();
@@ -65,8 +65,17 @@ class Ending extends MusicBeatState
 		tex.setFormat(Main.gFont, 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tex.screenCenter(X);
 		tex.borderSize = 2;
-		tex.skipKeys = [FlxKey.SPACE];
-		tex.delay = 0.05;
+		//tex.skipKeys = [FlxKey.SPACE];
+        switch(SaveData.data.get("Text Speed")) {
+            case "FAST":
+                tex.delay = 0.02;
+            case "SLOW":
+                tex.delay = 0.05;
+            case "INSTANT":
+                tex.delay = 0.0000001;
+            default:
+                tex.delay = 0.035;
+        }
 		add(tex);
 
         textbox(lines[curLine]);
@@ -84,16 +93,8 @@ class Ending extends MusicBeatState
             //    panel.alpha = FlxMath.lerp(panel.alpha, 0, elapsed*12);
         }
 
-        var isTouch:Bool = false;
-        #if mobile
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.justPressed)
-                isTouch = true;
-        }
-        #end
-
-        if((FlxG.keys.justPressed.SPACE || isTouch) && hasScrolled) {
+        if((Controls.justPressed("ACCEPT"))) {
+            if(hasScrolled) {
                 FlxG.sound.play(Paths.sound('dialog/skip'));
                 FlxTween.tween(tex, {alpha: 0}, 0.4, {
                     ease: FlxEase.sineInOut,
@@ -115,12 +116,14 @@ class Ending extends MusicBeatState
 
                     }
                 });
+            }
+            else
+                tex.skip();
         }
     }
 
     function textbox(text:String, ?delay:Float = 0.05)
     {
-        tex.delay = delay;
         tex.resetText(text);
         tex.alpha = 1;
 

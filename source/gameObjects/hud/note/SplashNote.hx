@@ -60,32 +60,25 @@ class SplashNote extends FlxSprite
 						switch (assetModifier) {
 							case "mlc":
 								animation.addByPrefix("splash1", '$direction splash', 24, false);
-								animation.addByPrefix("splash2", '$direction splash', 24, false);
-		
 							case "shack":
 								animation.addByPrefix("splash1", '$direction spr', 24, false);
-								animation.addByPrefix("splash2", '$direction spr', 24, false);
 							case "tails":
 								animation.addByPrefix("splash1", 'note splash $direction', 24, false);
-								animation.addByPrefix("splash2", 'note splash $direction', 24, false);
 							case "ylyl":
 								animation.addByPrefix("splash1", '$direction splash', 24, false);
-								animation.addByPrefix("splash2", '$direction splash', 24, false);
 							case 'doido':
 								animation.addByPrefix('splash1', '$direction splash', 24, false);
-								animation.addByPrefix('splash2', '$direction splash', 24, false);
+							case "fnfdon":
+								animation.addByPrefix('splash1', 'splash 1', 24, false);
 							case 'cd':
 								if(note.noteType == "beam")	{
 									animation.addByPrefix("splash1", 'THUNDER', 24, false);
-									animation.addByPrefix("splash2", 'THUNDER', 24, false);
 								}
 								else {
 									animation.addByPrefix("splash1", 'splash $direction 1', 24, false);
-									animation.addByPrefix("splash2", 'splash $direction 1', 24, false);
 								}
 							default:
-								animation.addByPrefix("splash1", '$direction splash 1', 24, false);
-								animation.addByPrefix("splash2", '$direction splash 2', 24, false);
+								animation.addByPrefix("splash", '$direction splash', 24, false);
 
 						}
 

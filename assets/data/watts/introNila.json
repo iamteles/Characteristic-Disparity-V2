@@ -1,0 +1,79 @@
+{
+    "ident": "buy",
+    "lines": [
+        [
+            "THAT WAS FUN, VERY FUN INDEED!",
+            "happy",
+            0.05,
+            "n",
+            "b"
+        ],
+        [
+            "Haha! Yeah it was!",
+            "happy",
+            0.05,"w"
+        ],
+        [
+            "Thanks for stopping by on such short notice Bells!",
+            "neutral",
+            0.05,"w"
+        ],
+        [
+            "Of courseeeeeeee :>",
+            "",
+            0.05,"b"
+        ],
+        [
+            "I should probably get going now though, dont wanna miss Bex's encore!",
+            "",
+            0.05,"b"
+        ],
+        [
+            "BYE AUNTIE BELLAAAAAA",
+            "happy",
+            0.05,"n"
+        ],
+        [
+            "See ya!",
+            "neutral",
+            0.05,"w"
+        ],
+        [
+            "Oo oo Mom 2... can I help you man the front desk? I bought some stuff for you to sell!",
+            "neutral",
+            0.05,"n","b",true
+        ],
+        [
+            "I brought some of my own inventions for you to sell!",
+            "neutral",
+            0.05,"n"
+        ],
+        [
+            "Awwww thanks honey! Of course you can!",
+            "happy",
+            0.05,"w"
+        ],
+        [
+            "YAY!!!!!",
+            "happy",
+            0.05,"n"
+        ],
+        [
+            "I'll be right here if ya need me then! You can ask me some stuff, if you feel like it!",
+            "neutral",
+            0.05,"n"
+        ],
+        [
+            "Don't forget to check out the new items in the shop, either.",
+            "neutral",
+            0.05,"w"
+        ],
+        [
+            "* Buy\n* Talk\n* Completion\n* Leave",
+            "neutral",
+            0.05,
+            "q","b",
+            ["buy", "talk", "comp"]
+        ]
+    ]
+}

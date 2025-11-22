@@ -1,6 +1,6 @@
 package states;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import data.GameTransition;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -9,7 +9,6 @@ import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import data.GameData.MusicBeatState;
 import gameObjects.menu.Alphabet;
-import gameObjects.android.FlxVirtualPad;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -18,7 +17,7 @@ using StringTools;
 
 class DebugState extends MusicBeatState
 {
-	var optionShit:Array<String> = ["menu", "video", "ending", "test"];
+	var optionShit:Array<String> = ["menu", "video", "ending"];
 	static var curSelected:Int = 0;
 
 	var optionGroup:FlxTypedGroup<Alphabet>;
@@ -31,7 +30,7 @@ class DebugState extends MusicBeatState
 		Main.setMouse(true);
 
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Debug Menu...", null);
+		DiscordIO.changePresence("In the Debug Menu", null);
 
 		var bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.fromRGB(80,80,80));
 		bg.screenCenter();
@@ -46,7 +45,7 @@ class DebugState extends MusicBeatState
 			item.align = CENTER;
 			item.text = optionShit[i].toUpperCase();
 			item.x = FlxG.width / 2;
-			item.y = 50 + ((item.height + 100) * i);
+			item.y = FlxMath.lerp(50, FlxG.height - item.height - 50, i / (optionShit.length - 1));
 			item.ID = i;
 			optionGroup.add(item);
 		}
@@ -68,53 +67,33 @@ class DebugState extends MusicBeatState
 			});
 		});
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(UP_DOWN, A_B_C);
-            add(virtualPad);
-        }
-
 		changeSelection();
 	}
-    var virtualPad:FlxVirtualPad;
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		var up:Bool = Controls.justPressed("UI_UP");
-        if(SaveData.data.get("Touch Controls"))
-            up = (Controls.justPressed("UI_UP") || virtualPad.buttonUp.justPressed);
-
-        var down:Bool = Controls.justPressed("UI_DOWN");
-        if(SaveData.data.get("Touch Controls"))
-            down = (Controls.justPressed("UI_DOWN") || virtualPad.buttonDown.justPressed);
-
-        var back:Bool = Controls.justPressed("BACK");
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed);
-
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-
-		var HAX:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            HAX = (Controls.justPressed("ACCEPT") || virtualPad.buttonC.justPressed);
-
-		if(up)
+		if(Controls.justPressed("UI_UP"))
 			changeSelection(-1);
-		if(down)
+		if(Controls.justPressed("UI_DOWN"))
 			changeSelection(1);
 
-		if(HAX) { // INFINITE MONEY HAX
+		if(Controls.justPressed("BOTPLAY")) { // INFINITE MONEY HAX
 			SaveData.transaction(150);
 		}
 
-		if(accept)
+		if(Controls.justPressed("ACCEPT"))
 		{
 			switch(optionShit[curSelected])
 			{
+				case "bios menu":
+					Main.switchState(new states.cd.Bios());
 				case "test":
 					Main.switchState(new states.PlayState());
+				case "shop reset":
+					SaveData.progression.set("nila", false);
+					SaveData.progression.set("nilaentrance", false);
+					SaveData.save();
 				case "menu":
 					Main.switchState(new states.cd.MainMenu());
 				case "dialog":
@@ -123,12 +102,15 @@ class DebugState extends MusicBeatState
 					Main.switchState(new states.cd.Ending());
 				case "kiss":
 					Main.switchState(new states.cd.Kissing());
+				case "swat":
+					Main.switchState(new states.cd.Swat());
 				case "intimidating":
 					Main.switchState(new states.cd.fault.MainMenu());
 				case "video":
+					states.VideoState.name = "divergence";
 					Main.switchState(new states.VideoState());
 				case "shop":
-					Main.switchState(new states.ShopState.LoadShopState());
+					Main.switchState(new states.ShopState());
 				case "transition":
 					openSubState(new GameTransition(false));
 				case "options":

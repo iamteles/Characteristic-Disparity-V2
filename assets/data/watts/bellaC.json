@@ -1,0 +1,50 @@
+{
+    "ident": "bellasel",
+    "saveIdent": "bellaC",
+    "lines": [
+        [
+            "That’s a tough one...",
+            "sad",
+            0.05
+        ],
+        [
+            "If I had to choose it would probably be the time she set up a spa and massage.",
+            "neutral",
+            0.05
+        ],
+        [
+            "She’s surprisingly good at massages!",
+            "happy",
+            0.05
+        ],
+        [
+            "Even though she keeps them hidden, her hands they are VERY soft.",
+            "neutral",
+            0.05
+        ],
+        [
+            "The best part was, though, I didn’t have to pay!",
+            "happy",
+            0.05
+        ],
+        [
+            "I’d kill to do that with her again!",
+            "neutral",
+            0.05
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","n",
+            ["bellaA", "bellaB", "bellaC", "bellaD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bellaA", "bellaB", "bellaC"]
+        ]
+    ]
+}

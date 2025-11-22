@@ -5,6 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import data.GameData.MusicBeatState;
+import data.Discord.DiscordIO;
 import states.cd.*;
 
 class Init extends MusicBeatState
@@ -13,6 +14,7 @@ class Init extends MusicBeatState
 	{
 		super.create();
 		SaveData.init();
+		DiscordIO.check();
 				
 		FlxG.fixedTimestep = false;
 		//FlxG.mouse.useSystemCursor = true;
@@ -31,12 +33,10 @@ class Init extends MusicBeatState
 		Main.randomizeTitle();
 
 		Main.skipTrans = true;
+		//Main.switchState(new Swat());
+		
 		if(SaveData.progression.get("firstboot"))
-			#if mobile
-			Main.switchState(new TitleScreen());
-			#else
 			Main.switchState(new Intro.IntroLoading());
-			#end
 		else
 			Main.switchState(new Intro.Warning());
 	}

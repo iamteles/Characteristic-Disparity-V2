@@ -15,15 +15,36 @@ class HealthIcon extends FlxSprite
 	public var curIcon:String = "";
 	public var maxFrames:Int = 0;
 
-	public function setIcon(curIcon:String = "face", isPlayer:Bool = false):HealthIcon
+	public function setIcon(curIcon:String = "face", isPlayer:Bool = false, song:String = ""):HealthIcon
 	{
 		this.curIcon = curIcon;
+
+		if(curIcon == "center" && song != "") {
+			var centeric:String = "heart";
+			switch(song.toLowerCase()) { //i don't remember!
+				case 'panic-attack' | 'convergence' | 'desertion':
+					centeric = 'bolt';
+				case 'irritation' | 'conservation' | 'commotion':
+					centeric = 'cent';
+				case 'ripple' | 'customer-service':
+					centeric = 'disk';
+				case 'kaboom':
+					centeric = "star";
+				case 'divergence-vip' | 'nefarious-vip' | 'euphoria-vip':
+					centeric = "vip";
+
+			}
+			return setIcon(centeric, isPlayer);
+		}
 
 		if(curIcon == "watts" && isPlayer)
 			return setIcon("bex", isPlayer);
 
-		if(curIcon == "watts-alt" && isPlayer)
+		if((curIcon == "watts-alt" || curIcon == "nila") && isPlayer)
 			return setIcon("bella", isPlayer);
+
+		if(song == "commotion" && !isPlayer)
+			return setIcon("duoshop", isPlayer);
 
 		//trace("attempt icon " + curIcon);
 		if(!Paths.fileExists('images/icons/icon-${curIcon}.png'))
@@ -83,6 +104,7 @@ class HealthIcon extends FlxSprite
 		var colorMap:Map<String, FlxColor> = [
 			"face" 		=> 0xFFA1A1A1,
 			"watts" 		=> 0xFFe5e07f,
+			"duoshop" 		=> 0xFFe5e07f,
 			"bree" 		=> 0xFF7f7387,
 			"angry-bree" 		=> 0xFF7f7387,
 			"bella"		=> 0xffFFD6D6,
@@ -95,7 +117,8 @@ class HealthIcon extends FlxSprite
 			"drown" => 0xFF448499,
 			"wave" => 0xFFEE6D48,
 			"empitri" => 0xFFF1ABAB,
-			"duo2" => 0xFFF1ABAB
+			"duo2" => 0xFFF1ABAB,
+			"nila" => 0xFF66CC99
 		];
 
 		function loopMap()

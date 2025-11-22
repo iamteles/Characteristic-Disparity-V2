@@ -17,7 +17,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxSpriteButton;
@@ -39,7 +39,7 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import states.LoadSongState;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 
 #if !html5
 import sys.FileSystem;
@@ -99,7 +99,7 @@ class ChartingState extends MusicBeatState
 		Controls.setSoundKeys(true);
 		Main.setMouse(true);
 
-		DiscordClient.changePresence("Editing Chart: " + SONG.song.toUpperCase(), null);
+		DiscordIO.changePresence("Editing Chart: " + SONG.song.toUpperCase(), null);
 
 		// setting up the cameras
 		var camGame = new FlxCamera();
@@ -397,7 +397,7 @@ class ChartingState extends MusicBeatState
 			var daCrochet:Float = Conductor.calcStep(Conductor.bpm);
 			for(i in daNums[0]...daNums[1])
 			{
-				////trace('looped $i');
+				//trace('looped $i');
 				var section = getSection(i);
 				if(section.changeBPM)
 					daCrochet = Conductor.calcStep(section.bpm);
@@ -528,7 +528,7 @@ class ChartingState extends MusicBeatState
 			if(snapText != "none")
 				GRID_SNAP = Std.parseInt(snapText);
 
-			//trace('curSnap: ' + GRID_SNAP);
+			trace('curSnap: ' + GRID_SNAP);
 		});
 		snapDropDown.name = "dropdown_snap";
 		snapDropDown.selectedLabel = formatSnaps[allSnaps.indexOf(GRID_SNAP)];
@@ -833,7 +833,7 @@ class ChartingState extends MusicBeatState
 						swagNote.ID = 1;
 						if(allNoteTypes.contains(swagNote.noteType) && swagNote.noteType != "none")
 						{
-							////trace(swagNote.noteType);
+							//trace(swagNote.noteType);
 							var numTxt:String = Std.string(allNoteTypes.indexOf(swagNote.noteType));
 
 							var typeTxt = new FlxText(0,0,0,numTxt,16);
@@ -933,7 +933,7 @@ class ChartingState extends MusicBeatState
 		autosavetimer += elapsed;
 		if(autosavetimer >= 60 * 5)
 		{
-			//trace('autosaved');
+			trace('autosaved');
 			autosavetimer = 0;
 			ChartAutoSaveSubState.addSave(SONG, songDiff);
 		}
@@ -1013,7 +1013,7 @@ class ChartingState extends MusicBeatState
 					newNote[0] += FlxMath.remapToRange(selectSquare.y, 0, GRID_SIZE * GRID_ZOOM, 0, Conductor.stepCrochet);
 					newNote[1] = Math.floor((FlxG.mouse.x - mainGrid.x) / GRID_SIZE);
 
-					////trace(newNote);
+					//trace(newNote);
 					curSelectedNote = newNote;
 					updateCurNote();
 					getSection(curSection).sectionNotes.push(newNote);
@@ -1064,7 +1064,7 @@ class ChartingState extends MusicBeatState
 
 				reloadSection(curSection, false);
 				updateCurNote();
-				//trace(curSelectedNote[2]);
+				trace(curSelectedNote[2]);
 			}
 		}
 
@@ -1175,7 +1175,9 @@ class ChartingState extends MusicBeatState
 
 	function updateInfoTxt()
 	{
+		#if (flixel < "6.0.0")
 		infoTxt.graphic.dump();
+		#end
 		infoTxt.text = ""
 		+ "Time: " + Std.string(Math.floor(Conductor.songPos / 1000 * 100) / 100)
 		+ " // "   + Std.string(Math.floor(songLength		 / 1000 * 100) / 100)
@@ -1204,7 +1206,7 @@ class ChartGrid extends FlxGroup
 		this.zoom = zoom;
 
 		//if(i == 1)
-		//	//trace('sucessfully reloaded');
+		//	trace('sucessfully reloaded');
 
 		clear();
 		var GRID_SIZE = ChartingState.GRID_SIZE;

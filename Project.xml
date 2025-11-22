@@ -3,7 +3,7 @@
 
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Characteristic Disparity" file="CD" packageName="com.teles.cdv2" package="com.teles.cdv2" main="Main" version="2.0.0" company="teles" />
+	<app title="Characteristic Disparity+" file="CDplus" packageName="com.teles.cdplus" package="com.teles.cdplus" main="Main" version="2.5.0" company="teles" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -37,14 +37,15 @@
 
 	<!-- _____________________________ Custom Defines ___________________________ -->
 
-	<define name="DISCORD_RPC" if="desktop" unless="web || neko" />
+	<define name="DISCORD_RPC" if="cpp" unless="mobile" />
+	<define name="HXVLC_NO_SHARE_DIRECTORY" if="desktop || android" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
-	<haxelib name="flixel" />
+	<haxelib name="flixel" version="5.9.0" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-ui" />
-	<haxelib name="discord_rpc" if="DISCORD_RPC"/>
+	<haxelib name="hxdiscord_rpc" if="DISCORD_RPC" />
 	<!--<haxelib name="hxCodec"/>-->
 	<haxelib name="hxvlc"/>
 	<!--<haxelib name="FlxAnimate"/>-->

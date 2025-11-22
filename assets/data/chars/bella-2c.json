@@ -128,6 +128,10 @@
 		0,
 		0
 	],
+	"rating_position": [
+		-200,
+		200
+	],
 	"sing_duration": 6.1,
 	"scale": 1,
 	"note_colors": [-22, -50, 13]

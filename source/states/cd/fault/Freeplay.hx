@@ -2,7 +2,7 @@ package states.cd.fault;
 
 import gameObjects.Character;
 import flixel.tweens.misc.ShakeTween;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -15,7 +15,6 @@ import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.effects.FlxFlicker;
-import gameObjects.android.FlxVirtualPad;
 import data.Highscore;
 import data.Highscore.ScoreData;
 import data.GameData.MusicBeatSubState;
@@ -49,7 +48,7 @@ class Freeplay extends MusicBeatState
     {
         super.create();
 
-        DiscordClient.changePresence("your fault.", null);
+        DiscordIO.changePresence("your fault.", null);
         CoolUtil.playMusic("fault");
 
         Main.setMouse(false);
@@ -115,7 +114,7 @@ class Freeplay extends MusicBeatState
         scores.y = box.y + 64;
 		add(scores);
 
-        diff = new FlxText(0, 0, 0, "< FODASE >");
+        diff = new FlxText(0, 0, 0, "YOUR FAULT");
 		diff.setFormat(Main.gFont, 55, 0xFFFFFFFF, CENTER);
         diff.x = box.x + (box.width/2 - diff.width/2);
         diff.y = scores.y + 168;
@@ -129,13 +128,8 @@ class Freeplay extends MusicBeatState
         arrows.y = 637.2;
 		add(arrows);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_FULL, A_B);
-            add(virtualPad);
-        }
-
         changeSelection();
-        changeDiff();
+        //changeDiff();
 
         var vg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('vignette')); //like the???
 		vg.updateHitbox();
@@ -143,45 +137,21 @@ class Freeplay extends MusicBeatState
         vg.alpha = 0.8;
 		add(vg);
     }
-    var virtualPad:FlxVirtualPad;
+
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(left)
+        if(Controls.justPressed("UI_LEFT"))
             changeSelection(-1);
-        if(right)
+        if(Controls.justPressed("UI_RIGHT"))
             changeSelection(1);
         //if(left)
 		//	changeDiff(-1);
 		//if(right)
 		//	changeDiff(1);
 
-        if(back)
+        if(Controls.justPressed("BACK"))
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.fault.MainMenu());
@@ -207,15 +177,15 @@ class Freeplay extends MusicBeatState
                 item.alpha = 0;
         }
 
-        if(accept && focused)
+        if(Controls.justPressed("ACCEPT") && focused)
         {
             try
             {
                 selected = true;
                 var diff = CoolUtil.getDiffs()[curDiff];
         
-                ////trace('$diff');
-                ////trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
+                //trace('$diff');
+                //trace('songs/${songList[curSelected][0]}/${songList[curSelected][0]}-${diff}');
                 
                 PlayState.playList = [];
                 PlayState.SONG = SongData.loadFromJson(songs[curSelected][0], diff);
@@ -270,17 +240,6 @@ class Freeplay extends MusicBeatState
         if(bgTween != null) bgTween.cancel();
 		bgTween = FlxTween.color(bg, 0.4, bg.color, songs[curSelected][2]);
 
-        updateScoreCount();
-    }
-
-    public function changeDiff(change:Int = 0)
-    {
-        curDiff += change;
-        curDiff = FlxMath.wrap(curDiff, 0, CoolUtil.getDiffs().length - 1);
-
-        diff.text = CoolUtil.getDiffs()[curDiff].toUpperCase();
-        diff.x = box.x + (box.width/2 - diff.width/2);
-        
         updateScoreCount();
     }
 

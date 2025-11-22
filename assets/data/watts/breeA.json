@@ -1,0 +1,34 @@
+{
+    "ident": "breesel",
+    "saveIdent": "breeA",
+    "lines": [
+        [
+            "...",
+            "confused",
+            0.05
+        ],
+        [
+            "Let's not get into that.",
+            "confused",
+            0.05
+        ],
+        [
+            "All I know is that, for lack of a better term, she’s a bitch.",
+            "confused",
+            0.05
+        ],
+        [
+            "Anyone who picks a fight with my friends is an ass.",
+            "confused",
+            0.05
+        ],
+        [
+            "* Ask Watts about her.\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q",
+            "b",
+            ["breeA", "breeB"]
+        ]
+    ]
+}

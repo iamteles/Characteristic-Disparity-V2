@@ -1,0 +1,33 @@
+{
+    "characters": ["cute", "evil"],
+    "background": "retro",
+    "finisher": "divergence-old",
+    "song": "freeplay",
+    "lines": [
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "WOW THAT WAS AMAZING :OOOOOOO"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "...thanks?"
+        },
+        {
+            "character": "left",
+            "frame": "neutral",
+            "text": "Can we please do one more?? :33333"
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "..."
+        },
+        {
+            "character": "right",
+            "frame": "neutral",
+            "text": "fine."
+        }
+    ]
+}

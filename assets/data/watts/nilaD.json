@@ -1,0 +1,49 @@
+{
+    "ident": "nilasel",
+    "saveIdent": "nilaD",
+    "lines": [
+        [
+            "Nah.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "I like my home, it's cozy.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Only way I'd go anywhere is with Mom 2.",
+            "neutral",
+            0.05,
+            "n"
+        ],
+        [
+            "Oh but y'know I do wanna see that Pantheon place!",
+            "happy",
+            0.05,
+            "n"
+        ],
+        [
+            "Too bad it only comes round once of couple months... and its so high up...",
+            "sad",
+            0.05,
+            "n"
+        ],
+        [
+            "Whatever. I'm sure literal death gods can go without seeing me and my excellence.. hmph.",
+            "angry",
+            0.05,
+            "n"
+        ],
+        [
+            "* What do you do?\n* What do you think of Watts?\n* What do you wanna be when you grow up?\n* Do you like to travel?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","b",
+            ["nilaA", "nilaB", "nilaC", "nilaD"]
+        ]
+    ]
+}

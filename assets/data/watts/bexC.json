@@ -1,0 +1,45 @@
+{
+    "ident": "bexsel",
+    "saveIdent": "bexC",
+    "lines": [
+        [
+            "That’s easy!",
+            "happy",
+            0.05
+        ],
+        [
+            "One day Bex and I were hanging out with our friend, Sam, on a hill.",
+            "neutral",
+            0.05
+        ],
+        [
+            "Sam did an impressive ass backflip and Bex tried to show her up.",
+            "neutral",
+            0.05
+        ],
+        [
+            "But she fell on her side and rolled down the hill.",
+            "happy",
+            0.05
+        ],
+        [
+            "I mean it wasn’t funny for her but Sam and I got a good laugh out of it!",
+            "confused",
+            0.05
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Ask Nila about her.\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","n",
+            ["bexA", "bexB", "bexC", "bexD"]
+        ],
+        [
+            "* How do you know her?\n* How close are you two?\n* What's your favorite memory with her?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","w",
+            ["bexA", "bexB", "bexC"]
+        ]
+    ]
+}

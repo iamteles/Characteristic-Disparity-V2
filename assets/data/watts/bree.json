@@ -1,5 +1,6 @@
 {
     "ident": "sel",
+    "saveIdent": "breeA",
     "lines": [
         [
             "...",
@@ -7,7 +8,7 @@
             0.05
         ],
         [
-            "Lets not get into that.",
+            "Let's not get into that.",
             "confused",
             0.05
         ],
@@ -22,9 +23,12 @@
             0.05
         ],
         [
-            "A. Tell me about Bella.\n* B. Tell me about Bex.\n* C. Tell me about Bree.\n* D. Tell me about yourself.",
+            "* Tell me about Bella.\n* Tell me about Bex.\n* Tell me about Bree.\n* Tell me about yourself.\n* Go Back.",
             "neutral",
-            0.05
+            0.05,
+            "q",
+            "b",
+            ["bellaW", "bexW", "breeA", "wattsW"]
         ]
     ]
 }

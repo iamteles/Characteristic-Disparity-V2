@@ -60,7 +60,7 @@ class Alphabet extends FlxSpriteGroup
 				continue;
 			}
 
-			////trace('da letter ' + i);
+			//trace('da letter ' + i);
 			if(daLetter == " ") 
 			{
 				lastWidth += 35;
@@ -205,7 +205,7 @@ class AlphaLetter extends FlxSprite
 
 	public function makeArrow(key:String)
 	{
-		////trace('why $key');
+		//trace('why $key');
 		switch(key.toLowerCase())
 		{
 			case "left": addAnim("arrowL", "arrow left");

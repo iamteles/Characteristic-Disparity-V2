@@ -1,0 +1,12 @@
+{
+    "ident": "buy",
+    "lines": [
+        [
+            "* Buy\n* Talk\n* Completion\n* Leave",
+            "neutral",
+            0.05,
+            "q","b",
+            ["buy", "talk", "comp"]
+        ]
+    ]
+}

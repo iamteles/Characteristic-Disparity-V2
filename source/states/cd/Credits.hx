@@ -1,6 +1,6 @@
 package states.cd;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -9,7 +9,6 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import data.GameData.MusicBeatState;
 import flixel.tweens.FlxTween;
-import gameObjects.android.FlxVirtualPad;
 import data.GameData.MusicBeatSubState;
 import flixel.input.keyboard.FlxKey;
 
@@ -29,27 +28,28 @@ class Credits extends MusicBeatState
 
 	static var curSelected:Int = 0;
     var list:Array<Array<String>> = [
-        ["Coco Puffs", "coco", "@file_corruption", "Artist\nComposer\nCharter", "Eat the brown part of this banana.", "https://twitter.com/file_corruption"],
-        ["teles", "starry", "@telesfnf", "Coder\nComposer", "i passed out like 3 times but your cake is ready :3", "https://www.youtube.com/@telesfnf/"],
-        ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://twitter.com/CharaWhyy"],
-        ["DiamondDiglett", "diamond", "@DiamonDiglett42", "Charter", "Do you ever just sit back", "https://twitter.com/DiamonDiglett42"],
-        ["YaBoiJustin", "justin", "@YaBoiJustinGG", "Composer", "welcome back king of pop <3", "https://twitter.com/YaBoiJustinGG"],
-        //["Leebert", "leebert", "@Bruh_Leebert", "Composer", "i'm making dubstep cus i'm depressed", "https://twitter.com/Bruh_Leebert"],
+        ["mochoco", "coco", "@mochocofrappe", "Artist\nComposer\nCharter", "LIGHT PUNCH, MEDIUM PUNCH, LIGHT KICK, HEAVY PUNCH", "https://twitter.com/mochocofrappe"],
+        ["teles", "nest", "@telesfnf", 'Coder\nComposer\nCharter\n"Artist"', "Yup, for 298 yen.", "https://www.youtube.com/@telesfnf/"],
+        ["CharaWhy", "chara", "@CharaWhyy", "Composer\nSFX", "Ill Bree your freakazoid, come on and wind me up", "https://charawhy.carrd.co/"],
+        ["Diamond", "diamond", "@It_Just_Diamond", "Charter", "Do you ever just sit back", "https://twitter.com/It_Just_Diamond"],
+        ["YaBoiJustin", "justin", "@YaBoiJustinGG", "Composer", "welcome back king of pop v2", "https://twitter.com/YaBoiJustinGG"],
+        ["Ruevoid", "shaya", "@Ruevoid", "Composer", "luigi house… but it mansion", "https://m.youtube.com/channel/UCZQHtSkBuWdPWx5fOOEtKNg"],
         ["HighPoweredKeyz", "hpk", "@HighPoweredKeyz", "Composer", "Stay kind, stay creative, and stay powerful!", "https://www.youtube.com/@HighPoweredKeyz"],
         ["Jospi", "jospi", "@jospi_music", "Composer", "boo", "https://twitter.com/jospi_music"],
         ["Linguini", "linguini", "@linguini7294", "Animation Helper", "make baby daisy meta again mario kart eight", "https://www.youtube.com/@linguini7294"],
-        ["GeefAnon", "dalilah", "N/A", "Art Help", "When the beat drops I'm going to fucking kill myself", "https://www.google.com"],
+        ["PastelDalilah", "dalilah", "@PastelDalilah", "Art Help", "TIS THE SEASON TO GET NEKIT", "https://x.com/PastelDalilah"],
         ["FiveKimz", "kim", "@FiveKimz", "Charter", "hej", "https://twitter.com/FiveKimz"],
-        ["Sandy Can", "sandy-can", "@msparadoxspace", "Voice Acting", "Voices: Spicy", "https://twitter.com/msparadoxspace"],
+        ["DiogoTV", "diogo", "@DiogoTVV", "Coding Help\nDoido Engine", "Happy Birthday Ellysson", "https://x.com/DiogoTVV"],
+        ["Annie Stars", "annie", "@annieStarsMC", "Voice Acting", "Voices: Bree", "https://x.com/annieStarsMC"],
+        ["Sandy Can", "sandy-can", "@SandyCanVO", "Voice Acting", "Voices: Spicy", "https://twitter.com/SandyCanVO"],
         ["Special Thanks", "special", "Lots'a people!", "Special Thanks", "Press ACCEPT to read Special Thanks!", "SPECIALTHANKS"],
     ];
 
-    public static var virtualPad:FlxVirtualPad;
     override function create()
     {
         super.create();
 
-        DiscordClient.changePresence("In the Credits Menu...", null);
+        DiscordIO.changePresence("In the Credits", null);
         CoolUtil.playMusic("credits");
 
         Main.setMouse(false);
@@ -89,6 +89,8 @@ class Credits extends MusicBeatState
             var iconName = list[i][1];
             if(iconName == "diamond" && FlxG.random.bool(30))
                 iconName = "oh-dear-god";
+            else if(iconName == "nest" && FlxG.random.bool(10))
+                iconName = "starry";
 
             var icon = new FlxSprite().loadGraphic(Paths.image('menu/credits/icons/' + iconName));
             icon.scale.set(1.7,1.7);
@@ -151,11 +153,6 @@ class Credits extends MusicBeatState
         add(arrowL);
 		add(arrowR);
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(LEFT_RIGHT, A_B);
-            add(virtualPad);
-        }
-
         changeSelection(0);
     }
 
@@ -193,35 +190,13 @@ class Credits extends MusicBeatState
             }
         }
 
-        var left:Bool = Controls.justPressed("UI_LEFT") || (FlxG.mouse.wheel > 0);
-        if(SaveData.data.get("Touch Controls"))
-            left = (Controls.justPressed("UI_LEFT") || virtualPad.buttonLeft.justPressed || (FlxG.mouse.wheel > 0));
-
-        var right:Bool = Controls.justPressed("UI_RIGHT") || (FlxG.mouse.wheel < 0);
-        if(SaveData.data.get("Touch Controls"))
-            right = (Controls.justPressed("UI_RIGHT") || virtualPad.buttonRight.justPressed || (FlxG.mouse.wheel < 0));
-
-        #if mobile
-        var accept:Bool = Controls.justPressed("ACCEPT");
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed);
-        #else
-        var accept:Bool = Controls.justPressed("ACCEPT") || FlxG.mouse.justPressed;
-        if(SaveData.data.get("Touch Controls"))
-            accept = (Controls.justPressed("ACCEPT") || virtualPad.buttonA.justPressed || FlxG.mouse.justPressed);
-        #end
-
-        var back:Bool = Controls.justPressed("BACK") || FlxG.mouse.justPressedRight;
-        if(SaveData.data.get("Touch Controls"))
-            back = (Controls.justPressed("BACK") || virtualPad.buttonB.justPressed) || FlxG.mouse.justPressedRight;
-
-        if(back)
+        if(Controls.justPressed("BACK"))
         {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
         }
 
-        if(accept && focused) {
+        if(Controls.justPressed("ACCEPT") && focused) {
             switch(list[curSelected][5])
             {
                 case "SPECIALTHANKS":
@@ -231,9 +206,9 @@ class Credits extends MusicBeatState
             }
         }
 
-		if(left)
+		if(Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(right)
+		if(Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
         if(Controls.pressed("UI_LEFT"))
@@ -298,7 +273,7 @@ class SpecialThanks extends MusicBeatSubState
         var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
 
-        var popUpTxt = new FlxText(0,0,0,"> Special Thanks <\n\nDiogoTV - Creator of Doido Engine\n\nPlaytesters\nBepixel, Kal, DiogoTV, Leozito\n\nTeam Shatterdisk\nParallax, Whisper, Shaya, Astro\n\nDusterBuster and the rest of Team TBD\nTurtle Pals Tapes\nThe Funkin Crew\n\nGuest Cameos\nAntonyR, YairLK7, LukasP, The Neko No Ni Dansu Team, Top 10 Portugal\n\nYou and everyone who supported us through the development!");
+        var popUpTxt = new FlxText(0,0,0,"> Special Thanks <\n\nPlaytesters\nBepixel, Kal, Leozito\n\nTeam Shatterdisk\nParallax, Astro, Glip Glop\n\nDusterBuster, Drazically and the rest of Team TBD\nTurtle Pals Tapes\nThe Funkin Crew\n\nGuest Cameos\nAntonyR, YairLK7, LukasP, Neko No Ni Dansu, Top 10 Portugal\n\nYou and everyone who supported us through the development!");
 		popUpTxt.setFormat(Main.gFont, 37, 0xFFFFFFFF, CENTER);
 		popUpTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.5);
 		popUpTxt.screenCenter();

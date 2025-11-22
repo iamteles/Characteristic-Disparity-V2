@@ -21,7 +21,7 @@ class HudClass extends FlxGroup
 	// health bar
 	public var healthBarBG:FlxSprite;
 	public var healthBar:FlxBar;
-	public var beamBar:FlxSprite;
+	public var timeBar:FlxSprite;
 	var smoothBar:Bool = true;
 
 	// icon stuff
@@ -37,6 +37,7 @@ class HudClass extends FlxGroup
 	var badScoreTxt:FlxText;
 
 	var simpleInfo:Bool = false;
+	var retroStyle:Bool = true;
 	var alignment:FlxTextAlign = CENTER;
 
 	public function new()
@@ -44,21 +45,32 @@ class HudClass extends FlxGroup
 		super();
 
 		simpleInfo = (PlayState.SONG.song.toLowerCase() == 'heartpounder');
+		retroStyle = (PlayState.SONG.song.endsWith("-old") || PlayState.SONG.song.toLowerCase() == 'exotic' || SaveData.skin() == "base");
 		if(simpleInfo)
 			alignment = LEFT;
 
-		healthBarBG = new FlxSprite().loadGraphic(Paths.image("hud/base/healthBar"));
+		healthBarBG = new FlxSprite().loadGraphic(Paths.image("hud/base/healthBar" + (retroStyle ? "Border" : "")));
 		healthBarBG.visible = !simpleInfo;
 
 		if(PlayState.SONG.song.toLowerCase() == 'nefarious' || PlayState.SONG.song.toLowerCase() == 'divergence' || PlayState.invertedCharacters || PlayState.SONG.song.toLowerCase() == 'cupid' || PlayState.SONG.song.toLowerCase() == 'euphoria-vip')
 			invertedIcons = true;
 
-		healthBar = new FlxBar(
-			0, 0,
-			RIGHT_TO_LEFT,
-			Math.floor(healthBarBG.width) - 140,
-			Math.floor(healthBarBG.height) - 20
-		);
+		if(retroStyle) {
+			healthBar = new FlxBar(
+				0, 0,
+				RIGHT_TO_LEFT,
+				Math.floor(healthBarBG.width) - 8,
+				Math.floor(healthBarBG.height) - 8
+			);
+		}
+		else {
+			healthBar = new FlxBar(
+				0, 0,
+				RIGHT_TO_LEFT,
+				Math.floor(healthBarBG.width) - 140,
+				Math.floor(healthBarBG.height) - 20
+			);
+		}
 		healthBar.createFilledBar(0xFFFF0000, 0xFF00FF00);
 		healthBar.updateBar();
 		healthBar.visible = !simpleInfo;
@@ -66,55 +78,44 @@ class HudClass extends FlxGroup
 		add(healthBar);
 		add(healthBarBG);
 
-		smoothBar = SaveData.data.get('Smooth Healthbar');
+		smoothBar = true;
 
 		iconDad = new HealthIcon();
-		iconDad.setIcon(PlayState.SONG.player2, false);
+		iconDad.setIcon(PlayState.SONG.player2, false, PlayState.daSong);
 		iconDad.visible = !simpleInfo;
 		iconDad.ID = 0;
 		add(iconDad);
 
 		iconBf = new HealthIcon();
-		iconBf.setIcon(PlayState.SONG.player1, true);
+		iconBf.setIcon(PlayState.SONG.player1, true, PlayState.daSong);
 		iconBf.ID = 1;
 		iconBf.visible = !simpleInfo;
 		add(iconBf);
 
-		var centeric:String = "heart";
-
 		iconCenter = new HealthIcon();
-		switch(PlayState.daSong) {
-			case 'panic-attack' | 'convergence' | 'desertion':
-				centeric = 'bolt';
-			case 'irritation' | 'conservation':
-				centeric = 'cent';
-			case 'ripple' | 'customer-service':
-				centeric = 'disk';
-			case 'kaboom':
-				centeric = "star";
-			case 'divergence-vip' | 'nefarious-vip' | 'euphoria-vip':
-				centeric = "vip";
-
-		}
-		iconCenter.setIcon(centeric, false);
-		iconCenter.visible = !simpleInfo;
+		iconCenter.setIcon("center", false, PlayState.daSong);
+		iconCenter.visible = !(simpleInfo || retroStyle);
 		//iconCenter.ID = 0;
 		add(iconCenter);
 
 		changeIcon(0, iconDad.curIcon);
 
 		var size:Int = 20;
+		var font = Main.gFont;
 		if(simpleInfo)
 			size = 32;
+		else if(retroStyle) {
+			font = Paths.font("phantommuff.ttf");
+		}
 		infoTxt = new FlxText(0, 0, 0, "hi there! i am using whatsapp");
-		infoTxt.setFormat(Main.gFont, size, 0xFFFFFFFF, alignment);
+		infoTxt.setFormat(font, size, 0xFFFFFFFF, alignment);
 		infoTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		add(infoTxt);
 		
 		timeTxt = new FlxText(0, 0, 0, "nuts / balls even");
 		timeTxt.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
 		timeTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
-		timeTxt.visible = SaveData.data.get('Song Timer');
+		timeTxt.visible = !retroStyle;
 		add(timeTxt);
 
 		badScoreTxt = new FlxText(0,0,0,"SAVING SCORES DISABLED");
@@ -130,11 +131,19 @@ class HudClass extends FlxGroup
 		botplayTxt.visible = false;
 		add(botplayTxt);
 
+		if(retroStyle) {
+			timeBar = new FlxSprite().makeGraphic(FlxG.width, 20, 0xFFFFFFFF);
+			timeBar.y = FlxG.height - timeBar.height + 10;
+			timeBar.scale.x = 0;
+			add(timeBar);
+		}
+
 		updateHitbox();
 		health = PlayState.health;
 	}
 
 	var separator:String = " | ";
+	var breaks:String = "Breaks";
 
 	public function updateText()
 	{
@@ -143,10 +152,13 @@ class HudClass extends FlxGroup
 		if(simpleInfo) {
 			separator = "\n";
 		}
+		else if(retroStyle) {
+			breaks = "Misses";
+		}
 
 		infoTxt.text += 			'Score: '		+ Timings.score;
 		infoTxt.text += separator + 'Accuracy: '	+ Timings.accuracy + "%" + ' [${Timings.getRank()}]';
-		infoTxt.text += separator + 'Breaks: '		+ Timings.misses;
+		infoTxt.text += separator + breaks + ': '		+ Timings.misses;
 
 		if(simpleInfo) {
 			infoTxt.x =  160 + 25 + (healthBarBG.x - healthBarBG.width / 2);
@@ -155,42 +167,55 @@ class HudClass extends FlxGroup
 			else
 				infoTxt.y = 16;
 		}
+		else if(retroStyle) {
+			infoTxt.screenCenter(X);
+			infoTxt.y = (!SaveData.data.get("Downscroll") ? 5 : FlxG.height - infoTxt.height - 5);
+			if(SaveData.data.get("Downscroll")) infoTxt.y -= 4;
+		}
 		else {
 			infoTxt.screenCenter(X);
 			infoTxt.y = healthBarBG.y + healthBarBG.height + 4;
 		}
 	}
 	
-	public function updateTimeTxt()
+	public function updateTimeTxt(?elapsed:Float)
 	{
 		var displayedTime:Float = Conductor.songPos;
+		if(Conductor.songPos < 0)
+			displayedTime = 0;
 		if(Conductor.songPos > PlayState.songLength)
 			displayedTime = PlayState.songLength;
 
-		timeTxt.text
-		= CoolUtil.posToTimer(displayedTime)
-		+ ' / '
-		+ CoolUtil.posToTimer(PlayState.songLength);
-		timeTxt.screenCenter(X);
+		if(retroStyle && elapsed != null) {
+			timeBar.scale.x = FlxMath.lerp(timeBar.scale.x, (displayedTime / PlayState.songLength), elapsed * 6);
+			timeBar.updateHitbox();
+		}
+		else {
+			timeTxt.text
+			= CoolUtil.posToTimer(displayedTime)
+			+ ' / '
+			+ CoolUtil.posToTimer(PlayState.songLength);
+			timeTxt.screenCenter(X);
+		}
 	}
 
 	public function updateHitbox(downscroll:Bool = false)
 	{
 		healthBarBG.screenCenter(X);
-		healthBarBG.y = (downscroll ? 50 : FlxG.height - healthBarBG.height - 50);
 
-		if(beamBar != null) {
-			beamBar.x = (healthBarBG.x + (healthBarBG.width/2) - (beamBar.width/2));
-			beamBar.y = (healthBarBG.y + (healthBarBG.height/2) - (beamBar.height/2)) + 10;
+		if(retroStyle) {
+			healthBarBG.y = (downscroll ? (0.11*FlxG.height) : (FlxG.height*0.89));
+			healthBar.setPosition(healthBarBG.x + 4, healthBarBG.y + 4);
+		}
+		else {
+			healthBarBG.y = (downscroll ? 50 : FlxG.height - healthBarBG.height - 50);
+			healthBar.setPosition(healthBarBG.x + 73, healthBarBG.y + 18);
 		}
 
-		healthBar.setPosition(healthBarBG.x + 73, healthBarBG.y + 18);
 		updateIconPos();
-
 		updateText();
 		
 		badScoreTxt.y = infoTxt.y + infoTxt.height;
-
 		botplayTxt.screenCenter(X);
 		botplayTxt.y = (!downscroll ? 40 + 50 : FlxG.height - 40 - 50);
 		updateTimeTxt();
@@ -209,17 +234,6 @@ class HudClass extends FlxGroup
 			iconDad,
 			iconCenter
 		];
-
-		if(beamBar != null) {
-			var beamAlpha = hudAlpha;
-			if(beamAlpha > 0.4)
-				beamAlpha = 0.4;
-
-			if(tweenTime <= 0)
-				beamBar.alpha = beamAlpha;
-			else
-				FlxTween.tween(beamBar, {alpha: beamAlpha}, tweenTime, {ease: FlxEase.cubeOut});
-		}
 
 		for(item in allItems)
 		{
@@ -248,8 +262,11 @@ class HudClass extends FlxGroup
 			botplayTxt.alpha = 0.5 + Math.sin(botplaySin) * 0.8;
 		}
 
+		if(retroStyle)
+			healthBarBG.angle = healthBar.angle;
+
 		updateIconPos();
-		updateTimeTxt();
+		updateTimeTxt(elapsed);
 	}
 
 	public function updateIconPos()
@@ -261,6 +278,10 @@ class HudClass extends FlxGroup
 		var barX:Float = (healthBar.x + (healthBar.width * (formatHealth) / 2));
 		var barY:Float = (healthBarBG.y + healthBarBG.height / 2);
 
+		if(retroStyle) {
+			barX = (healthBarBG.x + (healthBarBG.width * (formatHealth) / 2));
+		}
+
 		for(icon in [iconDad, iconBf, iconCenter])
 		{
 			icon.scale.set(
@@ -269,12 +290,29 @@ class HudClass extends FlxGroup
 			);
 			icon.updateHitbox();
 
-			iconDad.x = (healthBarBG.x - (iconDad.width/2)) - 25;
-			iconBf.y = (healthBarBG.y - iconBf.height/ 2) + (healthBarBG.height/2);
-			iconBf.x = ((healthBarBG.x + healthBarBG.width) - (iconBf.width/2)) + 25;
-			iconDad.y = (healthBarBG.y - iconDad.height/ 2) + (healthBarBG.height/2);
-			iconCenter.y = (healthBarBG.y - iconBf.height/ 2) + (healthBarBG.height/2);
-			iconCenter.x = barX - (iconCenter.width/2);
+			if(retroStyle) {
+				icon.y = barY - icon.height / 2 - 12;
+				icon.x = barX;
+
+				if(icon == iconDad)
+					icon.x -= icon.width - 24;
+				else
+					icon.x -= 24;
+			}
+			else {
+				if(icon == iconCenter) {
+					icon.y = (healthBarBG.y - iconBf.height/ 2) + (healthBarBG.height/2);
+					icon.x = barX - (icon.width/2);
+				}
+				else if(icon == iconDad) {
+					icon.x = (healthBarBG.x - (icon.width/2)) - 25;
+					icon.y = (healthBarBG.y - icon.height/ 2) + (healthBarBG.height/2);
+				}
+				else {
+					icon.y = (healthBarBG.y - icon.height/ 2) + (healthBarBG.height/2);
+					icon.x = ((healthBarBG.x + healthBarBG.width) - (icon.width/2)) + 25;
+				}
+			}
 
 			if(invertedIcons) {
 				if(icon.isPlayer)
@@ -298,7 +336,7 @@ class HudClass extends FlxGroup
 		for(icon in [iconDad, iconBf])
 		{
 			if(icon.ID == iconID)
-				icon.setIcon(newIcon, icon.isPlayer);
+				icon.setIcon(newIcon, icon.isPlayer, PlayState.daSong);
 		}
 		updateIconPos();
 
@@ -318,6 +356,9 @@ class HudClass extends FlxGroup
 		healthBar.updateBar();
 	}
 
+	var angleshit:Int = 2;
+	var anglevar:Int = 2;
+	var turn:FlxTween;
 	public function beatHit(curBeat:Int = 0)
 	{
 		var iconspeed:Int = 2;
@@ -331,6 +372,19 @@ class HudClass extends FlxGroup
 				icon.updateHitbox();
 				updateIconPos();
 			}
+		}
+
+		if(retroStyle) {
+			if(curBeat % 2 == 0)
+				angleshit = anglevar;
+			else
+				angleshit = -anglevar;
+
+			if (turn != null)
+				turn.cancel();
+
+			healthBar.angle = angleshit*0.05;
+			turn = FlxTween.tween(healthBar, {angle: angleshit}, Conductor.stepCrochet*0.0005, {ease: FlxEase.circOut});
 		}
 	}
 }

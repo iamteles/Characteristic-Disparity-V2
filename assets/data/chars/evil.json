@@ -114,8 +114,12 @@
 		79
 	],
 	"camera_position": [
-		-250,
-		-10
+		-100,
+		-80
+	],
+	"rating_position": [
+		-60,
+		100
 	],
 	"sing_duration": 4,
 	"scale": 1,

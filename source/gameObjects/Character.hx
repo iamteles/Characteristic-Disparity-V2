@@ -96,7 +96,7 @@ class Character extends FlxSprite
 		}
 		catch (e)
 		{
-			//trace(e);
+			trace(e);
 			charData = haxe.Json.parse(Paths.getContent(('data/chars/' + "bella-2a" + '.json')).trim());
 		}
 
@@ -143,7 +143,7 @@ class Character extends FlxSprite
 
 		if(animation.getByName('danceLeft') != null && animation.getByName('danceRight') != null) {
 			quickDancer = true;
-			if(curChar == "bella-vip-slow" || curChar == "bex-vip-slow")
+			if(curChar == "bella-vip-slow" || curChar == "bex-vip-slow" || curChar == "bex-1" || curChar == "bex-1alt" || curChar == "bex-1e")
 				quickDancer = false;
 			idleAnims = ['danceLeft', 'danceRight'];
 		}
@@ -240,7 +240,7 @@ class Character extends FlxSprite
 		offset.x += scaleOffset.x;
 		offset.y += scaleOffset.y;
 
-		if(!hasMiss && isPlayer) {
+		if(!hasMiss) {
 			this.color = (!miss ? 0xFF070068 : 0xFFFFFFFF);
 		}
 	}

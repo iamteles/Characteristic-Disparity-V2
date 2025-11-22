@@ -11,13 +11,13 @@
         },
         {
             "character": "left",
-            "frame": "smug",
-            "text": "Hey where’d that confidence from earlier go"
+            "frame": "stun talk",
+            "text": "Hey, where’d that confidence from earlier go?"
         },
         {
             "character": "left",
-            "frame": "stun talk",
-            "text": "I cut your arm by the way, look right there"
+            "frame": "smug",
+            "text": "Thought you'd be more of a challenge, but it appears I reign supreme yet again."
         },
         {
             "character": "right",
@@ -42,17 +42,22 @@
         {
             "character": "left",
             "frame": "smug",
-            "text": "Bella Wright, so glad you could join us"
+            "text": "Bella Wright, so glad you could join us."
         },
         {
             "character": "center",
             "frame": "confused",
-            "text": "...did you hurt her"
+            "text": "...did you hurt her?"
         },
         {
             "character": "left",
-            "frame": "yap",
-            "text": "I kinda need you two to break up and she didn’t comply soooooo.."
+            "frame": "stunned",
+            "text": "Maybe I did, maybe i didnt."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "Would you like to find out?"
         },
         {
             "character": "right",
@@ -66,23 +71,48 @@
         },
         {
             "character": "left",
-            "frame": "annoyed",
-            "text": "Are you defying me as well?"
+            "frame": "stun talk",
+            "text": "Ooooh, blind confidence! Where have I seen THAT before!"
         },
         {
             "character": "center",
             "frame": "angry",
-            "text": "What I’m about to do is beat your ass for hurting my girlfriend."
+            "text": "Ooooh, an ass whopping! That's what im gonna give you."
         },
         {
-            "character": "center",
-            "frame": "annoyed",
-            "text": "Bex go sit and rest, I’ll take it from here."
+            "character": "left",
+            "frame": "stunned",
+            "text": "..."
         },
         {
             "character": "left",
             "frame": "smug",
-            "text": "Well then!"
+            "text": "You're funny."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "Who the hell even talks like that."
+        },
+        {
+            "character": "center",
+            "frame": "annoyed",
+            "text": "Bex. Go sit and rest, I’ll take it from here."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "I sense a god's presence again..."
+        },
+        {
+            "character": "left",
+            "frame": "annoyed",
+            "text": "This is what I was talking about. Humans shouldn't have this."
+        },
+        {
+            "character": "left",
+            "frame": "smug",
+            "text": "No matter. I'll have you dealt with in no time."
         }
     ]
 }

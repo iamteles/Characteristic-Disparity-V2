@@ -1,0 +1,12 @@
+{
+    "ident": "nilasel",
+    "lines": [
+        [
+            "* What do you do?\n* What do you think of Watts?\n* What do you wanna be when you grow up?\n* Do you like to travel?\n* Go Back.",
+            "neutral",
+            0.05,
+            "q","b",
+            ["nilaA", "nilaB", "nilaC", "nilaD"]
+        ]
+    ]
+}

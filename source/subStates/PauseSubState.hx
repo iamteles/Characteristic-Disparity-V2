@@ -8,13 +8,13 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import data.Conductor;
 import data.GameData.MusicBeatSubState;
 import gameObjects.menu.AlphabetMenu;
 import states.*;
-import gameObjects.android.FlxVirtualPad;
 import flixel.addons.display.FlxBackdrop;
+import data.Discord.DiscordIO;
 
 class PauseSubState extends MusicBeatSubState
 {
@@ -28,21 +28,24 @@ class PauseSubState extends MusicBeatSubState
 	var curSelected:Int = 0;
 
 	var pauseSong:FlxSound;
+	var playstate:PlayState;
 
 	var tiles:FlxBackdrop;
 	var buttons:FlxTypedGroup<FlxSprite>;
 	var left:FlxSprite;
 	var right:FlxSprite;
 	var bpButton:FlxSprite;
+	var pmButton:FlxSprite;
 	var skull:FlxSprite;
 	var deaths:FlxText;
 	public function new()
 	{
 		super();
+		DiscordIO.changePresence("Paused: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
+
+		playstate = PlayState.instance;
 		var banana = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
 		add(banana);
-
-		Main.setMouse(true);
 
 		banana.alpha = 0;
 		FlxTween.tween(banana, {alpha: 0.4}, 0.1);
@@ -80,7 +83,6 @@ class PauseSubState extends MusicBeatSubState
 
 			button.scale.set(0.65,0.65);
 			button.updateHitbox();
-
 
 			switch(index) {
 				case 0:
@@ -127,6 +129,18 @@ class PauseSubState extends MusicBeatSubState
 		bpButton.y = FlxG.height - bpButton.height - 20;
 		add(bpButton);
 
+		pmButton = new FlxSprite().loadGraphic(Paths.image("hud/pause/photo"));
+		pmButton.scale.set(0.7,0.7);
+		pmButton.updateHitbox();
+		pmButton.x = bpButton.x + (bpButton.width/2) - (pmButton.width/2);
+		pmButton.screenCenter(Y);
+		pmButton.y -= 14;
+		if(SaveData.shop.get("camera"))
+			pmButton.alpha = 1;
+		else
+			pmButton.alpha = 0;
+		add(pmButton);
+
 		skull = new FlxSprite().loadGraphic(Paths.image("icons/icon-face"));
 		skull.updateHitbox();
 		skull.x = 1004 + 138 - (skull.width/2);
@@ -140,6 +154,24 @@ class PauseSubState extends MusicBeatSubState
 		deaths.y = skull.y + skull.height;
 		add(deaths);
 
+		var botText = new FlxText(0, 0, 0, Std.string(["X"]));
+		botText.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
+		botText.setBorderStyle(OUTLINE, 0xFF000000, 2);
+		botText.x = bpButton.x + (bpButton.width/2) - (botText.width/2);
+		botText.y = bpButton.y - botText.height - 5;
+		add(botText);
+
+		var photoText = new FlxText(0, 0, 0, Std.string(["Y"]));
+		photoText.setFormat(Main.gFont, 32, 0xFFFFFFFF, CENTER);
+		photoText.setBorderStyle(OUTLINE, 0xFF000000, 2);
+		photoText.x = bpButton.x + (bpButton.width/2) - (photoText.width/2);
+		photoText.y = pmButton.y + pmButton.height - 5;
+		if(SaveData.shop.get("camera"))
+			photoText.alpha = 1;
+		else
+			photoText.alpha = 0;
+		add(photoText);
+
 		var grphic:FlxSprite;
 		grphic = new FlxSprite().loadGraphic(Paths.image("hud/pause/pause"));
 		grphic.scale.set(0.65,0.65);
@@ -149,14 +181,21 @@ class PauseSubState extends MusicBeatSubState
 		add(grphic);
 
 		changeSelection();
+		lastMouseX = FlxG.mouse.getScreenPosition(FlxG.cameras.list[FlxG.cameras.list.length - 1]).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.cameras.list[FlxG.cameras.list.length - 1]).y;
 	}
 
 	override function close()
 	{
 		Main.setMouse(false);
 		pauseSong.stop();
+		DiscordIO.changePresence("Playing: " + PlayState.SONG.song.toUpperCase().replace("-", " "), null);
 		super.close();
 	}
+
+	var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
 
 	override function update(elapsed:Float)
 	{
@@ -168,22 +207,18 @@ class PauseSubState extends MusicBeatSubState
 				cast(item, FlxBasic).cameras = [lastCam];
 		}
 
-		// remainders from the old pause menu
-		var up:Bool = Controls.justPressed("UI_UP") || Controls.justPressed("UI_LEFT");
-        var down:Bool = Controls.justPressed("UI_DOWN") || Controls.justPressed("UI_RIGHT");
-        var back:Bool = Controls.justPressed("BACK");
-        var accept:Bool = Controls.justPressed("ACCEPT");
-
-		if(up)
+		if(Controls.justPressed("UI_UP") || Controls.justPressed("UI_LEFT"))
 			changeSelection(-1);
-		if(down)
+		if(Controls.justPressed("UI_DOWN") || Controls.justPressed("UI_RIGHT"))
 			changeSelection(1);
 
-		if(accept)
+		if(Controls.justPressed("ACCEPT"))
 			select(curSelected);
 
 		for(item in buttons) {
-			if(CoolUtil.mouseOverlap(item, lastCam)) {
+			if(CoolUtil.mouseOverlap(item, lastCam) && usingMouse) {
+				if(curSelected != item.ID)
+					changeSelection(0, item.ID);
 				if(FlxG.mouse.justPressed && focused) {
 					select(item.ID);
 				}
@@ -196,13 +231,25 @@ class PauseSubState extends MusicBeatSubState
 			}
 		}
 
+		if(CoolUtil.mouseOverlap(pmButton, lastCam)) {
+			if(FlxG.mouse.justPressed && focused) {
+				photo();
+			}
+		}
+
+		if(Controls.justPressed("BOTPLAY"))
+			botplay();
+
+		if(Controls.justPressed("LOOP"))
+			photo();
+
 		if(PlayState.botplay)
 			bpButton.animation.play('on');
 		else
 			bpButton.animation.play('off');
 
 		// works the same as resume
-		if(back)
+		if(Controls.justPressed("BACK"))
 		{
 			PlayState.paused = false;
 			close();
@@ -217,17 +264,32 @@ class PauseSubState extends MusicBeatSubState
 				right.x = FlxMath.lerp(right.x, item.x + item.width - 24, elapsed*12);
 				right.y = FlxMath.lerp(right.y, item.y - 8, elapsed*12);
 			}
-
 		}
+
+		if(lastMouseX != FlxG.mouse.getScreenPosition(lastCam).x || lastMouseY != FlxG.mouse.getScreenPosition(lastCam).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(lastCam).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(lastCam).y;
+        }
 	}
 
-	function changeSelection(change:Int = 0)
+	function changeSelection(change:Int = 0, force:Int = -1)
 	{
-		curSelected += change;
-		curSelected = FlxMath.wrap(curSelected, 0, optionShit.length - 1);
-
-		if(change != 0)
+		if(change != 0) {
+			curSelected += change;
 			FlxG.sound.play(Paths.sound("menu/scroll"));
+			usingMouse = false;
+        	Main.setMouse(false);
+		}
+		else if(force != -1) {
+			curSelected = force;
+			FlxG.sound.play(Paths.sound("menu/scroll"));
+		}
+
+		curSelected = FlxMath.wrap(curSelected, 0, optionShit.length - 1);
 	}
 
 	function select(what:Int = 0)
@@ -267,5 +329,14 @@ class PauseSubState extends MusicBeatSubState
 
 		var thing:String = (PlayState.botplay ? "On" : "Off");
 		FlxG.sound.play(Paths.sound("botplay" + thing));
+	}
+
+	function photo() {
+		if(!SaveData.shop.get("camera"))
+			return;
+		
+		persistentDraw = false;
+		FlxG.sound.play(Paths.sound("camera"));
+		this.openSubState(new PhotoSubState());
 	}
 }

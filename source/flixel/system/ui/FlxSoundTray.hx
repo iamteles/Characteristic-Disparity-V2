@@ -141,7 +141,7 @@ class FlxSoundTray extends Sprite
 			var sound = Paths.sound("menu/scroll");
 			if (sound != null)
 				FlxG.sound.load(sound).play();
-            ////trace(up);
+            //trace(up);
 		}
 
 		_timer = 1;
@@ -149,6 +149,10 @@ class FlxSoundTray extends Sprite
 		visible = true;
 		active = true;
 		var globalVolume:Int = Math.round(FlxG.sound.volume * 10);
+
+		SaveData.saveFile.data.volume = FlxG.sound.volume;
+		SaveData.saveFile.data.muted  = FlxG.sound.muted;
+		SaveData.saveFile.flush();
 
 		if (FlxG.sound.muted)
 		{

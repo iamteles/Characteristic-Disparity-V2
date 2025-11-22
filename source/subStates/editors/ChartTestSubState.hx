@@ -1,6 +1,6 @@
 package subStates.editors;
 
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
 import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
@@ -11,7 +11,7 @@ import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
@@ -238,7 +238,7 @@ class ChartTestSubState extends MusicBeatSubState
 		}
 
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Testing Chart: " + SONG.song.toUpperCase().replace("-", " "), null);
+		DiscordIO.changePresence("Testing Chart: " + SONG.song.toUpperCase().replace("-", " "), null);
 		
 		Conductor.songPos -= Conductor.crochet * 4;
 	}
@@ -248,7 +248,7 @@ class ChartTestSubState extends MusicBeatSubState
 		infoTxt.text = "";
 
 		//infoTxt.text += 'Step: ${curStep} // Beat: ${curBeat}\n';
-		infoTxt.text += 'Notes Hit: ${Timings.notesHit - Timings.misses}    Misses: ${Timings.misses}\n';
+		infoTxt.text += 'Notes Hit: ${Timings.notesHit - Timings.misses}    Breaks: ${Timings.misses}\n';
 		infoTxt.text += 'Accuracy: ${Timings.accuracy}% [${Timings.getRank()}]';
 
 		infoTxt.screenCenter(X);
@@ -572,7 +572,7 @@ class ChartTestSubState extends MusicBeatSubState
 							hold.noteCrochet * (strumline.scrollSpeed * 0.45)
 						];
 						
-						if(SaveData.data.get("Split Holds"))
+						if(false) //splitholds
 							newHoldSize[1] -= 20;
 
 						hold.setGraphicSize(
@@ -610,7 +610,7 @@ class ChartTestSubState extends MusicBeatSubState
 							hold.y += holdParent.height;
 					}
 					
-					if(SaveData.data.get("Split Holds"))
+					if(false) //splitholds
 						hold.y += 20 * downMult;
 					
 					if(holdParent.gotHeld && !hold.missed)
@@ -762,7 +762,7 @@ class ChartTestSubState extends MusicBeatSubState
 				if(Math.abs(Conductor.songPos - music.time) >= 40 || forced)
 				{
 					// makes everyone sync to the instrumental
-					////trace("synced song");
+					//trace("synced song");
 					music.time = Conductor.songPos;
 				}
 			}

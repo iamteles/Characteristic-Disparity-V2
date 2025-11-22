@@ -5,7 +5,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound ;
 import lime.utils.Assets;
 import openfl.display.BitmapData;
 import openfl.media.Sound;
@@ -32,11 +32,16 @@ class Paths
 	{
 		if(!renderedSounds.exists(key))
 		{
+			if(!fileExists('$key.ogg')) {
+				trace('$key.ogg doesnt exist');
+				key = 'sounds/menu/select';
+			}
+			trace('created new sound $key');
 			renderedSounds.set(key, Sound.fromFile(getPath('$key.ogg')));
 		}
-		
 		return renderedSounds.get(key);
 	}
+
 	public static function getGraphic(key:String):FlxGraphic
 	{
 		var path = getPath('images/$key.png');
@@ -51,14 +56,14 @@ class Paths
 				#end
 				
 				var newGraphic = FlxGraphic.fromBitmapData(bitmap, false, key, false);
-				//trace('created new image $key');
+				trace('created new image $key');
 				
 				renderedGraphics.set(key, newGraphic);
 			}
 			
 			return renderedGraphics.get(key);
 		}
-		//trace('$key doesnt exist, fuck');
+		trace('$key doesnt exist, fuck');
 		return null;
 	}
 
@@ -73,28 +78,43 @@ class Paths
 	];
 	public static function clearMemory()
 	{	
-		// sprite handler
-		//var clearCount:Int = 0;
+		// sprite caching
 		var clearCount:Array<String> = [];
 		for(key => graphic in renderedGraphics)
 		{
 			if(dumpExclusions.contains(key + '.png')) continue;
 
-			////trace('cleared $key');
-			//clearCount++;
 			clearCount.push(key);
-
-			if (openfl.Assets.cache.hasBitmapData(key)) 
+			
+			renderedGraphics.remove(key);
+			if(openfl.Assets.cache.hasBitmapData(key))
 				openfl.Assets.cache.removeBitmapData(key);
 			
-			graphic.dump();
-			graphic.destroy();
 			FlxG.bitmap.remove(graphic);
-			renderedGraphics.remove(key);
+			#if (flixel < "6.0.0")
+			graphic.dump();
+			#end
+			graphic.destroy();
 		}
 
-		//trace('cleared $clearCount');
-		//trace('cleared ${clearCount.length} assets');
+		trace('cleared $clearCount');
+		trace('cleared ${clearCount.length} assets');
+
+		// uhhhh
+		@:privateAccess
+		for(key in FlxG.bitmap._cache.keys())
+		{
+			var obj = FlxG.bitmap._cache.get(key);
+			if(obj != null && !renderedGraphics.exists(key))
+			{
+				openfl.Assets.cache.removeBitmapData(key);
+				FlxG.bitmap._cache.remove(key);
+				#if (flixel < "6.0.0")
+				obj.dump();
+				#end
+				obj.destroy();
+			}
+		}
 		
 		// sound clearing
 		for (key => sound in renderedSounds)
@@ -191,7 +211,7 @@ class Paths
 		} catch(e) {}
 		#end
 		
-		//trace(theList);
+		trace(theList);
 		return theList;
 	}
 
@@ -200,11 +220,36 @@ class Paths
 	public static function preloadPlayStuff(song:String = "euphoria"):Void
 	{
 		var assetModifier = states.PlayState.assetModifier;
-		var preGraphics:Array<String> = [];
+		var preGraphics:Array<String> = [
+			"hud/base/countdown",
+			"hud/base/blackbar",
+			"hud/base/you",
+			'hud/base/healthBar',
+			'hud/base/blackBar',
+			"hud/base/underlay 2",
+
+			"hud/pause/botplay",
+			"hud/pause/buttons",
+			"hud/pause/pause",
+			"hud/pause/selector",
+			"hud/pause/photo",
+			'menu/title/tiles/main',
+			"icons/icon-face",
+
+			'vignette',
+		];
 		var preSounds:Array<String> = [
+			"sounds/cget",
+
 			"sounds/miss/miss1",
 			"sounds/miss/miss2",
 			"sounds/miss/miss3",
+
+			"sounds/menu/scroll",
+			"sounds/menu/back",
+			"sounds/menu/select",
+			"sounds/botplayOn",
+			"sounds/botplayOff",
 
 			"music/death/deathSound",
 			"music/death/deathMusic",
@@ -227,20 +272,15 @@ class Paths
 			var caution:String = ["1", "1", "1", "2"][i];
 			if(song == "nefarious-vip")
 				preSounds.push('sounds/countdown/caution/$caution');
-
-			if(i >= 1)
-			{
-				var countName:String = ["ready", "set", "go"][i - 1];
-
-				var spritePath:String = assetModifier;
-				if(!Paths.fileExists('images/hud/$spritePath/$countName.png'))
-					spritePath = 'base';
-
-				preGraphics.push('hud/$spritePath/$countName');
-			}
 		}
 
 		preSounds.push("hitsounds/"+SaveData.data.get("HitSounds"));
+
+		var the:String = song;
+		if(!Paths.fileExists('images/hud/songnames/${song}.png')) {
+			the = "allegro";
+		}
+		preGraphics.push('hud/songnames/$the');
 
 		for(i in preGraphics)
 			preloadGraphic(i);

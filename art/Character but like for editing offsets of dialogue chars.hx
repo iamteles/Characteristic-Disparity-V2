@@ -244,7 +244,7 @@ class Character extends FlxSprite
 				}
 				catch (e)
 				{
-					//trace(e);
+					trace(e);
 					charData = haxe.Json.parse(Paths.getContent(('data/chars/' + "bella-2a" + '.json')).trim());
 				}
 		

@@ -9,8 +9,9 @@ import flixel.util.FlxColor;
 import data.GameData.MusicBeatState;
 import data.SongData;
 import flixel.tweens.FlxTween;
-import gameObjects.android.FlxVirtualPad;
-import data.Discord.DiscordClient;
+import data.Discord.DiscordIO;
+import flixel.effects.FlxFlicker;
+import flixel.util.FlxTimer;
 
 class StoryMode extends MusicBeatState
 {
@@ -20,27 +21,29 @@ class StoryMode extends MusicBeatState
     var epilogue:FlxSprite;
     var text:FlxSprite;
 
+    var curSelected:Int = 0;
+    var maxCurSelect:Int = 1;
+    var lastVert:Int = 0;
+
+    public static var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
+
     var weeks:FlxTypedGroup<FlxSprite>;
     public static var weekData:Array<Array<Dynamic>> = [];
-    public static var sliderActive:Int = -1; // -1 = none, 0 = w1, 1 = w2
     override function create()
     {
         super.create();
-
         CoolUtil.playMusic("LoveLetter");
-
-        Main.setMouse(true);
-
-        DiscordClient.changePresence("In the Story Mode...", null);
+        DiscordIO.changePresence("In the Story Mode", null);
+        usingMouse = false;
 
         weekData = [
             [["euphoria", "nefarious", "divergence"], "week1"],
             [["allegro", "panic-attack", "convergence", "desertion"], "week2"],
             [["euphoria-vip", "nefarious-vip", "divergence-vip"], "week-vip"],
-            [["sin"], "epilogue"],
+            [["sin"], "epilogue"], // technically intimidate is after this lol
         ];
-
-        sliderActive = -1;
 
         bg = new FlxSprite().loadGraphic(Paths.image('menu/story/bg'));
 		bg.updateHitbox();
@@ -51,7 +54,7 @@ class StoryMode extends MusicBeatState
 		add(weeks);
 
         week1 = new FlxSprite().loadGraphic(Paths.image('menu/story/week1'));
-        week1.scale.set(0.8,0.8);
+        week1.scale.set(0.75,0.75);
         week1.updateHitbox();
         week1.ID = 0;
         weeks.add(week1);
@@ -60,122 +63,392 @@ class StoryMode extends MusicBeatState
         if(!SaveData.progression.get("week1"))
             huh = "lock";
         week2 = new FlxSprite().loadGraphic(Paths.image('menu/story/week2' + huh));
-        week2.scale.set(0.8,0.8);
+        week2.scale.set(0.75,0.75);
         week2.updateHitbox();
         week2.ID = 1;
-        if(SaveData.progression.get("week1")) weeks.add(week2);
-        else add(week2);
+        weeks.add(week2);
 
-        epilogue = new FlxSprite().loadGraphic(Paths.image('menu/story/epilogue'));
-        epilogue.scale.set(0.4,0.4);
-        epilogue.updateHitbox();
-        epilogue.visible = SaveData.progression.get("week2");
-        add(epilogue);
+        if(SaveData.progression.get("week2")) {
+            maxCurSelect = 2;
+            epilogue = new FlxSprite().loadGraphic(Paths.image('menu/story/epilogue'));
+            epilogue.scale.set(0.35,0.35);
+            epilogue.updateHitbox();
+            epilogue.alpha = 0;
+            epilogue.ID = 2;
+            weeks.add(epilogue);
+        }
 
-        text = new FlxSprite(127, 15).loadGraphic(Paths.image('menu/story/text')); //i have not put a position here in a while lol
+        text = new FlxSprite(127, 15 - 30).loadGraphic(Paths.image('menu/story/text'));
         text.updateHitbox();
+        text.alpha = 0;
+        FlxTween.tween(text, {alpha: 1}, 0.4);
         add(text);
 
-        //enterWeek(["euphoria", "nefarious", "divergence"], "week1");
+        updatePos();
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
+
+    var week1Y:Float = 0;
+    var week2X:Float = 0;
+    var week2Y:Float = 0;
+    
+    function updatePos() {
+        week1.screenCenter();
+        week1.x -= 300;
+        week1.y += 125;
+        week1Y = week1.y;
+        week1.y += 30;
+
+        week2.screenCenter();
+        week2.x += 300;
+        week2.y += 125;
+        week2X = week2.x;
+        week2Y = week2.y;
+        week2.y += 40;
+
+        if(SaveData.progression.get("week2")) {
+            epilogue.screenCenter();
+            epilogue.y += 320;
+        }
+    }
+
+    var shaking:Bool = false;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
-        for(item in weeks) {
-            if(sliderActive >= 0) {
-                item.scale.x = FlxMath.lerp(item.scale.x, 0.9, elapsed*6);
-                item.scale.y = FlxMath.lerp(item.scale.y, 0.9, elapsed*6);
+        text.y = FlxMath.lerp(text.y, 15, elapsed*6);
+        week1.y = FlxMath.lerp(week1.y, week1Y, elapsed*6);
+        week2.y = FlxMath.lerp(week2.y, week2Y, elapsed*6);
+
+        if(Controls.justPressed("UI_LEFT"))
+            changeSelection(-1);
+        if(Controls.justPressed("UI_RIGHT"))
+            changeSelection(1);
+
+        if (shaking) { //lmfao old testament code
+            week2.x = week2X + FlxG.random.float(-0.05 * week2.width, 0.05 * week2.width);
+            week2.y = week2Y + FlxG.random.float(-0.05 * week2.height, 0.05 * week2.height);
+        }
+
+        //yuck
+        if((Controls.justPressed("UI_UP") || Controls.justPressed("UI_DOWN")) && maxCurSelect == 2) {
+            if(curSelected == 2) {
+                if(lastVert == 1)
+                    changeSelection(-1);
+                else
+                    changeSelection(1);
             }
             else {
-                if(CoolUtil.mouseOverlap(item, FlxG.camera)) {
-                    item.scale.x = FlxMath.lerp(item.scale.x, 0.9, elapsed*6);
-                    item.scale.y = FlxMath.lerp(item.scale.y, 0.9, elapsed*6);
-                    if(FlxG.mouse.justPressed && focused) {
-                        FlxG.sound.play(Paths.sound("menu/select"));
-                        sliderActive = item.ID;
-                        if(item.ID == 1)
-                            openSubState(new SliderL());
-                        else
-                            openSubState(new SliderR());
-                    }
-                        //enterWeek(weekData[item.ID][0], weekData[item.ID][1]);
-                }
-                else {
-                    item.scale.x = FlxMath.lerp(item.scale.x, 0.8, elapsed*6);
-                    item.scale.y = FlxMath.lerp(item.scale.y, 0.8, elapsed*6);
-                }
+                lastVert = curSelected;
+                if(curSelected == 1)
+                    changeSelection(1);
+                else
+                    changeSelection(-1);
             }
         }
 
-        if(SaveData.progression.get("week2")) {
-            if(CoolUtil.mouseOverlap(epilogue, FlxG.camera)) {
-                epilogue.scale.x = FlxMath.lerp(epilogue.scale.x, 0.4, elapsed*6);
-                epilogue.scale.y = FlxMath.lerp(epilogue.scale.y, 0.4, elapsed*6);
-                if(FlxG.mouse.justPressed) {
-                    FlxG.sound.play(Paths.sound("menu/select"));
-                    enterWeek(3);
-                }
-                    
-            }
-            else {
-                epilogue.scale.x = FlxMath.lerp(epilogue.scale.x, 0.3, elapsed*6);
-                epilogue.scale.y = FlxMath.lerp(epilogue.scale.y, 0.3, elapsed*6);
-            }
-        }
-
-
-        if(Controls.justPressed("BACK") && sliderActive == -1)
-        {
+        if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
             Main.switchState(new states.cd.MainMenu());
         }
 
-        if(SaveData.data.get("Touch Controls")) {
-            virtualPad = new FlxVirtualPad(BLANK, B);
-            add(virtualPad);
+        if(!selected) {
+            for(item in weeks) {
+                if((usingMouse && CoolUtil.mouseOverlap(item, FlxG.camera)) || (!usingMouse && curSelected == item.ID)) {
+                    item.alpha = FlxMath.lerp(item.alpha, 1, elapsed*8);
+                    if(item.ID == 2) {
+                        item.scale.x = FlxMath.lerp(item.scale.x, 0.4, elapsed*8);
+                        item.scale.y = FlxMath.lerp(item.scale.y, 0.4, elapsed*8);
+                    }
+                    else {
+                        item.scale.x = FlxMath.lerp(item.scale.x, 0.8, elapsed*8);
+                        item.scale.y = FlxMath.lerp(item.scale.y, 0.8, elapsed*8);
+                    }
+
+                    if(item.ID != curSelected) {
+                        curSelected = item.ID;
+                        FlxG.sound.play(Paths.sound("menu/scroll"));
+                    }
+                    if(((FlxG.mouse.justPressed && focused) || Controls.justPressed("ACCEPT"))) {
+                        FlxG.sound.play(Paths.sound("menu/select"));
+                        if(item.ID == 2) {
+                            Dialog.dialog = "sin";
+                            Main.switchState(new Dialog());
+                        }
+                        else {
+                            if(item.ID == 1 && !SaveData.progression.get("week1")) {
+                                shaking = true;
+                                FlxG.sound.play(Paths.sound("menu/locked"));
+                                new FlxTimer().start(0.1, function(tmr:FlxTimer)
+                                {
+                                    shaking = false;
+                                    week2.x = week2X;
+                                    week2.y = week2Y;
+                                });
+                            }
+                            else {
+                                Slider.usingMouse = usingMouse;
+                                Slider.weekID = item.ID;
+                                Slider.weekData = weekData[item.ID];
+                                Slider.weekVData = weekData[2];
+                                openSubState(new Slider());
+                            }
+                        }
+                        trace(curSelected);
+                    }
+                }
+                else {
+                    item.alpha = FlxMath.lerp(item.alpha, 0.78, elapsed*8);
+                    if(item.ID == 2) {
+                        item.scale.x = FlxMath.lerp(item.scale.x, 0.35, elapsed*8);
+                        item.scale.y = FlxMath.lerp(item.scale.y, 0.35, elapsed*8);
+                    }
+                    else {
+                        item.scale.x = FlxMath.lerp(item.scale.x, 0.75, elapsed*8);
+                        item.scale.y = FlxMath.lerp(item.scale.y, 0.75, elapsed*8);
+                    }
+                }
+            }
         }
+
+        if(lastMouseX != FlxG.mouse.getScreenPosition(FlxG.camera).x || lastMouseY != FlxG.mouse.getScreenPosition(FlxG.camera).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+        }
+    }
+
+    var selected = false;
+    public function changeSelection(change:Int = 0)
+    {
+        if(selected) return; //do not
+        curSelected += change;
+        curSelected = FlxMath.wrap(curSelected, 0, maxCurSelect);
+        if(change != 0)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
+
+        usingMouse = false;
+        Main.setMouse(false);
+    }
+}
+
+//unified
+class Slider extends MusicBeatSubState
+{
+    var thing:FlxSprite;
+    var button:FlxSprite;
+    var vipButton:FlxSprite;
+
+    public static var usingMouse:Bool = false;
+    var lastMouseX:Float = 0;
+    var lastMouseY:Float = 0;
+
+    public static var weekID:Int = 0;
+    public static var weekData:Array<Dynamic> = [];
+    public static var weekVData:Array<Dynamic> = [];
+
+    var weekName:FlxText;
+    var songs:FlxText;
+	public function new()
+    {
+        super();
+
+        thing = new FlxSprite().loadGraphic(Paths.image('menu/story/slider'));
+        thing.alpha = 0;
+		add(thing);
+
+        button = new FlxSprite().loadGraphic(Paths.image('menu/story/start'));
+        button.alpha = 0;
+        add(button);
+
+        if(weekID == 0) {
+            vipButton = new FlxSprite();
+            vipButton.frames = Paths.getSparrowAtlas('menu/story/vip');
+            vipButton.animation.addByPrefix('lock',  "vip locked", 24, true);
+            vipButton.animation.addByPrefix('on',  "vip selected", 14, true);
+            if(SaveData.shop.get("crown"))
+                vipButton.animation.play('on');
+            else
+                vipButton.animation.play('lock');
+            vipButton.updateHitbox();
+            add(vipButton);
+        }
+
+        weekName = new FlxText(0, 0, 0, "Week " + (weekID+1));
+		weekName.setFormat(Main.gFont, 120, 0xFFFFFFFF, CENTER);
+        weekName.setBorderStyle(OUTLINE, FlxColor.BLACK, 5);
+        weekName.alpha = 0;
+		add(weekName);
+
+        var songString:String = "";
+        var songArray:Array<String> = (cast weekData[0]);
+        for(song in songArray) {
+            if(song == "desertion")
+                songString += "???";
+            else
+                songString += song.toUpperCase();
+            songString += "\n";
+        }
+
+        songs = new FlxText(0, 0, 0, songString);
+		songs.setFormat(Main.gFont, 60, 0xFFFFFFFF, CENTER);
+        songs.setBorderStyle(OUTLINE, FlxColor.BLACK, 4);
+        songs.alpha = 0;
+		add(songs);
+
+        for (i in [thing, button, weekName, songs])
+            FlxTween.tween(i, {alpha: 1}, 0.3);
 
         updatePos();
+        lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+        lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
     }
-
-    var virtualPad:FlxVirtualPad;
 
     function updatePos() {
-        week1.screenCenter();
-        week1.x -= 300;
-        week1.y += 150;
+        if(weekID == 0) {
+            thing.flipX = true;
+            thing.x = FlxG.width - thing.width + 52;
+            thing.x += 52;
 
-        week2.screenCenter();
-        week2.x += 300;
-        week2.y += 150;
+            weekName.screenCenter(X);
+            weekName.x += 320;
+            weekName.y += 70;
 
-        epilogue.screenCenter();
-        epilogue.y += 320;
+            songs.screenCenter();
+            songs.x += 320;
+            songs.y -= 15;
+
+            button.screenCenter();
+            button.y += 221;
+            button.x += 410;
+
+            vipButton.screenCenter();
+            vipButton.y += 211;
+            vipButton.x += 140;
+        }
+        else {
+            thing.x -= 52;
+            thing.x -= 52;
+            weekName.screenCenter(X);
+            weekName.x -= 335;
+            weekName.y += 70;
+
+            songs.screenCenter();
+            songs.x -= 335;
+            songs.y -= 15;
+
+            button.screenCenter();
+            button.y += 221;
+            button.x -= 335;
+        }
+
+		new FlxTimer().start(0.2, function(tmr:FlxTimer)
+		{
+			selected = false;
+		});
     }
 
-    public static function enterWeek(id:Int) {
-        if(id == 0) {
-            Dialog.dialog = "euphoria";
-            Main.switchState(new Dialog());
+    var curSelected:Int = 0;
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
+    
+        if(weekID == 0)
+            thing.x = FlxMath.lerp(thing.x, FlxG.width - thing.width + 52, elapsed*6);
+        else
+            thing.x = FlxMath.lerp(thing.x, -52, elapsed*6);
+
+        if(Controls.justPressed("BACK"))
+        {
+            FlxG.sound.play(Paths.sound('menu/back'));
+            StoryMode.usingMouse = usingMouse;
+            close();
         }
-        else if(id == 1) {
-            Dialog.dialog = "allegro";
-            Main.switchState(new Dialog());
+
+        if(Controls.justPressed("UI_LEFT"))
+            changeSelection(-1);
+        if(Controls.justPressed("UI_RIGHT"))
+            changeSelection(1);
+
+        if((usingMouse && CoolUtil.mouseOverlap(button, FlxG.camera)) || (!usingMouse && curSelected == 0)) {
+            button.scale.x = FlxMath.lerp(button.scale.x, 1.05, elapsed*8);
+            button.scale.y = FlxMath.lerp(button.scale.y, 1.05, elapsed*8);
+            button.alpha = FlxMath.lerp(button.alpha, 1, elapsed*8);
+            
+            if(curSelected == 1)
+                curSelected = 0;
+            if(((FlxG.mouse.justPressed && focused) || Controls.justPressed("ACCEPT")) && !selected) {
+                FlxG.sound.play(Paths.sound("menu/select"));
+                selected = true;
+                FlxFlicker.flicker(button, 1.3, 0.06, true, false, function(_) {
+                    enterWeek(false);
+                });
+            }
         }
-        else if(id == 3) {
-            Dialog.dialog = "sin";
-            Main.switchState(new Dialog());
+        else {
+            button.alpha = FlxMath.lerp(button.alpha, 0.78, elapsed*8);
+            button.scale.x = FlxMath.lerp(button.scale.x, 1, elapsed*8);
+            button.scale.y = FlxMath.lerp(button.scale.y, 1, elapsed*8);
+        }
+
+        if(weekID == 0) {
+            if((usingMouse && CoolUtil.mouseOverlap(vipButton, FlxG.camera)) || (!usingMouse && curSelected == 1)) {
+                vipButton.scale.x = FlxMath.lerp(vipButton.scale.x, 1.05, elapsed*8);
+                vipButton.scale.y = FlxMath.lerp(vipButton.scale.y, 1.05, elapsed*8);
+                vipButton.alpha = FlxMath.lerp(vipButton.alpha, 1, elapsed*8);
+
+                if(curSelected == 0)
+                    curSelected = 1;
+                if(((FlxG.mouse.justPressed && focused) || Controls.justPressed("ACCEPT")) && !selected) {
+                    FlxG.sound.play(Paths.sound("menu/select"));
+                    selected = true;
+                    FlxFlicker.flicker(vipButton, 2, 0.06, true, false, function(_) {
+                        enterWeek(true);
+                    });
+                }
+            }
+            else {
+                vipButton.alpha = FlxMath.lerp(vipButton.alpha, 0.78, elapsed*8);
+                vipButton.scale.x = FlxMath.lerp(vipButton.scale.x, 1, elapsed*8);
+                vipButton.scale.y = FlxMath.lerp(vipButton.scale.y, 1, elapsed*8);
+            }
+        }
+
+        if(lastMouseX != FlxG.mouse.getScreenPosition(FlxG.camera).x || lastMouseY != FlxG.mouse.getScreenPosition(FlxG.camera).y) {
+            if(!usingMouse) {
+                usingMouse = true;
+                Main.setMouse(true);
+            }
+            lastMouseX = FlxG.mouse.getScreenPosition(FlxG.camera).x;
+            lastMouseY = FlxG.mouse.getScreenPosition(FlxG.camera).y;
+        }
+    }
+
+    function enterWeek(vip:Bool) {
+        if(!vip) {
+            if(weekID == 0) {
+                Dialog.dialog = "euphoria";
+                Main.switchState(new Dialog());
+            }
+            else if(weekID == 1) {
+                Dialog.dialog = "allegro";
+                Main.switchState(new Dialog());
+            }
         }
         else {
             PlayState.playList = [];
 
-            //trace(PlayState.playList);
+            trace(PlayState.playList);
     
-            var week = weekData[id][0];
-            var name = weekData[id][1];
+            var week = weekVData[0];
+            var name = weekVData[1];
     
-            //trace(week);
+            trace(week);
     
             PlayState.curWeek = name;
             PlayState.songDiff = "normal";
@@ -186,213 +459,25 @@ class StoryMode extends MusicBeatState
             PlayState.playList = week;
             PlayState.playList.remove(week[0]);
     
-            //trace(PlayState.playList);
+            trace(PlayState.playList);
             
             //CoolUtil.playMusic();
             Main.switchState(new LoadSongState());
         }
     }
-}
 
-class SliderL extends MusicBeatSubState
-{
-    var thing:FlxSprite;
-    var button:FlxSprite;
-    var weekID:Int = 1;
-
-    var weekName:FlxText;
-    var songs:FlxText;
-	public function new()
+    var selected:Bool = true;
+    public function changeSelection(change:Int = 0)
     {
-        super();
+        if(selected) return; //do not
 
-        thing = new FlxSprite().loadGraphic(Paths.image('menu/story/slider'));
-        thing.x -= 52;
-        thing.alpha = 0;
-		add(thing);
+        usingMouse = false;
+        Main.setMouse(false);
+        if(!(weekID == 0 && SaveData.shop.get("crown"))) return;
 
-        button = new FlxSprite().loadGraphic(Paths.image('menu/story/start'));
-        button.screenCenter();
-        button.y += 171;
-        button.alpha = 0;
-        add(button);
-
-        weekName = new FlxText(0, 0, 0, "Week 2");
-		weekName.setFormat(Main.gFont, 120, 0xFFFFFFFF, CENTER);
-        weekName.setBorderStyle(OUTLINE, FlxColor.BLACK, 5);
-        weekName.screenCenter(X);
-        weekName.x -= 320;
-        weekName.y += 70;
-        weekName.alpha = 0;
-		add(weekName);
-
-        songs = new FlxText(0, 0, 0, "Allegro\nPanic Attack\nConvergence\n???\n");
-		songs.setFormat(Main.gFont, 60, 0xFFFFFFFF, CENTER);
-        songs.setBorderStyle(OUTLINE, FlxColor.BLACK, 4);
-        songs.screenCenter();
-        songs.x -= 320;
-        songs.y -= 30;
-        songs.alpha = 0;
-		add(songs);
-
-        for (i in [thing, button, weekName, songs])
-            FlxTween.tween(i, {alpha: 1}, 0.1);
-    }
-
-    function updatePos() {
-        button.screenCenter();
-        button.y += 201;
-        button.x -= 320;
-    }
-
-    override function update(elapsed:Float)
-    {
-        super.update(elapsed);
-
-        if(StoryMode.sliderActive == 1) {
-            if(CoolUtil.mouseOverlap(button, FlxG.camera)) {
-                button.scale.x = FlxMath.lerp(button.scale.x, 1.1, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 1.1, elapsed*6);
-                if(FlxG.mouse.justPressed && focused) {
-                    FlxG.sound.play(Paths.sound("menu/select"));
-                    StoryMode.enterWeek(weekID);
-                    //sliderActive = true;
-                    //openSubState(new SliderL());
-                }
-                    //enterWeek(weekData[item.ID][0], weekData[item.ID][1]);
-            }
-            else {
-                button.scale.x = FlxMath.lerp(button.scale.x, 1, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 1, elapsed*6);
-            }
-    
-            updatePos();
-    
-            if(Controls.justPressed("BACK"))
-            {
-                FlxG.sound.play(Paths.sound('menu/back'));
-                StoryMode.sliderActive = -1;
-                close();
-            }
-        }
-    }
-}
-
-class SliderR extends MusicBeatSubState
-{
-    var thing:FlxSprite;
-    var button:FlxSprite;
-    var vipButton:FlxSprite;
-    var weekID:Int = 0;
-
-    var weekName:FlxText;
-    var songs:FlxText;
-	public function new()
-    {
-        super();
-
-        thing = new FlxSprite().loadGraphic(Paths.image('menu/story/slider'));
-        thing.flipX = true;
-        thing.x = FlxG.width - thing.width + 52;
-        thing.alpha = 0;
-		add(thing);
-
-        button = new FlxSprite().loadGraphic(Paths.image('menu/story/start'));
-        button.screenCenter();
-        button.y += 171;
-        button.alpha = 0;
-        add(button);
-
-        vipButton = new FlxSprite();
-		vipButton.frames = Paths.getSparrowAtlas('menu/story/vip');
-		vipButton.animation.addByPrefix('lock',  "vip locked", 24, true);
-		vipButton.animation.addByPrefix('on',  "vip selected", 14, true);
-        if(SaveData.shop.get("crown"))
-		    vipButton.animation.play('on');
-        else
-            vipButton.animation.play('lock');
-		vipButton.updateHitbox();
-		add(vipButton);
-
-        weekName = new FlxText(0, 0, 0, "Week 1");
-		weekName.setFormat(Main.gFont, 120, 0xFFFFFFFF, CENTER);
-        weekName.setBorderStyle(OUTLINE, FlxColor.BLACK, 5);
-        weekName.screenCenter(X);
-        weekName.x += 320;
-        weekName.y += 70;
-        weekName.alpha = 0;
-		add(weekName);
-
-        songs = new FlxText(0, 0, 0, "Euphoria\nNefarious\nDivergence\n");
-		songs.setFormat(Main.gFont, 60, 0xFFFFFFFF, CENTER);
-        songs.setBorderStyle(OUTLINE, FlxColor.BLACK, 4);
-        songs.screenCenter();
-        songs.x += 320;
-        songs.y -= 30;
-        songs.alpha = 0;
-		add(songs);
-
-        for (i in [thing, button, weekName, songs])
-            FlxTween.tween(i, {alpha: 1}, 0.1);
-    }
-
-    function updatePos() {
-        button.screenCenter();
-        button.y += 201;
-        button.x += 410;
-
-        vipButton.screenCenter();
-        vipButton.y += 211;
-        vipButton.x += 140;
-    }
-
-    override function update(elapsed:Float)
-    {
-        super.update(elapsed);
-
-        if(StoryMode.sliderActive == 0) {
-            if(CoolUtil.mouseOverlap(button, FlxG.camera)) {
-                button.scale.x = FlxMath.lerp(button.scale.x, 1.1, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 1.1, elapsed*6);
-                if(FlxG.mouse.justPressed && focused) {
-                    FlxG.sound.play(Paths.sound("menu/select"));
-                    StoryMode.enterWeek(weekID);
-                    //sliderActive = true;
-                    //openSubState(new SliderL());
-                }
-                    //enterWeek(weekData[item.ID][0], weekData[item.ID][1]);
-            }
-            else {
-                button.scale.x = FlxMath.lerp(button.scale.x, 1, elapsed*6);
-                button.scale.y = FlxMath.lerp(button.scale.y, 1, elapsed*6);
-            }
-
-            if(SaveData.shop.get("crown")) {
-                if(CoolUtil.mouseOverlap(vipButton, FlxG.camera)) {
-                    vipButton.scale.x = FlxMath.lerp(vipButton.scale.x, 1.1, elapsed*6);
-                    vipButton.scale.y = FlxMath.lerp(vipButton.scale.y, 1.1, elapsed*6);
-                    if(FlxG.mouse.justPressed && focused) {
-                        FlxG.sound.play(Paths.sound("menu/select"));
-                        StoryMode.enterWeek(2);
-                        //sliderActive = true;
-                        //openSubState(new SliderL());
-                    }
-                        //enterWeek(weekData[item.ID][0], weekData[item.ID][1]);
-                }
-                else {
-                    vipButton.scale.x = FlxMath.lerp(vipButton.scale.x, 1, elapsed*6);
-                    vipButton.scale.y = FlxMath.lerp(vipButton.scale.y, 1, elapsed*6);
-                }
-            }
-    
-            updatePos();
-    
-            if(Controls.justPressed("BACK"))
-            {
-                FlxG.sound.play(Paths.sound('menu/back'));
-                StoryMode.sliderActive = -1;
-                close();
-            }
-        }
+        curSelected += change;
+        curSelected = FlxMath.wrap(curSelected, 0, 1);
+        if(change != 0)
+            FlxG.sound.play(Paths.sound("menu/scroll"));
     }
 }
