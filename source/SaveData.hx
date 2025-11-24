@@ -200,15 +200,44 @@ class SaveData
 			"Self explanatory.",
 			[1, 999]
 		],
+		'Song Speed' => [
+			"1x",
+			SELECTOR,
+			"Song Speed multiplier. Does not affect scrolling. Multiplies your Score depending on what you pick.",
+			["0.5x", "0.75x", "1x", "1.25x", "1.5x", "1.75x", "2x"],
+		],
+		'Note Speed' => [
+			"1x",
+			SELECTOR,
+			"Scroll Speed multiplier. Does not affect overall song speed. Multiplies your Score depending on what you pick.",
+			["0.5x", "0.75x", "1x", "1.25x", "1.5x", "1.75x", "2x"],
+		],
+		'Note Fade' => [
+			"OFF",
+			SELECTOR,
+			"Whether notes fade in or out of view as they approach you.",
+			["OFF", "FADE IN", "FADE OUT", "BOTH"],
+		],
+		'Fail Mode' => [
+			"OFF",
+			SELECTOR,
+			"No Fail - You can't die (0.5x) | Sudden Death - You can't break (1.5x) | Perfect - You can't go below P Rank (2x)",
+			["OFF", "NO FAIL", "SUDDEN DEATH", "PERFECT"],
+		],
+		"Mirror Mode" => [
+			false,
+			CHECKMARK,
+			"Flips the notes around. Does not multiply score."
+		],
 		"Flashbang Mode" => [
 			false,
 			CHECKMARK,
-			"lol"
+			"Not recommended for those with photosensitivity. Doubles Score, for whatever reason."
 		],
 		"Jumpscares" => [
 			false,
 			CHECKMARK,
-			"Scary little surprise."
+			"Scary little surprise. Score will be unaffected."
 		],
 		"Dark Mode" => [
 			true,
@@ -231,6 +260,7 @@ class SaveData
 		"story" => false,
 		"nila" => false,
 		"plus" => true,
+		"100" => false,
 	];
 	public static var songs:Map<String, Dynamic> = [
 		"euphoria" => false,
@@ -645,6 +675,7 @@ class SaveData
 					"story" => false,
 					"nila" => false,
 					"plus" => true,
+					"100" => false
 				];
 				songs = [
 					"euphoria" => false,
@@ -962,15 +993,15 @@ class SaveData
 
 	public static function eggData():Array<Dynamic> {
 		var name:String = "Egg";
-		var price:Int = 500;
+		var price:Int = 300;
 
 		switch(eggCount()) {
 			case 1:
 				name = "Munched Egg";
-				price = 300;
+				price = 150;
 			case 2:
 				name = "Crunched Egg";
-				price = 150;
+				price = 50;
 			case 3:
 				name = "Egg?";
 				price = 1;

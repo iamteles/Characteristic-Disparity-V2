@@ -13,6 +13,8 @@ import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import data.Discord.DiscordIO;
+import gameObjects.MoneyCounter;
+
 
 using StringTools;
 
@@ -39,6 +41,7 @@ class Kissing extends MusicBeatState
 
     var begun:Bool = false;
     var tweening:Bool = false;
+    public static var moneyCount:MoneyCounter;
     override function create()
     {
         super.create();
@@ -128,10 +131,8 @@ class Kissing extends MusicBeatState
         retry.alpha = 0;
 		add(retry);
 
-        var hypercam = new FlxSprite().loadGraphic(Paths.image('minigame/hypercam'));
-		hypercam.updateHitbox();
-		hypercam.screenCenter();
-		add(hypercam);
+        moneyCount = new MoneyCounter(0, 0);
+		add(moneyCount);
 
         //loop();
     }
@@ -319,6 +320,13 @@ class Kissing extends MusicBeatState
 
                 finishDie = true;
                 FlxTween.tween(retry, {alpha: 1}, 0.5);
+
+                var moneyScore:Int = Std.int(score/5);
+                trace(moneyScore);
+
+                if(moneyScore > 0) {
+                    SaveData.transaction(moneyScore);
+                }
             });
         });
     }

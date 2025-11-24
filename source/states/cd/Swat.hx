@@ -16,6 +16,7 @@ import data.Discord.DiscordIO;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxObject;
 import flixel.FlxCamera;
+import gameObjects.MoneyCounter;
 
 using StringTools;
 
@@ -41,6 +42,7 @@ class Swat extends MusicBeatState
     var title:FlxSprite;
     var info:FlxText;
     public static var scare:FlxSprite;
+    public static var moneyCount:MoneyCounter;
 
     var begun:Bool = false;
     var tweening:Bool = false;
@@ -99,16 +101,6 @@ class Swat extends MusicBeatState
         info.cameras = [camHUD];
 		add(info);
 
-        retry = new FlxText(0,0,0,'You died!\nPress ACCEPT to restart.');
-		retry.setFormat(Main.dsFont, 50, 0xFFFFFFFF, CENTER);
-		retry.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.4);
-        retry.screenCenter(X);
-        retry.y = FlxG.height - retry.height - 65;
-        retry.antialiasing = false;
-        retry.cameras = [camHUD];
-        retry.alpha = 0;
-		add(retry);
-
         title = new FlxSprite().loadGraphic(Paths.image('minigame/swat/title-fly'));
 		title.updateHitbox();
 		title.screenCenter();
@@ -123,6 +115,20 @@ class Swat extends MusicBeatState
         scare.alpha = 0;
         scare.cameras = [camHUD];
         add(scare);
+
+        retry = new FlxText(0,0,0,'You died!\nPress ACCEPT to restart.');
+		retry.setFormat(Main.dsFont, 50, 0xFFFFFFFF, CENTER);
+		retry.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.4);
+        retry.screenCenter(X);
+        retry.y = FlxG.height - retry.height - 65;
+        retry.antialiasing = false;
+        retry.cameras = [camHUD];
+        retry.alpha = 0;
+		add(retry);
+
+        moneyCount = new MoneyCounter(0, 0);
+		moneyCount.cameras = [camHUD];
+		add(moneyCount);
 
         Main.setMouse(true);
     }
@@ -262,6 +268,13 @@ class Swat extends MusicBeatState
         }
         else
             FlxG.sound.play(Paths.sound('minigame/swat/death'));
+
+        var moneyScore:Int = Std.int(swatted/4);
+        trace(moneyScore);
+
+        if(moneyScore > 0) {
+            SaveData.transaction(moneyScore);
+        }
 
         if(swatted > highscore) {
             highscore = swatted;

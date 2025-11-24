@@ -215,7 +215,11 @@ class HudClass extends FlxGroup
 		updateIconPos();
 		updateText();
 		
-		badScoreTxt.y = infoTxt.y + infoTxt.height;
+		if(retroStyle)
+			badScoreTxt.y = healthBarBG.y + healthBarBG.height + 16;
+		else
+			badScoreTxt.y = infoTxt.y + infoTxt.height;
+
 		botplayTxt.screenCenter(X);
 		botplayTxt.y = (!downscroll ? 40 + 50 : FlxG.height - 40 - 50);
 		updateTimeTxt();

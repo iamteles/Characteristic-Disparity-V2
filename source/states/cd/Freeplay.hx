@@ -136,7 +136,7 @@ class Freeplay extends MusicBeatState
             char.x = 30;
             char.y = 0;
             char.alpha = 0;
-            if(/*!SaveData.songs.get(songs[i][0]) ||*/ !songs[i][4])
+            if(!SaveData.songs.get(songs[i][0]) || !songs[i][4])
                 char.color = 0xFF000000;
             characters.add(char);
 
@@ -409,7 +409,8 @@ class Freeplay extends MusicBeatState
     }
 
     public function updateScoreCount() {
-        realValues = Highscore.getScore('${songs[curSelected][0]}-${CoolUtil.getDiffs()[curDiff]}');
+        var mode:String = (SaveData.data.get("Mirror Mode") ? "mirror" : "normal");
+        realValues = Highscore.getScore('${songs[curSelected][0]}-${mode}');
 		//diffTxt.text = '< ${diff.toUpperCase()} >';
     }
 }

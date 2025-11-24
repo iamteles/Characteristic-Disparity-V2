@@ -60,9 +60,12 @@ class OptionsState extends MusicBeatState
 			"Discord RPC"
 		],
 		"extras" => [
-			"Jumpscares",
+			"Song Speed",
+			"Note Speed",
+			"Note Fade",
+			"Fail Mode",
+			"Mirror Mode",
 			"Flashbang Mode",
-			//"Miss on Ghost Tap",
 			"Munchlog"
 		],
 		"save" => [
@@ -119,8 +122,8 @@ class OptionsState extends MusicBeatState
 
 		DiscordIO.changePresence("In the Options", null);
 
-		/*if(SaveData.eggCheck())
-			optionShit.get("main").push("Extras");*/
+		if(SaveData.progression.get("100"))
+			optionShit.get("main").push("Extras");
 
 		var tiles = new FlxBackdrop(Paths.image('menu/freeplay/tile'), XY, 0, 0);
         tiles.velocity.set(30, 30);
@@ -169,7 +172,7 @@ class OptionsState extends MusicBeatState
 		verTxt.setFormat(Main.dsFont, 28, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.y = FlxG.height - verTxt.height;
-		if(!SaveData.eggCheck())
+		if(!SaveData.progression.get("100"))
 			verTxt.screenCenter(X);
 		else
 			verTxt.x = 3;

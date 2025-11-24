@@ -11,6 +11,7 @@ class Highscore
 
 	public static function addScore(song:String, newScore:ScoreData)
 	{
+		trace("try add score " + song);
 		var oldScore:ScoreData = getScore(song);
 
 		if(newScore.score >= oldScore.score)
@@ -23,6 +24,7 @@ class Highscore
 
 	public static function getScore(song:String):ScoreData
 	{
+		trace("try get score " + song);
 		if(!highscoreMap.exists(song))
 			return {score: 0, accuracy: 0, misses: 0};
 		else

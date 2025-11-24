@@ -15,6 +15,10 @@ import flixel.math.FlxMath;
 import data.GameData.MusicBeatState;
 import data.Discord.DiscordIO;
 
+#if MUNCH
+import states.cd.Munch;
+#end
+
 class Gallery extends MusicBeatState
 {
 	public var curSelected:Int = 0;
@@ -360,8 +364,10 @@ class Gallery extends MusicBeatState
 		}
 
 		if(Controls.justPressed("ACCEPT") && curCat == "main") {
-			if(items.get(curCat)[curSelected][1] == "")
+			if(items.get(curCat)[curSelected][1] == "") {
+				FlxG.camera.shake(0.005, 0.1, null, true, XY);
 				FlxG.sound.play(Paths.sound('menu/locked'));
+			}
 			else {
 				FlxG.sound.play(Paths.sound('menu/select'));
 				curCat = items.get(curCat)[curSelected][1];

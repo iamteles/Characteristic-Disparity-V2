@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import data.Conductor;
+import flixel.math.FlxMath;
 
 class Note extends FlxSprite
 {
@@ -231,19 +232,36 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if(SaveData.data.get("Note Fade") != "OFF" && assetModifier != "taiko") {
+			if(SaveData.data.get("Note Fade") == "FADE OUT")
+				near = (y > 200);
+			else if(SaveData.data.get("Note Fade") == "FADE IN")
+				near = !(y > 170);
+			else if(SaveData.data.get("Note Fade") == "BOTH")
+				near = true;
+			
+			acAlpha = FlxMath.lerp(
+				acAlpha,
+				(near ? 0 : 1),
+				elapsed * 24
+			);
+		}
+		alpha = realAlpha * multAlpha * acAlpha;
 	}
 	
 	public var realAlpha:Float = 1;
+	public var multAlpha:Float = 1;
+	public var acAlpha:Float = 1;
+	var near:Bool = false;
 	public function setAlpha():Void
 	{
-		var multAlpha:Float = 1;
-		if(isHold)
-			multAlpha = 0.7;
 		if(missed)
 			multAlpha = 0.2;
-		
-		// change realAlpha instead of alpha for this effect
-		alpha = realAlpha * multAlpha;
+		else if(isHold)
+			multAlpha = 0.9;
+		else
+			multAlpha = 1;
 	}
 
 	public function checkActive():Void
