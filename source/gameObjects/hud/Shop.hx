@@ -389,8 +389,8 @@ class ShopTalk extends FlxGroup
         });
     }
 
-
     public function tweenAlpha(alpha:Float, time:Float) {
+        dontdoanythin = true;
         if(alpha == 1)
             activeg = true;
         if(alpha == 0)
@@ -401,6 +401,11 @@ class ShopTalk extends FlxGroup
         if(activeIcon == "nila")
             FlxTween.tween(iconN, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
         FlxTween.tween(tex, {alpha: alpha}, time, {ease: FlxEase.sineInOut});
+
+        new FlxTimer().start(time, function(tmr:FlxTimer)
+		{
+			dontdoanythin = false;
+		});
     }
 
     function getCompAssessment() {
@@ -1074,6 +1079,7 @@ class ShopBuy extends FlxGroup
     public static var itemDesc = "What are you looking for?";
 
     public static var activeg:Bool = false;
+    public static var dontdoanythin:Bool = false;
 
     public static var char:Int = 0;
 
@@ -1211,6 +1217,7 @@ class ShopBuy extends FlxGroup
     }
 
     public function tweenAlpha(alpha:Float, time:Float) {
+        dontdoanythin = true;
         if(alpha == 1)
             activeg = true;
         if(alpha == 0)
@@ -1242,6 +1249,11 @@ class ShopBuy extends FlxGroup
         }
 
         alphaTab(alpha, time);
+
+        new FlxTimer().start(time, function(tmr:FlxTimer)
+		{
+			dontdoanythin = false;
+		});
     }
 
     public function alphaTab(alpha:Float, time:Float) {
@@ -1261,27 +1273,26 @@ class ShopBuy extends FlxGroup
         super.update(elapsed);
 
         if(activeg) {
-            if(Controls.justPressed("BACK")) {
-                ShopState.exitShop();
-            }
+            if(!dontdoanythin) {
+                if(Controls.justPressed("BACK"))
+                    ShopState.exitShop();
+                if(Controls.justPressed("LOOP"))
+                    changeTab(1);
+                if(Controls.justPressed("UI_UP"))
+                    changeItem(-2);
+                if(Controls.justPressed("UI_DOWN"))
+                    changeItem(2);
+                if(Controls.justPressed("UI_LEFT"))
+                    changeItem(-1);
+                if(Controls.justPressed("UI_RIGHT"))
+                    changeItem(1);
 
-            if(Controls.justPressed("LOOP"))
-                changeTab(1);
-
-            if(Controls.justPressed("UI_UP"))
-                changeItem(-2);
-            if(Controls.justPressed("UI_DOWN"))
-                changeItem(2);
-            if(Controls.justPressed("UI_LEFT"))
-                changeItem(-1);
-            if(Controls.justPressed("UI_RIGHT"))
-                changeItem(1);
-
-            for(item in curTab.members){
-                if(item.ident == curItem && !usingMouse)
-                    item.hovering = true;
-                else
-                    item.hovering = false;
+                for(item in curTab.members){
+                    if(item.ident == curItem && !usingMouse)
+                        item.hovering = true;
+                    else
+                        item.hovering = false;
+                }
             }
     
             for(i in tabs) {
@@ -1291,7 +1302,7 @@ class ShopBuy extends FlxGroup
                 else if(CoolUtil.mouseOverlap(i, ShopState.camHUD, new FlxPoint(holder.x + 10, i.y + i.height))) {
                     i.x = tabPos[1];
                     if(FlxG.mouse.justPressed) {
-                        changeTab(0, i.ID);
+                        if(!dontdoanythin) changeTab(0, i.ID);
                     }
                 }
                 else {

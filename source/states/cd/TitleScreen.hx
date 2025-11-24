@@ -42,17 +42,30 @@ class TitleScreen extends MusicBeatState
     var gameActive:Bool = false;
 
     static var introEnded:Bool = false;
+
+    function playSong(fromMenu:Bool = false) {
+        if(Main.curTitle[0] == "retro")
+            CoolUtil.playMusic("speaker");
+        else {
+            if(Main.curTitle[1] == "overTheHorizonHelica-old")
+                CoolUtil.playMusic("intro");
+            else
+                CoolUtil.playMusic("intro_plus");
+
+            if(fromMenu)
+                FlxG.sound.music.time = (Conductor.crochet * 16);
+        }
+    }
     override public function create():Void 
     {
         super.create();
 
         if(introEnded){
-            CoolUtil.playMusic("intro_plus");
-            FlxG.sound.music.time = (Conductor.crochet * 16);
+            playSong(true);
         }
         else {
             new FlxTimer().start(0.3, function(tmr:FlxTimer) {
-                CoolUtil.playMusic("intro_plus");
+                playSong(false);
             });
         }
 
@@ -80,9 +93,10 @@ class TitleScreen extends MusicBeatState
         var logoName:String = "-plus";
         if(Main.curTitle[0] == "retro")
             logoName = "-retro";
+        else if(Main.curTitle[1] == "overTheHorizonHelica-old") // because they use the same tiles lol
+            logoName = "";
         logo = new FlxSprite(204.05, 46.7).loadGraphic(Paths.image('menu/title/logo' + logoName));
-        if(logoName == "-plus")
-            logo.scale.set(0.7,0.7);
+        logo.scale.set(0.7,0.7);
         logo.updateHitbox();
         logo.screenCenter(X);
         var storeY:Float = logo.y;
@@ -98,7 +112,7 @@ class TitleScreen extends MusicBeatState
         info.y = 599.95;
         add(info);
 
-        var verTxt = new FlxText(0,0,0,'v2.5.0');
+        var verTxt = new FlxText(0,0,0,'v${lime.app.Application.current.meta.get('version')}');
 		verTxt.setFormat(Main.dsFont, 30, 0xFFFFFFFF, CENTER);
 		verTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
         verTxt.x = 5;
@@ -304,8 +318,17 @@ class TitleScreen extends MusicBeatState
     {
         if(exiting) return;
         exiting = true;
-        CoolUtil.playMusic("");
-        FlxG.sound.play(Paths.sound("intro/end_plus"));
+        
+        if(Main.curTitle[0] != "retro")
+            CoolUtil.playMusic("");
+
+        if(Main.curTitle[1] == "overTheHorizonHelica-old")
+            FlxG.sound.play(Paths.sound("intro/end"));
+        else if(Main.curTitle[0] == "retro")
+            FlxG.sound.play(Paths.sound("intro/end_retro"));
+        else
+            FlxG.sound.play(Paths.sound("intro/end_plus"));
+
         CoolUtil.flash(FlxG.camera, 1, 0xffffffff); 
         FlxFlicker.flicker(info, 2, 0.06, true, false, function(_)
         {

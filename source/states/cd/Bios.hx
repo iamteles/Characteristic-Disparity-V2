@@ -80,7 +80,7 @@ class Bios extends MusicBeatState
 		super();
 		// these two repeat dialogue soo...
 		function breeAbout(who:String) {
-			return "In Bree's almighty quest to become the most powerful god of all time, there's nothing that makes her more angry than people stronger than her, especially if that power is “misplaced”, in her eyes. "
+			return "In Bree's almighty quest to become the most powerful god of all time, there's nothing that makes her more angry than people stronger than her, especially if that power is \"misplaced\", in her eyes. "
 			+ "With their combined power, " + who + " and her partner become stronger than her, so they must stay vigilant to make sure she doesn't smite them down.";
 		}
 		function helicaAbout(who:String) {
@@ -110,7 +110,7 @@ class Bios extends MusicBeatState
 			series: "Characteristic Disparity",
 			age: "20",
 			height: "5'09",
-			about: "The shy, emo, rock and roll ready gal from New Jersey. Bex is more shy and introverted compared to her girlfriend Bella. However, she loves her to death, and would go to the ends of the earth for her. Bex likes to play guitar, and even has a gig and the bar she works at. She likes to smoke, as it helps her release a lot of stress from her anxiety, even though Bella disapproves of it.",
+			about: "The shy, emo, rock and roll ready gal from New Jersey. Bex is more shy and introverted compared to her girlfriend Bella, however, she loves her to death, and would go to the ends of the earth for her. Bex likes to play guitar, and even has a gig and the bar she works at. She likes to smoke, as it helps her release a lot of stress from her anxiety, even though Bella disapproves of it.",
 		},
 		// bree
 		4 => {
@@ -135,7 +135,7 @@ class Bios extends MusicBeatState
 			series: "Characteristic Disparity",
 			age: "11",
 			height: "4'09",
-			about: "The silly little scientist supreme. Nila is often babysat by Watts, whom she likes to call \"Mom 2\". They've grown a deep inseparable bond over the last couple of years, and love doing experiments and engineering together. She's got a hyperactive attitudewhich, while meshing well with Bella, clashes a bit with Bex, leading to her to prefer Bella's company.",
+			about: "The silly little scientist supreme. Nila is often babysat by Watts, whom she likes to call \"Mom 2\". They've grown a deep inseparable bond over the last couple of years, and love doing experiments and engineering together. She's got a hyperactive attitude which, while meshing well with Bella, clashes a bit with Bex, leading to her to prefer Bella's company.",
 		},
 		// helica
 		32 => {
@@ -143,7 +143,7 @@ class Bios extends MusicBeatState
 			series: "Characteristic Disparity",
 			age: "22",
 			height: "6'00",
-			about: "The guardian angel for all. Helica is a high class god hailing from the Pantheon. She teaches other gods in the status below her how to use their powers, in preparation to help look after earth one day, one of her students being Bree. The 2 hate each other, and Helica always ends up cleaning after her. Stopping Bree's reign of terror is one of her ultimate goals and she will stop at nothing to get it done.",
+			about: "The guardian angel for all. Helica is a high class god hailing from the Pantheon. She teaches other gods in the status below her how to use their powers, in preparation to help look after earth one day, one of her students being Bree. The two hate each other, and Helica always ends up cleaning after her. Stopping Bree's reign of terror is one of her ultimate goals and she will stop at nothing to get it done.",
 		},
 		// drown
 		64 => {

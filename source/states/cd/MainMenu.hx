@@ -169,6 +169,12 @@ class MainMenu extends MusicBeatState
             SaveData.save();
         }
 
+        if(SaveData.completion() == 100 && !SaveData.progression.get("100")) {
+            unlocks.push("Gameplay modifiers!\nThanks for playing!");
+            SaveData.progression.set("100", true);
+            SaveData.save();
+        }
+
         if(unlocks.length > 0) {
             Paths.preloadSound('sounds/gift');
 
@@ -218,7 +224,7 @@ class MainMenu extends MusicBeatState
 
         if(Controls.justPressed("BACK")) {
             FlxG.sound.play(Paths.sound('menu/back'));
-            Main.switchState(new states.cd.TitleScreen(), true);
+            Main.switchState(new states.cd.TitleScreen(), Main.curTitle[0] != "retro");
         }
 
 		if(Controls.justPressed("UI_LEFT"))

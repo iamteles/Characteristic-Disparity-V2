@@ -15,6 +15,21 @@ using StringTools;
 class CoolUtil
 {
 	// general things
+	public static function stringToFloat(str:String, ?backup:Float = 0):Float
+	{
+		var num:Float = Std.parseFloat(str);
+		if(!Std.isOfType(num, Float) || Math.isNaN(num))
+			num = backup;
+		return num;
+	}
+
+	public static function getSpeed(str:String):Float
+	{
+		var strM = str.substr(0, str.length - 1);
+		var spd:Float = stringToFloat(strM, 1);
+		return spd;
+	}
+
 	inline public static function formatChar(char:String):String
 	{
 		return char.substring(0, char.lastIndexOf('-'));
@@ -53,7 +68,7 @@ class CoolUtil
 	{
 		return switch(week)
 		{
-			default: ["normal", "mania"];
+			default: ["normal"];
 		}
 	}
 

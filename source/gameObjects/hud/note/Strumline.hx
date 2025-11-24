@@ -2,6 +2,7 @@ package gameObjects.hud.note;
 
 import flixel.group.FlxGroup;
 import gameObjects.Character;
+import states.PlayState;
 
 class Strumline extends FlxGroup
 {
@@ -17,7 +18,8 @@ class Strumline extends FlxGroup
 
 	public var x:Float = 0;
 	public var downscroll:Bool = false;
-	public var scrollSpeed:Float = 2.8;
+	public var scrollSpeed(get, set):Float;
+	var _scrollSpeed:Float = 2.8;
 
 	public var isPlayer:Bool = false;
 	public var botplay:Bool = false;
@@ -32,6 +34,15 @@ class Strumline extends FlxGroup
 	public var noteColor:Array<Int> = [0, 0, 0];
 
 	public var isTaiko:Bool = false;
+
+	function get_scrollSpeed():Float {
+		return (_scrollSpeed * CoolUtil.getSpeed(SaveData.data.get("Note Speed"))) / (CoolUtil.getSpeed(SaveData.data.get("Song Speed")));
+	}
+
+	function set_scrollSpeed(v:Float):Float {
+		_scrollSpeed = v;
+		return _scrollSpeed;
+	}
 
 	public function new(x:Float, ?character:Character, ?downscroll:Bool, ?isPlayer = false, ?botplay = true, ?assetModifier:String = "base", isTaiko:Bool = false)
 	{
@@ -88,7 +99,7 @@ class Strumline extends FlxGroup
 	
 	public function addNote(note:Note)
 	{
-		note.alpha = noteAlpha;
+		note.realAlpha = noteAlpha;
 		allNotes.add(note);
 		if(note.isHold)
 			holdGroup.add(note);
